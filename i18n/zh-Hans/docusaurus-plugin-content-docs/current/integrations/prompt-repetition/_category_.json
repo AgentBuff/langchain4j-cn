@@ -1,0 +1,8 @@
+{
+  "label": "提示重复",
+  "position": 22,
+  "link": {
+    "type": "generated-index",
+    "description": "用于 AI Services 护栏与 RAG 查询转换的提示重复工具"
+  }
+}

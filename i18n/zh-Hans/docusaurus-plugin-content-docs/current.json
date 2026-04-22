@@ -1,0 +1,142 @@
+{
+  "version.label": {
+    "message": "Next",
+    "description": "The label for version current"
+  },
+  "sidebar.tutorialSidebar.category.Tutorials": {
+    "message": "教程",
+    "description": "The label for category 'Tutorials' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Tutorials.link.generated-index.description": {
+    "message": "教程",
+    "description": "The generated-index page description for category 'Tutorials' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Integrations": {
+    "message": "集成",
+    "description": "The label for category 'Integrations' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Integrations.link.generated-index.description": {
+    "message": "集成",
+    "description": "The generated-index page description for category 'Integrations' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Language Models": {
+    "message": "语言模型",
+    "description": "The label for category 'Language Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Language Models.link.generated-index.description": {
+    "message": "语言模型",
+    "description": "The generated-index page description for category 'Language Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Embedding Models": {
+    "message": "嵌入模型",
+    "description": "The label for category 'Embedding Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Embedding Models.link.generated-index.description": {
+    "message": "嵌入模型",
+    "description": "The generated-index page description for category 'Embedding Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Embedding Stores": {
+    "message": "嵌入存储",
+    "description": "The label for category 'Embedding Stores' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Embedding Stores.link.generated-index.description": {
+    "message": "嵌入存储",
+    "description": "The generated-index page description for category 'Embedding Stores' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Chat Memory Stores": {
+    "message": "聊天记忆存储",
+    "description": "The label for category 'Chat Memory Stores' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Chat Memory Stores.link.generated-index.description": {
+    "message": "聊天记忆存储",
+    "description": "The generated-index page description for category 'Chat Memory Stores' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Image Models": {
+    "message": "图像模型",
+    "description": "The label for category 'Image Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Image Models.link.generated-index.description": {
+    "message": "图像模型",
+    "description": "The generated-index page description for category 'Image Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Document Loaders": {
+    "message": "文档加载器",
+    "description": "The label for category 'Document Loaders' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Document Loaders.link.generated-index.description": {
+    "message": "文档加载器",
+    "description": "The generated-index page description for category 'Document Loaders' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Document Parsers": {
+    "message": "文档解析器",
+    "description": "The label for category 'Document Parsers' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Document Parsers.link.generated-index.description": {
+    "message": "文档解析器",
+    "description": "The generated-index page description for category 'Document Parsers' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Scoring (Reranking) Models": {
+    "message": "打分（重排序）模型",
+    "description": "The label for category 'Scoring (Reranking) Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Scoring (Reranking) Models.link.generated-index.description": {
+    "message": "打分（重排序）模型",
+    "description": "The generated-index page description for category 'Scoring (Reranking) Models' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Code Execution Engines": {
+    "message": "代码执行引擎",
+    "description": "The label for category 'Code Execution Engines' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Code Execution Engines.link.generated-index.description": {
+    "message": "代码执行引擎",
+    "description": "The generated-index page description for category 'Code Execution Engines' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Frameworks": {
+    "message": "框架",
+    "description": "The label for category 'Frameworks' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Frameworks.link.generated-index.description": {
+    "message": "框架",
+    "description": "The generated-index page description for category 'Frameworks' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Web Search Engines": {
+    "message": "Web 搜索引擎",
+    "description": "The label for category 'Web Search Engines' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Web Search Engines.link.generated-index.description": {
+    "message": "Web 搜索引擎可在 [RAG 流水线](https://docs.langchain4j.dev/tutorials/rag#web-search-content-retriever) 中作为 `ContentRetriever` 使用，也可以作为 `@Tool` 使用。",
+    "description": "The generated-index page description for category 'Web Search Engines' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Browser Execution Engines": {
+    "message": "浏览器执行引擎",
+    "description": "The label for category 'Browser Execution Engines' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Browser Execution Engines.link.generated-index.description": {
+    "message": "浏览器执行引擎",
+    "description": "The generated-index page description for category 'Browser Execution Engines' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Model Routing": {
+    "message": "模型路由",
+    "description": "The label for category 'Model Routing' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Model Routing.link.generated-index.description": {
+    "message": "Model Router 及其路由策略",
+    "description": "The generated-index page description for category 'Model Routing' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Prompt Repetition": {
+    "message": "提示词重复",
+    "description": "The label for category 'Prompt Repetition' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Prompt Repetition.link.generated-index.description": {
+    "message": "用于 AI Services guardrails 和 RAG 查询转换的提示词重复工具",
+    "description": "The generated-index page description for category 'Prompt Repetition' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Useful Materials": {
+    "message": "参考资料",
+    "description": "The label for category 'Useful Materials' in sidebar 'tutorialSidebar'"
+  },
+  "sidebar.tutorialSidebar.category.Useful Materials.link.generated-index.description": {
+    "message": "参考资料",
+    "description": "The generated-index page description for category 'Useful Materials' in sidebar 'tutorialSidebar'"
+  }
+}

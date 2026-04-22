@@ -1,0 +1,38 @@
+{
+  "site.tagline": {
+    "message": "用 LLM 的能力增强你的 Java 应用",
+    "description": "Site tagline"
+  },
+  "homepage.header.button": {
+    "message": "开始阅读",
+    "description": "Homepage hero button"
+  },
+  "homepage.meta.description": {
+    "message": "LangChain4j 文档首页",
+    "description": "Homepage meta description"
+  },
+  "homepage.features.easy.title": {
+    "message": "轻松接入 LLM 与向量存储",
+    "description": "Homepage feature title"
+  },
+  "homepage.features.easy.description": {
+    "message": "通过统一 API 即可轻松接入主流商业和开源 LLM 与向量存储，用来构建聊天机器人、助手等应用。",
+    "description": "Homepage feature description"
+  },
+  "homepage.features.java.title": {
+    "message": "专为 Java 打造",
+    "description": "Homepage feature title"
+  },
+  "homepage.features.java.description": {
+    "message": "借助 Quarkus、Spring Boot 和 Helidon 集成，LangChain4j 可以顺滑地融入 Java 应用。在 Java 与 LLM 之间支持双向集成：既可以从 Java 调用 LLM，也可以让 LLM 反向调用 Java 代码。",
+    "description": "Homepage feature description"
+  },
+  "homepage.features.toolbox.title": {
+    "message": "Agents、Tools、RAG",
+    "description": "Homepage feature title"
+  },
+  "homepage.features.toolbox.description": {
+    "message": "从底层的提示词模板、聊天记忆、输出解析，到高层的 Agents 与 RAG，LangChain4j 提供了覆盖常见 LLM 场景的完整工具箱。",
+    "description": "Homepage feature description"
+  }
+}

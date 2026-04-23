@@ -1,42 +1,50 @@
-## LangChain4j Documentation
+# LangChain4j 中文文档
 
-### Table of Contents
+这是 LangChain4j 简体中文文档站点仓库，基于 [Docusaurus](https://docusaurus.io/) 构建。
 
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
+在线访问地址：<https://langchain4j-cn.vercel.app/>
 
-This is built using [Docusaurus](https://docusaurus.io/), a modern static docs/website generator.
+站点默认根路径展示简体中文内容，英文版本位于 `/en`。
 
-### Prerequisites
+## 目录
 
-- [Node.JS](https://nodejs.org/en/download) (20+)
+- [前置要求](#前置要求)
+- [安装依赖](#安装依赖)
+- [本地开发](#本地开发)
+- [构建站点](#构建站点)
 
-If Node.js is managed by Node Version Manager (nvm), run:
+## 前置要求
+
+- [Node.js](https://nodejs.org/en/download) 20+
+
+如果你使用 nvm 管理 Node.js 版本，先执行：
+
 ```shell
 nvm use
 ```
 
-### Installation
+## 安装依赖
 
-This command installs all the Node dependencies.
+安装全部 Node 依赖：
 
 ```bash
 npm ci
 ```
 
-### Build
+## 本地开发
 
-This command builds the deployable static artifacts (i.e., html, js, css, etc) under the `build` directory. This static content can then be deployed to `GitHub pages` or `Vercel`, etc.
+启动本地开发服务器：
 
-```
-npm run build
-```
-
-### Local Development
-
-This command starts a local development server and opens up a browser window. Most changes are reflected live without
-having to restart the server.
-
-```
+```bash
 npm run start
+```
+
+大多数改动都会自动热更新，无需手动重启。
+
+## 构建站点
+
+生成可部署的静态文件到 `build` 目录，可直接部署到 Vercel 等静态托管平台：
+
+```bash
+npm run build
 ```

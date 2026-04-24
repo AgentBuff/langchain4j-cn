@@ -1,7 +1,7 @@
 ---
 sidebar_position: 5
-stableVersion: 1.13.0
-betaVersion: 1.13.0-beta23
+stableVersion: 1.13.1
+betaVersion: 1.13.1-beta23
 title: Get Started with LangChain4j | Java LLM Quickstart
 description: Add LangChain4j to your Maven or Gradle project in minutes. Wire up OpenAI, Azure OpenAI, Gemini, Claude, Ollama or other LLM providers, and run your first chat with just a few lines of Java. Requires JDK 17+.
 keywords:
@@ -38,7 +38,7 @@ As an example, let's import the OpenAI dependency:
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-open-ai</artifactId>
-    <version>1.13.0</version>
+    <version>1.13.1</version>
 </dependency>
 ```
 
@@ -49,14 +49,14 @@ the following dependency:
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j</artifactId>
-    <version>1.13.0</version>
+    <version>1.13.1</version>
 </dependency>
 ```
 
 - For Gradle in `build.gradle`:
 ```groovy
-implementation 'dev.langchain4j:langchain4j-open-ai:1.13.0'
-implementation 'dev.langchain4j:langchain4j:1.13.0'
+implementation 'dev.langchain4j:langchain4j-open-ai:1.13.1'
+implementation 'dev.langchain4j:langchain4j:1.13.1'
 ```
 
 <details>
@@ -68,7 +68,7 @@ implementation 'dev.langchain4j:langchain4j:1.13.0'
         <dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-bom</artifactId>
-            <version>1.13.0</version>
+            <version>1.13.1</version>
             <type>pom</type>
             <scope>import</scope>
         </dependency>
@@ -81,8 +81,8 @@ Please note that `langchain4j-bom` always contains the latest versions of all La
 :::
 
 :::note
-Please note that while the `langchain4j-bom` version is `1.13.0`,
-many of the modules still have version `1.13.0-beta23`,
+Please note that while the `langchain4j-bom` version is `1.13.1`,
+many of the modules still have version `1.13.1-beta23`,
 so there might be some breaking changes for these modules in the future.
 :::
 </details>
@@ -111,7 +111,7 @@ you can use the most recent `SNAPSHOT` dependency:
     <dependency>
         <groupId>dev.langchain4j</groupId>
         <artifactId>langchain4j</artifactId>
-        <version>1.13.0-SNAPSHOT</version>
+        <version>1.13.1-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```

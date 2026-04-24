@@ -1,10 +1,8 @@
 # LangChain4j 中文文档
 
-这是 LangChain4j 简体中文文档站点仓库，基于 [Docusaurus](https://docusaurus.io/) 构建。
+这个目录包含 LangChain4j 文档站点，基于 [Docusaurus](https://docusaurus.io/) 构建。
 
-在线访问地址：<https://langchain4j-cn.vercel.app/>
-
-站点默认根路径展示简体中文内容，英文版本位于 `/en`。
+站点当前默认以简体中文作为根路径内容，英文版本位于 `/en`。
 
 ## 目录
 
@@ -43,7 +41,7 @@ npm run start
 
 ## 构建站点
 
-生成可部署的静态文件到 `build` 目录，可直接部署到 Vercel 等静态托管平台：
+生成可部署的静态文件到 `build` 目录，可直接部署到 Vercel、GitHub Pages 等静态托管平台：
 
 ```bash
 npm run build

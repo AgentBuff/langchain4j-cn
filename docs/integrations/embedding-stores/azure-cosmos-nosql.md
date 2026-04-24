@@ -7,7 +7,7 @@ sidebar_position: 5
 https://azure.microsoft.com/en-us/products/cosmos-db/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ https://azure.microsoft.com/en-us/products/cosmos-db/
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `AzureCosmosDbNoSqlEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [AzureCosmosDbNoSqlEmbeddingStoreIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-azure-cosmos-nosql/src/test/java/dev/langchain4j/store/embedding/azure/cosmos/nosql/AzureCosmosDbNoSqlEmbeddingStoreIT.java)

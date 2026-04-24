@@ -4,7 +4,7 @@ sidebar_position: 5
 
 # Voyage AI
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,12 +14,10 @@ sidebar_position: 5
 </dependency>
 ```
 
-
-## Voyage AI Models
+## Voyage AI 模型
 
 - `VoyageAiScoringModel`
 
-
-## Examples
-- [Advanced RAG with re-ranking](https://github.com/langchain4j/langchain4j-examples/blob/main/rag-examples/src/main/java/_3_advanced/_03_Advanced_RAG_with_ReRanking_Example.java)
+## 示例
+- [带重排序的高级 RAG](https://github.com/langchain4j/langchain4j-examples/blob/main/rag-examples/src/main/java/_3_advanced/_03_Advanced_RAG_with_ReRanking_Example.java)
 - [VoyageAiScoringModelExample](https://github.com/langchain4j/langchain4j-examples/blob/main/voyage-ai-examples/src/main/java/VoyageAiScoringModelExample.java)

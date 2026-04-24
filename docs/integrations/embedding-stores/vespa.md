@@ -7,7 +7,7 @@ sidebar_position: 26
 https://vespa.ai/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,11 +18,11 @@ https://vespa.ai/
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `VespaEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [VespaEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/vespa-example/src/main/java/VespaEmbeddingStoreExample.java)

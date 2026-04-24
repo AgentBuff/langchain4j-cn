@@ -77,29 +77,25 @@ const config = {
             en: {
                 label: 'English',
                 htmlLang: 'en-US',
+                // Explicit path or Docusaurus would default it to htmlLang
+                // ('en-US') and look for i18n/en-US/ instead of i18n/en/.
+                path: 'en',
+                translate: true,
             },
             'zh-Hans': {
                 label: '简体中文',
                 htmlLang: 'zh-CN',
+                // Same pitfall: without an explicit path Docusaurus would look
+                // for i18n/zh-CN/ instead of i18n/zh-Hans/.
+                path: 'zh-Hans',
+                translate: true,
             },
         },
     },
 
     headTags: [
-        {
-            tagName: 'meta',
-            attributes: {
-                name: 'description',
-                content: SITE_DESCRIPTION,
-            },
-        },
-        {
-            tagName: 'meta',
-            attributes: {
-                name: 'keywords',
-                content: SITE_KEYWORDS.join(', '),
-            },
-        },
+        // Site-wide constants only. Per-page title/description/keywords/og live
+        // in frontmatter + themeConfig.metadata so react-helmet can dedupe them.
         {
             tagName: 'meta',
             attributes: {
@@ -259,6 +255,42 @@ const config = {
                 rel: 'preconnect',
                 href: 'https://www.googletagmanager.com',
                 crossorigin: 'anonymous',
+            },
+        },
+        // Web App Manifest (PWA signal, also used by Bing Webmaster for the site).
+        {
+            tagName: 'link',
+            attributes: {
+                rel: 'manifest',
+                href: '/manifest.webmanifest',
+            },
+        },
+        // Apple touch icon (mobile Safari / Bing Image fallback).
+        {
+            tagName: 'link',
+            attributes: {
+                rel: 'apple-touch-icon',
+                href: '/img/favicon.ico',
+            },
+        },
+        // Preload the hero logo so LCP on the homepage ships faster -
+        // Core Web Vitals is a Bing ranking signal.
+        {
+            tagName: 'link',
+            attributes: {
+                rel: 'preload',
+                href: '/img/logo.svg',
+                as: 'image',
+                type: 'image/svg+xml',
+                fetchpriority: 'high',
+            },
+        },
+        // Theme color for the mobile browser chrome.
+        {
+            tagName: 'meta',
+            attributes: {
+                name: 'theme-color',
+                content: '#2e8555',
             },
         },
         // JSON-LD structured data - WebSite
@@ -531,6 +563,27 @@ const config = {
                             {
                                 label: 'Stack Overflow',
                                 href: 'https://stackoverflow.com/questions/tagged/langchain4j',
+                            },
+                        ],
+                    },
+                    {
+                        title: 'Resources',
+                        items: [
+                            {
+                                label: 'FAQ',
+                                to: '/faq',
+                            },
+                            {
+                                label: 'Sitemap',
+                                href: SITE_URL + '/sitemap.xml',
+                            },
+                            {
+                                label: 'llms.txt (for AI search)',
+                                href: SITE_URL + '/llms.txt',
+                            },
+                            {
+                                label: 'llms-full.txt',
+                                href: SITE_URL + '/llms-full.txt',
                             },
                         ],
                     },

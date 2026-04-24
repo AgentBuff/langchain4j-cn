@@ -2,5 +2,5 @@
 sidebar_position: 20
 ---
 
-# Latest Release Notes
-Please find the latest release notes [here](https://github.com/langchain4j/langchain4j/releases).
+# 最新发行说明
+请在[这里](https://github.com/langchain4j/langchain4j/releases)查阅最新发行说明。

@@ -6,10 +6,9 @@ sidebar_position: 4
 
 https://tavily.com/
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
-
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-web-search-engine-tavily</artifactId>
@@ -17,10 +16,10 @@ https://tavily.com/
 </dependency>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `TavilyWebSearchEngine`
 
-## Examples
+## 示例
 
 - [Advanced RAG with Web Search](https://github.com/langchain4j/langchain4j-examples/blob/main/rag-examples/src/main/java/_3_advanced/_08_Advanced_RAG_Web_Search_Example.java)

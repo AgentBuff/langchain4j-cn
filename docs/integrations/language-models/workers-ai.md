@@ -7,7 +7,7 @@ sidebar_position: 19
 https://developers.cloudflare.com/workers-ai/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,13 +18,13 @@ https://developers.cloudflare.com/workers-ai/
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `WorkersAiChatModel`
 - `WorkersAiLanguageModel`
 
 
-## Examples
+## 示例
 
 - [WorkerAIChatModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-workers-ai/src/test/java/dev/langchain4j/model/workersai/WorkersAiChatModelIT.java)
 - [WorkerAILanguageModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-workers-ai/src/test/java/dev/langchain4j/model/workersai/WorkersAiLanguageModelIT.java)

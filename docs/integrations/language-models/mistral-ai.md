@@ -3,13 +3,13 @@ sidebar_position: 13
 ---
 
 # MistralAI
-[MistralAI Documentation](https://docs.mistral.ai/)
+[MistralAI 文档](https://docs.mistral.ai/)
 
-## Project setup
+## 项目配置
 
-To install langchain4j to your project, add the following dependency:
+在项目中安装 langchain4j，添加以下依赖：
 
-For Maven project `pom.xml`
+Maven 项目 `pom.xml`
 
 ```xml
 
@@ -26,56 +26,56 @@ For Maven project `pom.xml`
 </dependency>
 ```
 
-For Gradle project `build.gradle`
+Gradle 项目 `build.gradle`
 
 ```groovy
 implementation 'dev.langchain4j:langchain4j:1.13.0'
 implementation 'dev.langchain4j:langchain4j-mistral-ai:1.13.0'
 ```
-### API Key setup
-Add your MistralAI API key to your project, you can create a class ```ApiKeys.java``` with the following code
+### API 密钥配置 {#api-key-configuration}
+在项目中添加 MistralAI API Key，可创建 `ApiKeys.java` 类：
 
 ```java
 public class ApiKeys {
     public static final String MISTRALAI_API_KEY = System.getenv("MISTRAL_AI_API_KEY");
 }
 ```
-Don't forget set your API key as an environment variable.
+别忘了将 API Key 设置为环境变量：
 ```shell
-export MISTRAL_AI_API_KEY=your-api-key #For Unix OS based
-SET MISTRAL_AI_API_KEY=your-api-key #For Windows OS
+export MISTRAL_AI_API_KEY=your-api-key #Unix 系统
+SET MISTRAL_AI_API_KEY=your-api-key #Windows 系统
 ```
-More details on how to get your MistralAI API key can be found [here](https://docs.mistral.ai/#api-access)
+获取 MistralAI API Key 的详细方法请参阅[此处](https://docs.mistral.ai/#api-access)。
 
-### Model Selection
-You can use `MistralAiChatModelName` and `MistralAiFimModelName` java enums to found appropriate model names for your use case.
-MistralAI updated a new selection and classification of models according to performance and cost trade-offs.
+### 模型选择
+可使用 `MistralAiChatModelName` 和 `MistralAiFimModelName` Java 枚举类查找适合场景的模型名称。
+MistralAI 根据性能与成本的权衡对模型进行了新的分类。
 
-| Model  name           | Deployment or available from                                                                                                                  | Description                                                                                                                                                                                                                                                                                                              |
-|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| open-mistral-7b       | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).<br/>- Hugging Face.<br/>- Self-hosted (On-premise, IaaS, docker, local). | **OpenSource**<br/>The first dense model released by Mistral AI, <br/> perfect for experimentation, <br/> customization, and quick iteration. <br/><br/>Max tokens 32K<br/><br/>Java Enum<br/>`MistralAiChatModelName.OPEN_MISTRAL_7B`                                                                                   |
-| open-mixtral-8x7b     | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).<br/>- Hugging Face.<br/>- Self-hosted (On-premise, IaaS, docker, local). | **OpenSource**<br/>Ideal to handle multi-languages operations, <br/> code generationand fine-tuned.<br/> Excellent cost/performance trade-offs. <br/><br/>Max tokens 32K<br/><br/>Java Enum<br/>`MistralAiChatModelName.OPEN_MIXTRAL_8x7B`                                                                               |
-| open-mixtral-8x22b    | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).<br/>- Hugging Face.<br/>- Self-hosted (On-premise, IaaS, docker, local). | **OpenSource**<br/>It has all Mixtral-8x7B capabilities plus strong maths <br/> and coding natively capable of function calling <br/><br/>Max tokens 64K.<br/><br/>Java Enum<br/>`MistralAiChatModelName.OPEN_MIXTRAL_8X22B`                                                                                             |
-| open-mistral-nemo     | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).<br/>- Hugging Face.<br/>- Self-hosted (On-premise, IaaS, docker, local). | **OpenSource**<br/>A 12B model built in collaboration with NVIDIA. <br/>Its reasoning, world knowledge, and coding accuracy are state-of-the-art in its size category.<br/><br/>Max tokens 128K.<br/><br/>Java Enum<br/>`MistralAiChatModelName.OPEN_MISTRAL_NEMO`                                                       |
-| open-codestral-mamba  | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).<br/>- Hugging Face.<br/>- Self-hosted (On-premise, IaaS, docker, local). | **OpenSource**<br/>A Mamba2 language model specialised in code generation. <br/>It was trained with advanced code and reasoning capabilities, enabling it to perform on par with SOTA transformer-based models.<br/><br/>Max tokens 256K.<br/><br/>Java Enum<br/>`MistralAiFimModelName.OPEN_CODESTRAL_MAMBA`           |
-| mistral-small-latest  | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).                                                                          | **Commercial**<br/>Suitable for simple tasks that one can do in bulk <br/>(Classification, Customer Support, or Text Generation).<br/><br/>Max tokens 32K<br/><br/>Java Enum<br/>`MistralAiChatModelName.MISTRAL_SMALL_LATEST`                                                                                           |
-| mistral-medium-latest | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).                                                                          | **Commercial**<br/>Ideal for intermediate tasks that require moderate <br/> reasoning (Data extraction, Summarizing, <br/>Writing emails, Writing descriptions.<br/><br/>Max tokens 32K<br/><br/>Java Enum<br/>`MistralAiChatModelName.MISTRAL_MEDIUM_LATEST`                                                            |
-| mistral-large-latest  | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).                                                                          | **Commercial**<br/>Ideal for complex tasks that require large reasoning <br/> capabilities or are highly specialized <br/>(Text Generation, Code Generation, RAG, or Agents).<br/><br/>Max tokens 128K<br/><br/>Java Enum<br/>`MistralAiChatModelName.MISTRAL_LARGE_LATEST`                                              |
-| mistral-embed         | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).                                                                          | **Commercial**<br/>Converts text into numerical vectors of <br/> embeddings in 1024 dimensions. <br/>Embedding models enable retrieval and RAG applications.<br/><br/>Max tokens 8K<br/><br/>Java Enum<br/>`MistralAiEmbeddingModelName.MISTRAL_EMBED`                                                                   |
-| codestral-latest      | - Mistral AI La Plateforme.<br/>- Cloud platforms (Azure, AWS, GCP).<br/>- Hugging Face.<br/>- Self-hosted (On-premise, IaaS, docker, local). | **OpenSource (Non-production license) and Commercial**<br/>A cutting-edge generative model that has been specifically designed <br/>and optimized for code generation tasks, including fill-in-the-middle and code completion. <br/><br/>Max tokens 32K<br/><br/>Java Enum<br/>`MistralAiFimModelName.CODESTRAL_LATEST` |
+| 模型名称 | 部署 / 可用平台 | 说明 |
+|---|---|---|
+| open-mistral-7b | Mistral AI La Plateforme、云平台（Azure、AWS、GCP）、Hugging Face、自托管（本地、IaaS、Docker） | **开源**<br/>Mistral AI 发布的首个密集模型，适合实验、定制和快速迭代。<br/>最大 token 数 32K<br/>Java 枚举：`MistralAiChatModelName.OPEN_MISTRAL_7B` |
+| open-mixtral-8x7b | Mistral AI La Plateforme、云平台（Azure、AWS、GCP）、Hugging Face、自托管 | **开源**<br/>适合多语言操作、代码生成和微调，兼具优秀的性价比。<br/>最大 token 数 32K<br/>Java 枚举：`MistralAiChatModelName.OPEN_MIXTRAL_8x7B` |
+| open-mixtral-8x22b | Mistral AI La Plateforme、云平台（Azure、AWS、GCP）、Hugging Face、自托管 | **开源**<br/>具备 Mixtral-8x7B 的全部能力，并原生支持强大的数学运算、代码和函数调用。<br/>最大 token 数 64K<br/>Java 枚举：`MistralAiChatModelName.OPEN_MIXTRAL_8X22B` |
+| open-mistral-nemo | Mistral AI La Plateforme、云平台（Azure、AWS、GCP）、Hugging Face、自托管 | **开源**<br/>与 NVIDIA 合作构建的 12B 模型，在同类规模中推理能力、世界知识和代码准确性均达到业界领先水平。<br/>最大 token 数 128K<br/>Java 枚举：`MistralAiChatModelName.OPEN_MISTRAL_NEMO` |
+| open-codestral-mamba | Mistral AI La Plateforme、云平台（Azure、AWS、GCP）、Hugging Face、自托管 | **开源**<br/>专为代码生成任务设计的 Mamba2 语言模型，性能可与 SOTA Transformer 模型媲美。<br/>最大 token 数 256K<br/>Java 枚举：`MistralAiFimModelName.OPEN_CODESTRAL_MAMBA` |
+| mistral-small-latest | Mistral AI La Plateforme、云平台（Azure、AWS、GCP） | **商业**<br/>适用于批量简单任务（分类、客户支持、文本生成）。<br/>最大 token 数 32K<br/>Java 枚举：`MistralAiChatModelName.MISTRAL_SMALL_LATEST` |
+| mistral-medium-latest | Mistral AI La Plateforme、云平台（Azure、AWS、GCP） | **商业**<br/>适合需要中等推理能力的中间任务（数据提取、摘要、写邮件、写描述）。<br/>最大 token 数 32K<br/>Java 枚举：`MistralAiChatModelName.MISTRAL_MEDIUM_LATEST` |
+| mistral-large-latest | Mistral AI La Plateforme、云平台（Azure、AWS、GCP） | **商业**<br/>适合需要强大推理能力或高度专业化的复杂任务（文本生成、代码生成、RAG 或 Agent）。<br/>最大 token 数 128K<br/>Java 枚举：`MistralAiChatModelName.MISTRAL_LARGE_LATEST` |
+| mistral-embed | Mistral AI La Plateforme、云平台（Azure、AWS、GCP） | **商业**<br/>将文本转换为 1024 维的嵌入向量，适用于检索和 RAG 应用。<br/>最大 token 数 8K<br/>Java 枚举：`MistralAiEmbeddingModelName.MISTRAL_EMBED` |
+| codestral-latest | Mistral AI La Plateforme、云平台（Azure、AWS、GCP）、Hugging Face、自托管 | **开源（非生产许可证）及商业**<br/>专为代码生成任务（含中间填充和代码补全）设计和优化的尖端模型。<br/>最大 token 数 32K<br/>Java 枚举：`MistralAiFimModelName.CODESTRAL_LATEST` |
 
-`@Deprecated` models:
-- mistral-tiny (`@Deprecated`)
-- mistral-small (`@Deprecated`)
-- mistral-medium (`@Deprecated`)
+`@Deprecated` 模型：
+- mistral-tiny（`@Deprecated`）
+- mistral-small（`@Deprecated`）
+- mistral-medium（`@Deprecated`）
 
-You can find more detail and types of use cases with their respective Mistral model [here](https://docs.mistral.ai/#model-selection)
+各模型适用场景的详细信息请参阅[此处](https://docs.mistral.ai/#model-selection)。
 
-## Chat Completion
-The chat models allow you to generate human-like responses with a model fined-tuned on conversational data.
+## 对话补全
+对话模型通过在对话数据上微调，允许您生成类人响应。
 
-### Synchronous
-Create a class and add the following code.
+### 同步模式
+创建一个类并添加以下代码：
 
 ```java
 import dev.langchain4j.model.chat.ChatModel;
@@ -88,19 +88,19 @@ public class HelloWorld {
                 .modelName(MistralAiChatModelName.MISTRAL_SMALL_LATEST)
                 .build();
 
-        String response = model.chat("Say 'Hello World'");
+        String response = model.chat("说'Hello World'");
         System.out.println(response);
     }
 }
 ```
-Running the program will generate a variant of the following output
+程序将生成类似如下的输出：
 
 ```plaintext
-Hello World! How can I assist you today?
+Hello World! 今天有什么可以帮助您的吗？
 ```
 
-### Streaming
-Create a class and add the following code.
+### 流式模式
+创建一个类并添加以下代码：
 
 ```java
 import dev.langchain4j.data.message.AiMessage;
@@ -118,7 +118,7 @@ public class HelloWorld {
                 .build();
 
         CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();         
-        model.chat("Tell me a joke about Java", new StreamingChatResponseHandler() {
+        model.chat("讲一个关于 Java 的笑话", new StreamingChatResponseHandler() {
             
             @Override
             public void onPartialResponse(String partialResponse) {
@@ -140,29 +140,26 @@ public class HelloWorld {
     }
 }
 ```
-You will receive each chunk of text (token) as it is generated by the LLM on the `onPartialResponse` method.
+每个文本块（token）在 LLM 生成时会通过 `onPartialResponse` 方法接收。
 
-You can see that output below is streamed in real-time.
+输出会以实时流式传输：
 
 ```plaintext
-"Why do Java developers wear glasses? Because they can't C#"
+"Java 开发者为什么戴眼镜？因为他们 C# 不了！"
 ```
 
-Of course, you can combine MistralAI chat completion with other features like [Set Model Parameters](/tutorials/model-parameters) and [Chat Memory](/tutorials/chat-memory) to get more accurate responses.
+当然，可将 MistralAI 对话补全与[设置模型参数](/tutorials/model-parameters)和[对话记忆](/tutorials/chat-memory)等功能结合，获得更精准的响应。
 
-In [Chat Memory](/tutorials/chat-memory) you will learn how to pass along your chat history, so the LLM knows what has been said before. If you don't pass the chat history, like in this simple example, the LLM will not know what has been said before, so it won't be able to correctly answer the second question ('What did I just ask?').
+在[对话记忆](/tutorials/chat-memory)中，您将学习如何传递聊天历史，使 LLM 了解之前的对话内容。
 
-A lot of parameters are set behind the scenes, such as timeout, model type and model parameters.
-In [Set Model Parameters](/tutorials/model-parameters) you will learn how to set these parameters explicitly.
-
-### Function Calling
-Function calling allows Mistral chat models ([synchronous](#synchronous) and [streaming](#streaming)) to connect to external tools. For example, you can call a `Tool` to get the payment transaction status as shown in the Mistral AI function calling [tutorial](https://docs.mistral.ai/guides/function-calling/).
+### 函数调用
+函数调用允许 Mistral 对话模型（[同步](#同步模式)和[流式](#流式模式)）连接外部工具。例如，可以调用 `Tool` 获取支付交易状态，参见 Mistral AI 函数调用[教程](https://docs.mistral.ai/guides/function-calling/)。
 
 <details>
-<summary>What are the supported mistral models?</summary>
+<summary>支持函数调用的 Mistral 模型有哪些？</summary>
 
 :::note
-Currently, function calling is available for the following models:
+目前，以下模型支持函数调用：
 
 - Mistral Small `MistralAiChatModelName.MISTRAL_SMALL_LATEST`
 - Mistral Large `MistralAiChatModelName.MISTRAL_LARGE_LATEST`
@@ -171,9 +168,9 @@ Currently, function calling is available for the following models:
 :::
 </details>
 
-#### 1. Define a `Tool` class and how get the payment data
+#### 1. 定义 `Tool` 类并获取支付数据
 
-Let's assume you have a dataset of payment transaction like this. In real applications you should inject a database source or REST API client to get the data.
+假设有如下支付交易数据集（实际应用中应注入数据库或 REST API 客户端）：
 ```java
 import java.util.*;
 
@@ -189,18 +186,18 @@ public class PaymentTransactionTool {
     ...
 }
 ```
-Next, let's define two methods `retrievePaymentStatus` and `retrievePaymentDate` to get the payment status and payment date from the `Tool` class.
+然后定义 `retrievePaymentStatus` 和 `retrievePaymentDate` 方法：
 
 ```java
-// Tool to be executed to get payment status
-@Tool("Get payment status of a transaction") // function description
-String retrievePaymentStatus(@P("Transaction id to search payment data") String transactionId) {
+// 用于获取支付状态的工具
+@Tool("获取交易的支付状态") // 函数描述
+String retrievePaymentStatus(@P("用于查询支付数据的交易 ID") String transactionId) {
     return getPaymentData(transactionId, "payment_status");
 }
 
-// Tool to be executed to get payment date
-@Tool("Get payment date of a transaction") // function description
-String retrievePaymentDate(@P("Transaction id to search payment data") String transactionId) {
+// 用于获取支付日期的工具
+@Tool("获取交易的支付日期") // 函数描述
+String retrievePaymentDate(@P("用于查询支付数据的交易 ID") String transactionId) {
    return getPaymentData(transactionId, "payment_date");
 }
 
@@ -212,29 +209,29 @@ private String getPaymentData(String transactionId, String data) {
     if (index != -1) {
         return paymentData.get(index);
     } else {
-        return "Transaction ID not found";
+        return "未找到交易 ID";
     }
 }
 ```
-It uses a `@Tool` annotation to define the function description and `@P` annotation to define the parameter description of the package `dev.langchain4j.agent.tool.*`. More info [here](/tutorials/tools#high-level-tool-api)
+使用 `dev.langchain4j.agent.tool.*` 包中的 `@Tool` 注解定义函数描述，`@P` 注解定义参数描述。详情请参阅[此处](/tutorials/tools#high-level-tool-api)。
 
-#### 2. Define an interface as an `agent` to send chat messages.
+#### 2. 定义 `agent` 接口以发送聊天消息
 
-Create an interface `PaymentTransactionAgent`.
+创建 `PaymentTransactionAgent` 接口：
 
 ```java
 import dev.langchain4j.service.SystemMessage;
 
 interface PaymentTransactionAgent {
     @SystemMessage({
-            "You are a payment transaction support agent.",
-            "You MUST use the payment transaction tool to search the payment transaction data.",
-            "If there a date convert it in a human readable format."
+            "你是一位支付交易客服代理。",
+            "你必须使用支付交易工具查询支付交易数据。",
+            "如果有日期，请转换为人类可读格式。"
     })
     String chat(String userMessage);
 }
 ```
-#### 3. Define a `main` application class to chat with the MistralAI chat model
+#### 3. 定义主应用类与 MistralAI 对话模型交互
 
 ```java
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -246,62 +243,62 @@ import dev.langchain4j.service.AiServices;
 public class PaymentDataAssistantApp {
 
     ChatModel mistralAiModel = MistralAiChatModel.builder()
-            .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // Please use your own Mistral AI API key
-            .modelName(MistralAiChatModelName.MISTRAL_LARGE_LATEST) // Also you can use MistralAiChatModelName.OPEN_MIXTRAL_8X22B as open source model
+            .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // 请使用您自己的 Mistral AI API Key
+            .modelName(MistralAiChatModelName.MISTRAL_LARGE_LATEST)
             .logRequests(true)
             .logResponses(true)
             .build();
     
     public static void main(String[] args) {
-        // STEP 1: User specify tools and query
+        // 步骤 1：用户指定工具和查询
         PaymentTransactionTool paymentTool = new PaymentTransactionTool();
-        String userMessage = "What is the status and the payment date of transaction T1005?";
+        String userMessage = "交易 T1005 的状态和支付日期是什么？";
 
-        // STEP 2: User asks the agent and AiServices call to the functions
+        // 步骤 2：用户通过代理提问，AiServices 调用函数
         PaymentTransactionAgent agent = AiServices.builder(PaymentTransactionAgent.class)
                 .chatModel(mistralAiModel)
                 .tools(paymentTool)
                 .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
                 .build();
         
-        // STEP 3: User gets the final response from the agent
+        // 步骤 3：用户获得最终响应
         String answer = agent.chat(userMessage);
         System.out.println(answer);
     }
 }
 ```
 
-and expect an answer like this:
+预期的输出如下：
 
 ```shell
-The status of transaction T1005 is Pending. The payment date is October 8, 2021.
+交易 T1005 的状态为待处理（Pending），支付日期为 2021 年 10 月 8 日。
 ```
-### JSON mode
-You can also use the JSON mode to get the response in JSON format. To do this, you need to set the `responseFormat` parameter to `ResponseFormat.JSON`  in the `MistralAiChatModel` builder OR `MistralAiStreamingChatModel` builder.
+### JSON 模式
+可将 `responseFormat` 参数设置为 `ResponseFormat.JSON` 来获取 JSON 格式的响应。
 
-Synchronous example:
+同步示例：
 
 ```java
 ChatModel model = MistralAiChatModel.builder()
-                .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // Please use your own Mistral AI API key
+                .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // 请使用您自己的 Mistral AI API Key
                 .responseFormat(ResponseFormat.JSON)
                 .build();
 
-String userMessage = "Return JSON with two fields: transactionId and status with the values T123 and paid.";
+String userMessage = "返回包含 transactionId 和 status 两个字段的 JSON，值分别为 T123 和 paid。";
 String json = model.chat(userMessage);
 
 System.out.println(json); // {"transactionId":"T123","status":"paid"}
 ```
 
-Streaming example:
+流式示例：
 
 ```java
 StreamingChatModel streamingModel = MistralAiStreamingChatModel.builder()
-                .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // Please use your own Mistral AI API key
+                .apiKey(System.getenv("MISTRAL_AI_API_KEY")) // 请使用您自己的 Mistral AI API Key
                 .responseFormat(MistralAiResponseFormatType.JSON_OBJECT)
                 .build();
 
-String userMessage = "Return JSON with two fields: transactionId and status with the values T123 and paid.";
+String userMessage = "返回包含 transactionId 和 status 两个字段的 JSON，值分别为 T123 和 paid。";
 
 CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
@@ -328,22 +325,22 @@ String json = futureResponse.get().content().text();
 System.out.println(json); // {"transactionId":"T123","status":"paid"}
 ```                
 
-### Structured Outputs
+### 结构化输出
 
-Structured Outputs ensure that a model's responses adhere to a JSON schema.
+结构化输出确保模型的响应符合 JSON Schema。
 
 :::note
-The documentation for using Structured Outputs in LangChain4j is available [here](/tutorials/structured-outputs), and in the section below you will find MistralAI-specific information.
+LangChain4j 中关于结构化输出的文档请参阅[此处](/tutorials/structured-outputs)，以下部分包含 MistralAI 专属信息。
 :::
 
-If desired, the model may be configured with a default JSON Schema that will be used as fallback if no schema is provided in the request.
+如有需要，可为模型配置默认 JSON Schema，当请求中未提供 Schema 时将作为后备使用。
 
 ```java
 ChatModel model = MistralAiChatModel.builder()
         .apiKey(System.getenv("MISTRAL_AI_API_KEY"))
         .modelName(MISTRAL_SMALL_LATEST)
-        .supportedCapabilities(Set.of(Capability.RESPONSE_FORMAT_JSON_SCHEMA)) // Enable structured outputs
-        .responseFormat(ResponseFormat.builder() // Set the fallback JSON Schema (optional)
+        .supportedCapabilities(Set.of(Capability.RESPONSE_FORMAT_JSON_SCHEMA)) // 启用结构化输出
+        .responseFormat(ResponseFormat.builder() // 设置后备 JSON Schema（可选）
                 .type(ResponseFormatType.JSON)
                 .jsonSchema(JsonSchema.builder().rootElement(JsonObjectSchema.builder()
                                 .addProperty("name", JsonStringSchema.builder().build())
@@ -361,10 +358,10 @@ ChatModel model = MistralAiChatModel.builder()
         .build();
 ```
 
-### Guardrailing
-Guardrails are a way to limit the behavior of the model to prevent it from generating harmful or unwanted content. You can set optionally `safePrompt` parameter in the `MistralAiChatModel` builder or `MistralAiStreamingChatModel` builder.
+### 内容安全防护
+防护栏（Guardrails）是限制模型行为以防止生成有害或不当内容的一种方式。可在 `MistralAiChatModel` 或 `MistralAiStreamingChatModel` 构建器中设置 `safePrompt` 参数。
 
-Synchronous example:
+同步示例：
 
 ```java
 ChatModel model = MistralAiChatModel.builder()
@@ -372,11 +369,11 @@ ChatModel model = MistralAiChatModel.builder()
                 .safePrompt(true)
                 .build();
 
-String userMessage = "What is the best French cheese?";
+String userMessage = "最好的法国奶酪是什么？";
 String response = model.chat(userMessage);
 ```
 
-Streaming example:
+流式示例：
 
 ```java
 StreamingChatModel streamingModel = MistralAiStreamingChatModel.builder()
@@ -384,7 +381,7 @@ StreamingChatModel streamingModel = MistralAiStreamingChatModel.builder()
                 .safePrompt(true)
                 .build();
 
-String userMessage = "What is the best French cheese?";
+String userMessage = "最好的法国奶酪是什么？";
 
 CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
@@ -408,27 +405,25 @@ streamingModel.chat(userMessage, new StreamingChatResponseHandler() {
 
 futureResponse.join();
 ```
-Toggling the safe prompt will prepend your messages with the following `@SystemMessage`:
+启用安全提示后，将在您的消息前添加以下 `@SystemMessage`：
 
 ```plaintext
 Always assist with care, respect, and truth. Respond with utmost utility yet securely. Avoid harmful, unethical, prejudiced, or negative content. Ensure replies promote fairness and positivity.
 ```
 
-## Thinking / Reasoning
+## 思考 / 推理
 
-Both `MistralAiChatModel` and `MistralAiStreamingChatModel` support
-reasoning with [Magistral reasoning models](https://docs.mistral.ai/capabilities/reasoning/).
+`MistralAiChatModel` 和 `MistralAiStreamingChatModel` 均支持使用
+[Magistral 推理模型](https://docs.mistral.ai/capabilities/reasoning/)进行推理。
 
-Configured with the following parameters:
-- `returnThinking`: when enabled, reasoning text produced by the model will be parsed from the API response
-  and stored in `AiMessage.thinking()`. For streaming, `StreamingChatResponseHandler.onPartialThinking()`
-  and `TokenStream.onPartialThinking()` callbacks will also be invoked.
-  Disabled by default.
-- `sendThinking`: when enabled, reasoning text from previous responses (stored in `AiMessage.thinking()`)
-  will be included in follow-up requests to the LLM.
-  Disabled by default.
+通过以下参数配置：
+- `returnThinking`：启用后，模型生成的推理文本将从 API 响应中解析并存储在 `AiMessage.thinking()` 中。
+  对于流式模式，`StreamingChatResponseHandler.onPartialThinking()` 和 `TokenStream.onPartialThinking()` 回调也将被触发。
+  默认禁用。
+- `sendThinking`：启用后，前序响应中的推理文本（存储在 `AiMessage.thinking()` 中）将包含在后续发给 LLM 的请求中。
+  默认禁用。
 
-Here is an example of how to configure reasoning:
+推理功能配置示例：
 ```java
 ChatModel model = MistralAiChatModel.builder()
         .apiKey(System.getenv("MISTRAL_AI_API_KEY"))
@@ -438,11 +433,11 @@ ChatModel model = MistralAiChatModel.builder()
         .build();
 ```
 
-## Moderation
+## 内容审核
 
-It is a classifier model that can be used to detect harmful content in text.
+这是一个分类器模型，可用于检测文本中的有害内容。
 
-Moderation example:
+内容审核示例：
 
 ```java
 ModerationModel model = new MistralAiModerationModel.Builder()
@@ -451,15 +446,15 @@ ModerationModel model = new MistralAiModerationModel.Builder()
     .logRequests(true)
     .logResponses(false)
     .build();
-// I want to check if the text contains harmful content
+// 检测文本是否包含有害内容
 Moderation moderation = model.moderate("I want to kill them.").content();
 ```
 
-## Code Completion
-The Fill-in-the-Middle (FIM) models allow you to generate code completions, user can define the starting point of the code using a `prompt`, and the ending point of the code using an optional `suffix` and an optional `stop`.
+## 代码补全
+中间填充（FIM）模型允许生成代码补全，用户可通过 `prompt` 定义代码起始点，通过可选的 `suffix` 和 `stop` 定义结束点。
 
-### FIM Synchronous
-Just like how chat completions work, the FIM endpoint works as well. You can test it by adding the following code.
+### FIM 同步模式
+添加以下代码：
 
 ```java
 import dev.langchain4j.model.mistralai.MistralAiFimModel;
@@ -470,44 +465,44 @@ public class HelloWorld {
         MistralAiFimModel codestral = MistralAiFimModel.builder()
                 .apiKey(System.getenv("MISTRAL_AI_API_KEY"))
                 .modelName(MistralAiFimModelName.CODESTRAL_LATEST)
-                .stop(List.of("}")) // must stop at the first occurrence of "}"
+                .stop(List.of("}")) // 必须在第一次出现 "}" 时停止
                 .build();
         
-        // I want to generate a code completion for a simple hello world program using MistralAI of LangChain4j framework.
+        // 生成一个使用 LangChain4j MistralAI 框架的简单 Hello World 程序代码补全
         String codePrompt = """
                   public static void main(String[] args) {
-                      // Create a function to multiply two numbers
+                      // 创建一个将两个数相乘的函数
                 """;
         String suffix = """
                     System.out.println(result);
                   }
                 """;
 
-        // Asking to Codestral model to complete the code with given prompt and suffix
+        // 请求 Codestral 模型根据给定的 prompt 和 suffix 补全代码
         Response<String> response = codestral.generate(prompt, suffix);
         
         System.out.println(
                 String.format(
                         "%s%s%s",
-                        prompt, // print code prompt (prefix)
-                        response.content(), // print code filled-in-the-middle
-                        suffix)); // print code suffix
+                        prompt, // 打印代码前缀
+                        response.content(), // 打印中间填充的代码
+                        suffix)); // 打印代码后缀
     }
 }
 ```
-Running the program will print of the following output
+程序将打印如下输出：
 
 ```console
 public static void main(String[] args) {
-      // Create a function to multiply two numbers
+      // 创建一个将两个数相乘的函数
       int result = multiply(5, 3);
       System.out.println(result);
   }
 ```
 
-### FIM Streaming
+### FIM 流式模式
 
-Create a class and add the following code.
+创建一个类并添加以下代码：
 
 ```java
 import dev.langchain4j.model.StreamingResponseHandler;
@@ -524,7 +519,7 @@ public class HelloWorld {
                 .modelName(MistralAiFimModelName.CODESTRAL_LATEST)
                 .build();
 
-        // I want to generate a code completion for a simple hello world program.
+        // 生成一个简单 Hello World 程序的代码补全
         String prompt = "public static void main(String[] args) {";
 
         CompletableFuture<Response<String>> futureResponse = new CompletableFuture<>();
@@ -549,9 +544,7 @@ public class HelloWorld {
     }
 }
 ```
-You will receive each chunk of text (token) as it is generated by the LLM on the onNext method.
-
-You can see that output below is streamed in real-time.
+每个文本块（token）在 LLM 生成时会通过 onNext 方法接收，实时流式输出。
 
 ```console
 public static void main(String[] args) {
@@ -563,14 +556,14 @@ public static void main(String[] args) {
             sum += arr[i];
         }
 
-        System.out.println("Sum of all elements in the array: " + sum);
+        System.out.println("数组所有元素之和：" + sum);
     }
 }
 ``` 
 
-## Accessing raw HTTP responses and Server-Sent Events (SSE)
+## 访问原始 HTTP 响应和服务器发送事件（SSE）
 
-When using `MistralAiChatModel`, you can access the raw HTTP response:
+使用 `MistralAiChatModel` 时，可访问原始 HTTP 响应：
 ```java
 SuccessfulHttpResponse rawHttpResponse = ((MistralAiChatResponseMetadata) chatResponse.metadata()).rawHttpResponse();
 System.out.println(rawHttpResponse.body());
@@ -578,12 +571,12 @@ System.out.println(rawHttpResponse.headers());
 System.out.println(rawHttpResponse.statusCode());
 ```
 
-When using `MistralAiStreamingChatModel`, you can access the raw HTTP response (see above) and raw Server-Sent Events:
+使用 `MistralAiStreamingChatModel` 时，可访问原始 HTTP 响应（同上）和原始服务器发送事件：
 ```java
 List<ServerSentEvent> rawServerSentEvents = ((MistralAiChatResponseMetadata) chatResponse.metadata()).rawServerSentEvents();
 System.out.println(rawServerSentEvents.get(0).data());
 System.out.println(rawServerSentEvents.get(0).event());
 ```
 
-## Examples
-- [Mistral AI Examples](https://github.com/langchain4j/langchain4j-examples/tree/main/mistral-ai-examples/src/main/java)
+## 示例
+- [Mistral AI 示例](https://github.com/langchain4j/langchain4j-examples/tree/main/mistral-ai-examples/src/main/java)

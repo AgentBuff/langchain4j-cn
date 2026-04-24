@@ -1,8 +1,8 @@
 {
-  "label": "Embedding Models",
+  "label": "嵌入模型",
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "Embedding Models"
+    "description": "嵌入模型"
   }
 }

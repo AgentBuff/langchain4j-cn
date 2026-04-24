@@ -6,33 +6,33 @@ sidebar_position: 16
 
 :::note
 
-This is the documentation for the `OpenAI Official SDK` integration, that uses the [official OpenAI Java SDK](https://github.com/openai/openai-java).
+本文档介绍 `OpenAI Official SDK` 集成，它使用[官方 OpenAI Java SDK](https://github.com/openai/openai-java)。
 
-LangChain4j provides 3 different integrations with OpenAI for using chat models, and this is #2 :
+LangChain4j 提供了 3 种不同的 OpenAI 集成方式，本文介绍的是第 2 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用自定义 Java 实现的 OpenAI REST API，最适合与 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）配合使用。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
 
 :::
 
-## Use cases for this integration
+## 此集成的使用场景
 
-This integration uses the [OpenAI Java SDK GitHub Repository](https://github.com/openai/openai-java), and will work for all OpenAI models which can be provided by:
+本集成使用 [OpenAI Java SDK GitHub 仓库](https://github.com/openai/openai-java)，支持以下平台提供的所有 OpenAI 模型：
 
 - OpenAI
 - Microsoft Foundry
 - GitHub Models
 
-It will also work with models supporting the OpenAI API, such as DeepSeek.
+同时也支持兼容 OpenAI API 的模型，如 DeepSeek。
 
-## OpenAI Documentation
+## OpenAI 文档
 
-- [OpenAI Java SDK GitHub Repository](https://github.com/openai/openai-java)
-- [OpenAI API Documentation](https://platform.openai.com/docs/introduction)
-- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [OpenAI Java SDK GitHub 仓库](https://github.com/openai/openai-java)
+- [OpenAI API 文档](https://platform.openai.com/docs/introduction)
+- [OpenAI API 参考](https://platform.openai.com/docs/api-reference)
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -42,17 +42,16 @@ It will also work with models supporting the OpenAI API, such as DeepSeek.
 </dependency>
 ```
 
-## Configuring the models
+## 配置模型
 
 :::note
-This configuration, as well as the next section about its usage, is for non-streaming mode (also known as "blocking" or "synchronous" mode).
-Streaming mode is detailed 2 sections below: it allows for real-time chat with the model, but is more complex to use.
+本节以及下一节的使用说明均针对非流式模式（也称为"阻塞"或"同步"模式）。
+流式模式在两节之后详述：流式模式支持与模型的实时对话，但使用更复杂。
 :::
 
-To use OpenAI models, you usually need an endpoint URL, an API key, and a model name. This depends on where the model is hosted, and this integration tries
-to make it easier with some auto-configuration:
+使用 OpenAI 模型通常需要端点 URL、API Key 和模型名称。这取决于模型托管的位置，本集成提供了一些自动配置选项：
 
-### Generic configuration
+### 通用配置
 
 ```java
 import com.openai.models.ChatModel;
@@ -70,9 +69,9 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-### OpenAI configuration
+### OpenAI 配置
 
-The OpenAI `baseUrl` (`https://api.openai.com/v1`) is the default, so you can omit it:
+OpenAI 的 `baseUrl`（`https://api.openai.com/v1`）是默认值，可以省略：
 
 ```java
 ChatModel model = OpenAiOfficialChatModel.builder()
@@ -81,11 +80,11 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-### Azure OpenAI configuration
+### Azure OpenAI 配置
 
-#### Generic configuration
+#### 通用配置
 
-For Azure OpenAI, setting a `baseUrl` is mandatory, and Azure OpenAI will be automatically detected if that URL ends with `openai.azure.com`:
+对于 Azure OpenAI，必须设置 `baseUrl`，如果该 URL 以 `openai.azure.com` 结尾，将自动检测为 Azure OpenAI：
 
 ```java
 ChatModel model = OpenAiOfficialChatModel.builder()
@@ -95,7 +94,7 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-If you want to force the usage of Azure OpenAI, you can also use the `isAzure()` method:
+若要强制使用 Azure OpenAI，也可以使用 `isAzure()` 方法：
 
 ```java
 ChatModel model = OpenAiOfficialChatModel.builder()
@@ -106,30 +105,30 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-#### Passwordless authentication
+#### 无密码认证
 
-You can authenticate to Azure OpenAI using "passwordless" authentication, which is more secure as you won't manage the API key.
+您可以使用"无密码"认证方式连接 Azure OpenAI，更安全，无需管理 API Key。
 
-To do so, you must first configure your Azure OpenAI instance to support managed identity, and then give access to this application, for example:
+首先需要将 Azure OpenAI 实例配置为支持托管身份，然后授予应用程序访问权限，例如：
 
 ```bash
-# Enable system managed identity on the Azure OpenAI instance
+# 为 Azure OpenAI 实例启用系统托管身份
 az cognitiveservices account identity assign \
     --name <your-openai-instance-name> \
     --resource-group <your-resource-group>
 
-# Get your logged-in identity
+# 获取当前登录的身份
 az ad signed-in-user show \
     --query id -o tsv
     
-# Give access to the Azure OpenAI instance
+# 授予 Azure OpenAI 实例的访问权限
 az role assignment create \
     --role "Cognitive Services OpenAI User" \
     --assignee <your-logged-identity-from-the-previous-command> \
     --scope "/subscriptions/<your-subscription-id>/resourceGroups/<your-resource-group>"
 ```
 
-Then, you need to add the `azure-identity` dependency to your Maven `pom.xml`:
+然后，在 Maven `pom.xml` 中添加 `azure-identity` 依赖：
 
 ```xml
 <dependency>
@@ -138,11 +137,11 @@ Then, you need to add the `azure-identity` dependency to your Maven `pom.xml`:
 </dependency>
 ```
 
-When no API key is configured, LangChain4j will then automatically use passwordless authentication with Azure OpenAI.
+未配置 API Key 时，LangChain4j 将自动对 Azure OpenAI 使用无密码认证。
 
-### GitHub Models configuration
+### GitHub Models 配置
 
-For GitHub Models, you can use the default `baseUrl` (`https://models.inference.ai.azure.com`):
+对于 GitHub Models，可以使用默认 `baseUrl`（`https://models.inference.ai.azure.com`）：
 
 ```java
 ChatModel model = OpenAiOfficialChatModel.builder()
@@ -152,7 +151,7 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-Or you can use the `isGitHubModels()` method to force the usage of GitHub Models, which will automatically set the `baseUrl`:
+或者使用 `isGitHubModels()` 方法强制使用 GitHub Models，它会自动设置 `baseUrl`：
 
 ```java
 ChatModel model = OpenAiOfficialChatModel.builder()
@@ -162,7 +161,7 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-As GitHub Models are usually configured using the `GITHUB_TOKEN` environment variable, which is automatically filled up when using GitHub Actions or GitHub Codespaces, it will be automatically detected:
+由于 GitHub Models 通常使用 `GITHUB_TOKEN` 环境变量，该变量在 GitHub Actions 或 GitHub Codespaces 中会自动填充，因此会被自动检测到：
 
 ```java
 ChatModel model = OpenAiOfficialChatModel.builder()
@@ -171,15 +170,15 @@ ChatModel model = OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-This last configuration is easier to use, and more secure as the `GITHUB_TOKEN` environment variable is not exposed in the code or in the GitHub logs.
+最后一种配置更简便，也更安全，因为 `GITHUB_TOKEN` 环境变量不会暴露在代码或 GitHub 日志中。
 
-## Using the models
+## 使用模型
 
-In the previous section, an `OpenAiOfficialChatModel` object was created, which implements the `ChatModel` interface.
+上一节创建的 `OpenAiOfficialChatModel` 对象实现了 `ChatModel` 接口。
 
-It can be either used by an [AI Service](https://docs.langchain4j.dev/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter) or used directly in a Java application.
+可以由 [AI Service](https://docs.langchain4j.dev/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter) 使用，也可直接在 Java 应用程序中使用。
 
-In this example, it is autowired as a Spring Bean:
+以下示例展示了将其作为 Spring Bean 自动注入的方式：
 
 ```java
 @RestController
@@ -198,14 +197,14 @@ class ChatModelController {
 }
 ```
 
-## Structured Outputs
-The [Structured Outputs](https://openai.com/index/introducing-structured-outputs-in-the-api/) feature is supported
-for both [tools](/tutorials/tools) and [response format](/tutorials/ai-services#json-mode).
+## 结构化输出
+[结构化输出](https://openai.com/index/introducing-structured-outputs-in-the-api/)功能支持
+[工具](/tutorials/tools)和[响应格式](/tutorials/ai-services#json-mode)两种场景。
 
-See more info on Structured Outputs [here](/tutorials/structured-outputs).
+更多结构化输出信息请参阅[此处](/tutorials/structured-outputs)。
 
-### Structured Outputs for Tools
-To enable Structured Outputs feature for tools, set `.strictTools(true)` when building the model:
+### 工具的结构化输出
+要为工具启用结构化输出功能，请在构建模型时设置 `.strictTools(true)`：
 
 ```java
 OpenAiOfficialChatModel.builder()
@@ -214,12 +213,12 @@ OpenAiOfficialChatModel.builder()
         .build();
 ```
 
-Please note that this will automatically make all tool parameters mandatory (`required` in json schema)
-and set `additionalProperties=false` for each `object` in json schema. This is due to the current OpenAI limitations.
+请注意，这将自动使所有工具参数变为必填（json schema 中的 `required`），
+并为 json schema 中每个 `object` 设置 `additionalProperties=false`。这是当前 OpenAI 的限制。
 
-### Structured Outputs for Response Format
-To enable the Structured Outputs feature for response formatting when using AI Services,
-set `supportedCapabilities(Set.of(RESPONSE_FORMAT_JSON_SCHEMA))` and `.strictJsonSchema(true)` when building the model:
+### 响应格式的结构化输出
+要在使用 AI Services 时为响应格式启用结构化输出功能，
+请在构建模型时设置 `supportedCapabilities(Set.of(RESPONSE_FORMAT_JSON_SCHEMA))` 和 `.strictJsonSchema(true)`：
 
 ```java
 import static dev.langchain4j.model.chat.Capability.RESPONSE_FORMAT_JSON_SCHEMA;
@@ -233,16 +232,16 @@ OpenAiChatModel.builder()
         .build();
 ```
 
-In this case AI Service will automatically generate a JSON schema from the given POJO and pass it to the LLM.
+此时 AI Service 将自动从给定的 POJO 生成 JSON Schema 并传递给 LLM。
 
-## Configuring the models for streaming
+## 配置流式模式的模型
 
 :::note
-In the two sections above, we detailed how to configure the models for non-streaming mode (also known as "blocking" or "synchronous" mode).
-This section is for streaming mode, which allows for real-time chat with the model, but is more complex to use.
+以上两节详述了非流式模式（"阻塞"或"同步"模式）的配置。
+本节介绍流式模式，它支持与模型的实时对话，但使用更复杂。
 :::
 
-This is similar to the non-streaming mode, but you need to use the `OpenAiOfficialStreamingChatModel` class instead of `OpenAiOfficialChatModel`:
+与非流式模式类似，但需要使用 `OpenAiOfficialStreamingChatModel` 类代替 `OpenAiOfficialChatModel`：
 
 ```java
 StreamingChatModel model = OpenAiOfficialStreamingChatModel.builder()
@@ -252,20 +251,20 @@ StreamingChatModel model = OpenAiOfficialStreamingChatModel.builder()
         .build();
 ```
 
-You can also use the specific `isAzure()` and `isGitHubModels()` methods to force the usage of Azure OpenAI or GitHub Models, as detailed in the non-streaming configuration section.
+也可以使用 `isAzure()` 和 `isGitHubModels()` 方法强制使用 Azure OpenAI 或 GitHub Models，详见非流式配置节。
 
 ## OpenAI Responses API
 
 :::note
-This feature is experimental and may change in future releases.
+此功能为实验性功能，未来版本可能发生变化。
 :::
 
-OpenAI's [Responses API](https://platform.openai.com/docs/api-reference/responses) (`/v1/responses`) is an alternative to the Chat Completions API.
-Currently, only a streaming model is available (`OpenAiOfficialResponsesStreamingChatModel`).
+OpenAI 的 [Responses API](https://platform.openai.com/docs/api-reference/responses)（`/v1/responses`）是 Chat Completions API 的替代方案。
+目前仅提供流式模型（`OpenAiOfficialResponsesStreamingChatModel`）。
 
-### Creating `OpenAiOfficialResponsesStreamingChatModel`
+### 创建 `OpenAiOfficialResponsesStreamingChatModel`
 
-#### Plain Java
+#### 纯 Java
 ```java
 StreamingChatModel model = OpenAiOfficialResponsesStreamingChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
@@ -273,7 +272,7 @@ StreamingChatModel model = OpenAiOfficialResponsesStreamingChatModel.builder()
         .build();
 ```
 
-You can also use `OpenAiOfficialResponsesChatRequestParameters` to configure default request parameters:
+也可以使用 `OpenAiOfficialResponsesChatRequestParameters` 配置默认请求参数：
 ```java
 StreamingChatModel model = OpenAiOfficialResponsesStreamingChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
@@ -288,13 +287,13 @@ StreamingChatModel model = OpenAiOfficialResponsesStreamingChatModel.builder()
 
 ### `OpenAiOfficialResponsesChatRequestParameters`
 
-`OpenAiOfficialResponsesChatRequestParameters` extends `DefaultChatRequestParameters` with Responses API-specific fields:
-`previousResponseId`, `maxToolCalls`, `parallelToolCalls`, `topLogprobs`, `truncation`, `include`,
-`serviceTier`, `safetyIdentifier`, `promptCacheKey`, `promptCacheRetention`, `reasoningEffort`,
-`textVerbosity`, `streamIncludeObfuscation`, `store`, `strictTools`, `strictJsonSchema`.
+`OpenAiOfficialResponsesChatRequestParameters` 继承 `DefaultChatRequestParameters`，并增加了 Responses API 专属字段：
+`previousResponseId`、`maxToolCalls`、`parallelToolCalls`、`topLogprobs`、`truncation`、`include`、
+`serviceTier`、`safetyIdentifier`、`promptCacheKey`、`promptCacheRetention`、`reasoningEffort`、
+`textVerbosity`、`streamIncludeObfuscation`、`store`、`strictTools`、`strictJsonSchema`。
 
-These parameters can be configured as defaults when creating the model (via `defaultRequestParameters` on the builder),
-or passed per-request via `ChatRequest` (per-request parameters override the defaults):
+这些参数可在创建模型时作为默认值配置（通过构建器上的 `defaultRequestParameters`），
+也可通过 `ChatRequest` 按请求传入（每次请求的参数会覆盖默认值）：
 ```java
 ChatRequest chatRequest = ChatRequest.builder()
         .messages(UserMessage.from("Hello"))
@@ -308,17 +307,17 @@ ChatRequest chatRequest = ChatRequest.builder()
 
 ### `OpenAiOfficialResponsesChatResponseMetadata`
 
-The response metadata for the Responses API provides additional fields beyond the standard `ChatResponseMetadata`:
+Responses API 的响应元数据在标准 `ChatResponseMetadata` 基础上提供了额外字段：
 
 ```java
 OpenAiOfficialResponsesChatResponseMetadata metadata =
         (OpenAiOfficialResponsesChatResponseMetadata) chatResponse.metadata();
 
-metadata.id();               // Response ID (can be used as previousResponseId)
-metadata.modelName();        // Model name used for the request
-metadata.finishReason();     // Finish reason (STOP, LENGTH, TOOL_EXECUTION, OTHER)
-metadata.tokenUsage();       // Returns OpenAiOfficialTokenUsage with detailed token counts
-metadata.createdAt();        // Timestamp when the response was created
-metadata.completedAt();      // Timestamp when the response was completed
-metadata.serviceTier();      // Service tier used for the request
+metadata.id();               // 响应 ID（可用作 previousResponseId）
+metadata.modelName();        // 请求使用的模型名称
+metadata.finishReason();     // 完成原因（STOP、LENGTH、TOOL_EXECUTION、OTHER）
+metadata.tokenUsage();       // 返回包含详细 token 计数的 OpenAiOfficialTokenUsage
+metadata.createdAt();        // 响应创建的时间戳
+metadata.completedAt();      // 响应完成的时间戳
+metadata.serviceTier();      // 请求使用的服务层级
 ```

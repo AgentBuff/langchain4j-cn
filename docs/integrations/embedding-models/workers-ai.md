@@ -7,7 +7,7 @@ sidebar_position: 20
 https://developers.cloudflare.com/workers-ai/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ https://developers.cloudflare.com/workers-ai/
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `WorkersAiEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [WorkersAiEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-workers-ai/src/test/java/dev/langchain4j/model/workersai/WorkersAiEmbeddingModelIT.java)

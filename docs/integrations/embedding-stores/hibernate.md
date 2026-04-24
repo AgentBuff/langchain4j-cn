@@ -4,14 +4,11 @@ sidebar_position: 19
 
 # Hibernate
 
-LangChain4j integrates seamlessly with [Hibernate](https://github.com/hibernate/hibernate-orm), allowing developers to store
-and query vector embeddings directly in all databases that Hibernate supports. This integration is ideal for applications like semantic search,
-RAG, and more.
+LangChain4j 与 [Hibernate](https://github.com/hibernate/hibernate-orm) 无缝集成，允许开发者在所有 Hibernate 支持的数据库中直接存储和查询向量嵌入。此集成非常适合语义搜索、RAG 等应用场景。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
-
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-hibernate</artifactId>
@@ -19,110 +16,104 @@ RAG, and more.
 </dependency>
 ```
 
-## Gradle Dependency
+## Gradle 依赖
 
 ```implementation 'dev.langchain4j:langchain4j-hibernate:1.13.0-beta23'```
 
-## APIs
+## API 参考 {#api}
 
 - `HibernateEmbeddingStore`
 
-## Parameter Summary
+## 参数说明
 
-### Generic store
+### 通用存储
 
-When using just the `EmbeddingStore` API without wanting to worry about Hibernate specifics, like entity class definition
-and the configuration of Hibernate, this kind of store is preferred.
+当只想使用 `EmbeddingStore` API 而不关心 Hibernate 细节（如实体类定义和 Hibernate 配置）时，推荐使用此类型存储。
 
-To configure it, use either `HibernateEmbeddingStore.dynamicBuilder()` or `HibernateEmbeddingStore.dynamicDatasourceBuilder()`.
+使用 `HibernateEmbeddingStore.dynamicBuilder()` 或 `HibernateEmbeddingStore.dynamicDatasourceBuilder()` 进行配置。
 
-| Plain Java Property | Description                                                                                                                                                                                                                                                                                                                                                                                    | Default Value | Required/Optional                                                                                                                                                                                                                                                                                                                            |
-|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `datasource`        | The `DataSource` object used for database connections. Available only in the `HibernateEmbeddingStore.dynamicDatasourceBuilder()` builder variant. If not provided, `jdbcUrl`, `user` and `password` must be provided individually in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                          | None          | Required if `jdbcUrl`, `user` and `password` are not provided individually.                                                                                                                                                                                                                                                                  |
-| `jdbcUrl`           | JDBC URL of the database server. Required if `DataSource` and `host`, `port`, `database` are not provided. Available only in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                                                                                                                                   | None          | Required if `DataSource` or `host`, `port`, `database` are not provided                                                                                                                                                                                                                                                                      |
-| `host`              | Hostname of the database server. Required if neither `DataSource` or `jdbcUrl` are not provided. Available only in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                                                                                                                                             | None          | Required if neither `DataSource` or `jdbcUrl` are not provided                                                                                                                                                                                                                                                                               |
-| `port`              | Port number of the database server. Required if neither `DataSource` or `jdbcUrl` are not provided. Available only in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                                                                                                                                          | None          | Required if neither `DataSource` or `jdbcUrl` are not provided                                                                                                                                                                                                                                                                               |
-| `database`          | Name of the database to connect to. Required if neither `DataSource` or `jdbcUrl` are not provided. Available only in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                                                                                                                                          | None          | Required if neither `DataSource` or `jdbcUrl` are not provided                                                                                                                                                                                                                                                                               |
-| `databaseKind`      | The database kind. Required if `DataSource` is provided or the kind can't be inferred from the `jdbcUrl`.                                                                                                                                                                                                                                                                                      | None          | Required if `DataSource` is provided or the kind can't be inferred from the `jdbcUrl`                                                                                                                                                                                                                                                        |
-| `user`              | Username for database authentication. Required if `DataSource` is not provided. Available only in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                                                                                                                                                              | None          | Required if `DataSource` is not provided                                                                                                                                                                                                                                                                                                     |
-| `password`          | Password for database authentication. Required if `DataSource` is not provided. Available only in the `HibernateEmbeddingStore.dynamicBuilder()` builder variant.                                                                                                                                                                                                                              | None          | Required if `DataSource` is not provided                                                                                                                                                                                                                                                                                                     |
-| `table`             | The name of the database table used for storing embeddings.                                                                                                                                                                                                                                                                                                                                    | None          | Required                                                                                                                                                                                                                                                                                                                                     |
-| `dimension`         | The dimensionality of the embedding vectors. This should match the embedding model being used. Use `embeddingModel.dimension()` to dynamically set it.                                                                                                                                                                                                                                         | None          | Required                                                                                                                                                                                                                                                                                                                                     |
-| `createIndex`       | Specifies whether to automatically create an index for the vector embedding.                                                                                                                                                                                                                                                                                                                   | `false`       | Optional                                                                                                                                                                                                                                                                                                                                     |
-| `indexType`         | The database specific type of index to use e.g. `ivfflat`, `hnsw`. An IVFFlat index divides vectors into lists, and then searches a subset of those lists closest to the query vector. It has faster build times and uses less memory than HNSW but has lower query performance (in terms of speed-recall tradeoff). Should use [IVFFlat](https://github.com/pgvector/pgvector#ivfflat) index. | None          | Optional. Defaults to the preferred index type e.g. `ivfflat` on PostgreSQL                                                                                                                                                                                                                                                                  |
-| `indexOptions`      | The options to configure on the index for the vector embedding.                                                                                                                                                                                                                                                                                                                                | None          | When Required: If `createIndex` is `true` and the index type is `ivfflat`, on PostgreSQL the `lists = 1` option must be provided and must be greater than zero. Otherwise, the program will throw an exception during table initialization. When Optional: If `createIndex` is `false`, this property is ignored and doesn’t need to be set. |
-| `createTable`       | Specifies whether to automatically create the embeddings table.                                                                                                                                                                                                                                                                                                                                | `false`       | Optional                                                                                                                                                                                                                                                                                                                                     |
-| `dropTableFirst`    | Specifies whether to drop the table before recreating it (useful for tests).                                                                                                                                                                                                                                                                                                                   | `false`       | Optional                                                                                                                                                                                                                                                                                                                                     |
-| `distanceFunction`  | The distance function to use for vector search. Supports varies based on database: <ul><li>**COSINE**</li><li>**EUCLIDEAN**</li><li>**EUCLIDEAN_SQUARED**</li><li>**MANHATTAN**</li><li>**INNER_PRODUCT**</li><li>**NEGATIVE_INNER_PRODUCT**</li><li>**HAMMING**</li><li>**JACCARD**</li></ul>                                                                                                 | `COSINE`      | Optional. If not set, a default configuration is used with `COSINE`.                                                                                                                                                                                                                                                                         |
+| 参数 | 描述 | 默认值 | 必填/可选 |
+|---|---|---|---|
+| `datasource` | 用于数据库连接的 `DataSource` 对象。仅在 `HibernateEmbeddingStore.dynamicDatasourceBuilder()` builder 变体中可用。如果未提供，则必须在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中单独提供 `jdbcUrl`、`user` 和 `password`。 | 无 | 如果未单独提供 `jdbcUrl`、`user` 和 `password` 则必填。 |
+| `jdbcUrl` | 数据库服务器的 JDBC URL。如果未提供 `DataSource` 和 `host`、`port`、`database`，则必填。仅在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中可用。 | 无 | 未提供 `DataSource` 或 `host`、`port`、`database` 时必填 |
+| `host` | 数据库服务器主机名。如果未提供 `DataSource` 或 `jdbcUrl` 则必填。仅在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中可用。 | 无 | 未提供 `DataSource` 或 `jdbcUrl` 时必填 |
+| `port` | 数据库服务器端口号。如果未提供 `DataSource` 或 `jdbcUrl` 则必填。仅在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中可用。 | 无 | 未提供 `DataSource` 或 `jdbcUrl` 时必填 |
+| `database` | 要连接的数据库名称。如果未提供 `DataSource` 或 `jdbcUrl` 则必填。仅在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中可用。 | 无 | 未提供 `DataSource` 或 `jdbcUrl` 时必填 |
+| `databaseKind` | 数据库类型。如果提供了 `DataSource` 或无法从 `jdbcUrl` 推断类型，则必填。 | 无 | 提供了 `DataSource` 或无法从 `jdbcUrl` 推断类型时必填 |
+| `user` | 数据库身份验证用户名。如果未提供 `DataSource` 则必填。仅在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中可用。 | 无 | 未提供 `DataSource` 时必填 |
+| `password` | 数据库身份验证密码。如果未提供 `DataSource` 则必填。仅在 `HibernateEmbeddingStore.dynamicBuilder()` builder 变体中可用。 | 无 | 未提供 `DataSource` 时必填 |
+| `table` | 用于存储嵌入的数据库表名。 | 无 | 必填 |
+| `dimension` | 嵌入向量的维度，应与所用嵌入模型匹配。可使用 `embeddingModel.dimension()` 动态设置。 | 无 | 必填 |
+| `createIndex` | 是否自动为向量嵌入创建索引。 | `false` | 可选 |
+| `indexType` | 数据库特定的索引类型，例如 `ivfflat`、`hnsw`。IVFFlat 索引将向量划分为列表，然后搜索最接近查询向量的子集列表。构建时间更快，内存使用更少，但查询性能低于 HNSW。 | 无 | 可选，默认为首选索引类型，例如 PostgreSQL 上的 `ivfflat` |
+| `indexOptions` | 用于配置向量嵌入索引的选项。 | 无 | 当 `createIndex` 为 `true` 且索引类型为 `ivfflat` 时，PostgreSQL 上必须提供 `lists = 1` 选项且必须大于零，否则表初始化时会抛出异常。当 `createIndex` 为 `false` 时忽略此属性。 |
+| `createTable` | 是否自动创建嵌入表。 | `false` | 可选 |
+| `dropTableFirst` | 是否在重建表之前先删除表（适用于测试）。 | `false` | 可选 |
+| `distanceFunction` | 向量搜索使用的距离函数。支持因数据库而异：**COSINE**、**EUCLIDEAN**、**EUCLIDEAN_SQUARED**、**MANHATTAN**、**INNER_PRODUCT**、**NEGATIVE_INNER_PRODUCT**、**HAMMING**、**JACCARD** | `COSINE` | 可选，如果未设置，则使用 `COSINE` 的默认配置。 |
 
-### Entity store
+### 实体存储
 
-To make use of an existing Hibernate entity model in the `EmbeddingStore` API, or to apply data model customizations,
-the entity store is preferred.
+当希望在 `EmbeddingStore` API 中使用已有的 Hibernate 实体模型，或应用数据模型自定义时，推荐使用实体存储。
 
-To configure it, use either `HibernateEmbeddingStore.builder()`.
+使用 `HibernateEmbeddingStore.builder()` 进行配置。
 
-| Plain Java Property             | Description                                                                                                                                                                                                                                                                                    | Default Value | Required/Optional                                                                                  |
-|---------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|----------------------------------------------------------------------------------------------------|
-| `sessionFactory`                | The `SessionFactory` object where the `entityClass` is part of.                                                                                                                                                                                                                                | None          | Required                                                                                           |
-| `databaseKind`                  | The database kind. Required if kind can't be inferred from the Hibernate ORM dialect.                                                                                                                                                                                                          | None          | Required if kind can't be inferred from the Hibernate ORM dialect                                  |
-| `entityClass`                   | Specifies the entity class of the `SessionFactory` to use for the `EmbeddingStore`.                                                                                                                                                                                                            | None          | Required                                                                                           |
-| `embeddingAttributeName`        | Specifies the name of the entity attribute that represents the vector embedding.                                                                                                                                                                                                               | None          | Optional. If not set, the entity is scanned for an attribute annotated with `@Embedding`           |
-| `embeddedTextAttributeName`     | Specifies the name of the entity attribute that represents the source text of the vector embedding.                                                                                                                                                                                            | None          | Optional. If not set, the entity is scanned for an attribute annotated with `@EmbeddedText`       |
-| `unmappedMetadataAttributeName` | Specifies the name of the entity attribute that represents the JSON column where unmapped metadata is stored.                                                                                                                                                                                  | None          | Optional. If not set, the entity is scanned for an attribute annotated with `@UnmappedMetadata`    |
-| `metadataAttributeNames`        | Specifies the names of the entity attributes that are explicitly mapped to text metadata.                                                                                                                                                                                                      | None          | Optional. If not set, the entity is scanned for an attribute annotated with `@MetadataAttribute`   |
-| `distanceFunction`              | The distance function to use for vector search. Supports varies based on database: <ul><li>**COSINE**</li><li>**EUCLIDEAN**</li><li>**EUCLIDEAN_SQUARED**</li><li>**MANHATTAN**</li><li>**INNER_PRODUCT**</li><li>**NEGATIVE_INNER_PRODUCT**</li><li>**HAMMING**</li><li>**JACCARD**</li></ul> | `COSINE`      | Optional. If not set, a default configuration is used with `COSINE`.                               |
+| 参数 | 描述 | 默认值 | 必填/可选 |
+|---|---|---|---|
+| `sessionFactory` | `entityClass` 所在的 `SessionFactory` 对象。 | 无 | 必填 |
+| `databaseKind` | 数据库类型。如果无法从 Hibernate ORM 方言推断类型，则必填。 | 无 | 无法从 Hibernate ORM 方言推断类型时必填 |
+| `entityClass` | 指定用于 `EmbeddingStore` 的 `SessionFactory` 中的实体类。 | 无 | 必填 |
+| `embeddingAttributeName` | 指定表示向量嵌入的实体属性名称。 | 无 | 可选，如果未设置，则扫描实体中带 `@Embedding` 注解的属性 |
+| `embeddedTextAttributeName` | 指定表示向量嵌入源文本的实体属性名称。 | 无 | 可选，如果未设置，则扫描实体中带 `@EmbeddedText` 注解的属性 |
+| `unmappedMetadataAttributeName` | 指定表示存储未映射元数据的 JSON 列的实体属性名称。 | 无 | 可选，如果未设置，则扫描实体中带 `@UnmappedMetadata` 注解的属性 |
+| `metadataAttributeNames` | 指定显式映射到文本元数据的实体属性名称。 | 无 | 可选，如果未设置，则扫描实体中带 `@MetadataAttribute` 注解的属性 |
+| `distanceFunction` | 向量搜索使用的距离函数。支持因数据库而异：**COSINE**、**EUCLIDEAN**、**EUCLIDEAN_SQUARED**、**MANHATTAN**、**INNER_PRODUCT**、**NEGATIVE_INNER_PRODUCT**、**HAMMING**、**JACCARD** | `COSINE` | 可选，如果未设置，则使用 `COSINE` 的默认配置。 |
 
-## Examples
+## 示例
 
-To demonstrate the capabilities, you can e.g. use a Dockerized PostgreSQL setup. It leverages Testcontainers to
-run PostgreSQL with PGVector.
+例如，可以使用 Docker 化的 PostgreSQL 设置来演示功能，利用 Testcontainers 运行带 PGVector 的 PostgreSQL。
 
-#### Quick Start with Docker
+#### 使用 Docker 快速启动
 
-To quickly set up a PostgreSQL instance with the PGVector extension, you can use the following Docker command:
+使用以下 Docker 命令快速设置带 PGVector 扩展的 PostgreSQL 实例：
 
 ```
 docker run --rm --name langchain4j-postgres-test-container -p 5432:5432 -e POSTGRES_USER=my_user -e POSTGRES_PASSWORD=my_password pgvector/pgvector
 ```
 
-#### Explanation of the Command:
+#### 命令说明：
 
-- ```docker run```: Runs a new container.
-- ```--rm```: Automatically removes the container after it stops, ensuring no residual data.
-- ```--name langchain4j-postgres-test-container```: Names the container langchain4j-postgres-test-container for easy
-  identification.
-- ```-p 5432:5432```: Maps port 5432 on your local machine to port 5432 in the container.
-- ```-e POSTGRES_USER=my_user```: Sets the PostgreSQL username to my_user.
-- ```-e POSTGRES_PASSWORD=my_password```: Sets the PostgreSQL password to my_password.
-- ```pgvector/pgvector```: Specifies the Docker image to use, pre-configured with the PGVector extension.
+- `docker run`：运行新容器。
+- `--rm`：容器停止后自动删除，确保无残留数据。
+- `--name langchain4j-postgres-test-container`：将容器命名为 langchain4j-postgres-test-container 以便识别。
+- `-p 5432:5432`：将本机 5432 端口映射到容器中的 5432 端口。
+- `-e POSTGRES_USER=my_user`：将 PostgreSQL 用户名设置为 my_user。
+- `-e POSTGRES_PASSWORD=my_password`：将 PostgreSQL 密码设置为 my_password。
+- `pgvector/pgvector`：指定要使用的 Docker 镜像，已预配置 PGVector 扩展。
 
-Here are two code examples showing how to create a `HibernateEmbeddingStore`. The first uses only the required parameters,
-while the second configures all available parameters.
+以下两个代码示例展示了如何创建 `HibernateEmbeddingStore`。第一个仅使用必填参数，第二个配置所有可用参数。
 
-1. Only Required Parameters
+1. 仅使用必填参数
 
 ```java
 HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.dynamicBuilder()
-        .databaseKind(DatabaseKind.POSTGRESQL)                  // Required: The database kind
-        .host("localhost")                                      // Required: Host of the database server
-        .port(5432)                                             // Required: Port of the database server
-        .database("postgres")                                   // Required: Database name
-        .user("my_user")                                        // Required: Database user
-        .password("my_password")                                // Required: Database password
-        .table("my_embeddings")                                 // Required: Table name to store embeddings
-        .dimension(embeddingModel.dimension())                  // Required: Dimension of embeddings
+        .databaseKind(DatabaseKind.POSTGRESQL)                  // 必填：数据库类型
+        .host("localhost")                                      // 必填：数据库服务器主机
+        .port(5432)                                             // 必填：数据库服务器端口
+        .database("postgres")                                   // 必填：数据库名称
+        .user("my_user")                                        // 必填：数据库用户
+        .password("my_password")                                // 必填：数据库密码
+        .table("my_embeddings")                                 // 必填：存储嵌入的表名
+        .dimension(embeddingModel.dimension())                  // 必填：嵌入维度
         .build();
 ```
 
-2. All Parameters Set
+2. 设置所有参数
 
-In this variant, we include all the commonly used optional parameters like createIndex, indexOptions,
-createTable, dropTableFirst, and distanceFunction. Adjust these values as needed:
+此变体包含所有常用的可选参数，如 createIndex、indexOptions、createTable、dropTableFirst 和 distanceFunction，请根据需要调整：
 
- ```java
+```java
 HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.dynamicBuilder()
-        // Required parameters
+        // 必填参数
         .databaseKind(DatabaseKind.POSTGRESQL)
         .host("localhost")
         .port(5432)
@@ -132,27 +123,24 @@ HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.dynamicBuilder(
         .table("my_embeddings")
         .dimension(embeddingModel.dimension())
 
-        // Optional parameters
-        .createIndex(true)                              // Enable vector index creation
-        .indexType("ivfflat")                           // Index type IVFFlat
-        .indexOptions("lists = 100")                    // Number of lists for IVFFlat index
-        .createTable(true)                              // Automatically create the table if it doesn’t exist
-        .dropTableFirst(false)                          // Don’t drop the table first (set to true if you want a fresh start)
-        .distanceFunction(DistanceFunction.MANHATTEN)   // Use MANHATTAN distance function for vector search
+        // 可选参数
+        .createIndex(true)                              // 启用向量索引创建
+        .indexType("ivfflat")                           // 索引类型 IVFFlat
+        .indexOptions("lists = 100")                    // IVFFlat 索引的列表数量
+        .createTable(true)                              // 如果表不存在则自动创建
+        .dropTableFirst(false)                          // 不先删除表（若想全新开始则设为 true）
+        .distanceFunction(DistanceFunction.MANHATTEN)   // 使用 MANHATTAN 距离函数进行向量搜索
 
         .build();
 ```
 
-Use the first example if you just want the minimal configuration to get started quickly.
-The second example shows how you can leverage all available builder parameters for more control and customization.
+使用第一个示例可以快速开始最简配置，第二个示例展示了如何利用所有可用的 builder 参数以获得更多控制和自定义。
 
-Don't forget to close the `HibernateEmbeddingStore` when you don't need it anymore, to close the underlying Hibernate resources.
+不再需要时，请记得关闭 `HibernateEmbeddingStore` 以释放底层 Hibernate 资源。
 
-#### Custom Hibernate entity
+#### 自定义 Hibernate 实体
 
-When you want to customize the data model or want to reuse an existing entity as source for the `EmbeddingStore`,
-you can make use of the annotations `@Embedding`, `@EmbeddedText`, `@UnmappedMetadata` and `@MetadataAttribute` to mark the
-entity attributes to use by the Hibernate `EmbeddingStore` implementation. 
+当希望自定义数据模型或重用现有实体作为 `EmbeddingStore` 的数据源时，可以使用注解 `@Embedding`、`@EmbeddedText`、`@UnmappedMetadata` 和 `@MetadataAttribute` 标记 Hibernate `EmbeddingStore` 实现要使用的实体属性。
 
 ```java
 @Entity
@@ -160,30 +148,30 @@ public class MyEmbeddingEntity {
     @Id
     UUID id;
     @Embedding
-    @Array(length = 384)                // The dimension of the embedding vector based on the embedding model
+    @Array(length = 384)                // 基于嵌入模型的嵌入向量维度
     float[] embedding;
     @EmbeddedText
     String text;
     @UnmappedMetadata
-    Map<String, Object> metadata;       // Can be either a Map<String, Object> or a String
+    Map<String, Object> metadata;       // 可以是 Map<String, Object> 或 String
     
     @MetadataAttribute
-    String mimeType;                    // Explicitly mapped. Synchronizes TextSegment#metadata with this attribute
+    String mimeType;                    // 显式映射，与 TextSegment#metadata 同步
     @MetadataAttribute
-    String fileName;                    // Explicitly mapped. Synchronizes TextSegment#metadata with this attribute
+    String fileName;                    // 显式映射，与 TextSegment#metadata 同步
 }
 ```
 
-The builder will then look for these annotations and derive the attribute names.
+builder 将查找这些注解并推导属性名称。
 
 ```java
 HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.builder()
-        .sessionFactory(sessionFactory)         // Required: The SessionFactory containing your entity class
-        .entityClass(MyEmbeddingEntity.class)   // Required: The embedding entity class
+        .sessionFactory(sessionFactory)         // 必填：包含实体类的 SessionFactory
+        .entityClass(MyEmbeddingEntity.class)   // 必填：嵌入实体类
         .build();
 ```
 
-Alternatively, if annotating the entity model is not desired, the attribute names can also be provided explicitly.
+如果不希望为实体模型添加注解，也可以显式提供属性名称：
 
 ```java
 HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.builder()
@@ -196,8 +184,7 @@ HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.builder()
         .build();
 ```
 
-Metadata can also be nested within `@OneToOne`, `@ManyToOne` or `@Embedded` attributes that are also annotated with `@MetadataAttribute`,
-or by specifying an explicit attribute path with the `.` (dot) separator.
+元数据也可以嵌套在同样带有 `@MetadataAttribute` 注解的 `@OneToOne`、`@ManyToOne` 或 `@Embedded` 属性中，或通过使用 `.`（点）分隔符指定显式属性路径。
 
 ```java
 @Entity
@@ -236,20 +223,19 @@ public class BookDetails {
 }
 ```
 
-The equivalent attribute paths are `details.language` and `author.id`, which are then available for filtering,
-by specifying these paths as metadata keys, e.g.
+等效的属性路径为 `details.language` 和 `author.id`，可通过指定这些路径作为元数据键用于过滤，例如：
 
 ```java
 MetadataFilterBuilder.metadataKey("details.language").isEqualTo("English")
 ```
 
-or
+或
 
 ```java
 MetadataFilterBuilder.metadataKey("author.id").isEqualTo(2L)
 ```
 
-Alternatively, the `HibernateEmbeddingStore` API also provides `search` methods that allow to use the type-safe Hibernate ORM `Restriction` API.
+此外，`HibernateEmbeddingStore` API 还提供了 `search` 方法，允许使用类型安全的 Hibernate ORM `Restriction` API：
 
 ```java
 HibernateEmbeddingStore<Book> embeddingStore = embeddingStore();
@@ -261,7 +247,7 @@ embeddingStore.search(
             .equalTo("English"));
 ```
 
-or
+或
 
 ```java
 HibernateEmbeddingStore<Book> embeddingStore = embeddingStore();
@@ -273,24 +259,23 @@ embeddingStore.search(
             .equalTo(2L));
 ```
 
-## Complete RAG Example with Hibernate
+## 使用 Hibernate 的完整 RAG 示例
 
-This section demonstrates how to build a complete Retrieval-Augmented Generation (RAG) system using the Hibernate integration
-with PostgreSQL with the PGVector extension for semantic search.
+本节演示如何使用带 PGVector 扩展的 PostgreSQL 通过 Hibernate 集成构建完整的检索增强生成（RAG）系统。
 
-### Overview
+### 概述
 
-A RAG system consists of two main stages:
-1. **Indexing Stage (Offline)**: Load documents, split into chunks, generate embeddings, and store in pgvector
-2. **Retrieval Stage (Online)**: Embed user query, search similar chunks, inject context into LLM prompt
+RAG 系统由两个主要阶段组成：
+1. **索引阶段（离线）**：加载文档、分割为块、生成嵌入并存储在 pgvector 中
+2. **检索阶段（在线）**：嵌入用户查询、搜索相似块、将上下文注入 LLM 提示词
 
-### Prerequisites
+### 前提条件
 
-Ensure you have a PostgreSQL instance with PGVector running (see Docker setup above).
+确保已运行带 PGVector 的 PostgreSQL 实例（请参阅上面的 Docker 设置）。
 
-### 1. Document Ingestion (Indexing Stage)
+### 1. 文档摄取（索引阶段）
 
-This example shows how to load documents, split them into chunks, and store embeddings in pgvector:
+此示例展示如何加载文档、将其分割为块并在 pgvector 中存储嵌入：
 
 ```java
 import dev.langchain4j.data.document.Document;
@@ -307,17 +292,17 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 
 import static dev.langchain4j.data.document.loader.FileSystemDocumentLoader.loadDocument;
 
-// Load document (PDF, TXT, etc.)
+// 加载文档（PDF、TXT 等）
 Document document = loadDocument("/path/to/document.pdf", new ApachePdfBoxDocumentParser());
 
-// Split document into smaller chunks
-// 300 tokens per chunk, 50 tokens overlap for context continuity
+// 将文档分割为更小的块
+// 每块 300 个 token，50 个 token 重叠以保持上下文连续性
 DocumentSplitter splitter = DocumentSplitters.recursive(300, 50);
 
-// Create embedding model (384 dimensions for AllMiniLmL6V2)
+// 创建嵌入模型（AllMiniLmL6V2 为 384 维）
 EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
 
-// Create pgvector embedding store
+// 创建 pgvector 嵌入存储
 HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.dynamicBuilder()
         .databaseKind(DatabaseKind.POSTGRESQL)
         .host("localhost")
@@ -326,10 +311,10 @@ HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.dynamicBuilder(
         .user("my_user")
         .password("my_password")
         .table("document_embeddings")
-        .dimension(embeddingModel.dimension())  // 384 for AllMiniLmL6V2
+        .dimension(embeddingModel.dimension())  // AllMiniLmL6V2 为 384
         .build();
 
-// Ingest: split document, generate embeddings, and store in pgvector
+// 摄取：分割文档、生成嵌入并存储在 pgvector 中
 EmbeddingStoreIngestor.builder()
         .documentSplitter(splitter)
         .embeddingModel(embeddingModel)
@@ -337,12 +322,12 @@ EmbeddingStoreIngestor.builder()
         .build()
         .ingest(document);
 
-System.out.println("Document ingested successfully!");
+System.out.println("文档摄取成功！");
 ```
 
-### 2. Querying (Retrieval Stage)
+### 2. 查询（检索阶段）
 
-This example shows how to query the RAG system with a user question:
+此示例展示如何使用用户问题查询 RAG 系统：
 
 ```java
 import dev.langchain4j.data.embedding.Embedding;
@@ -354,26 +339,26 @@ import dev.langchain4j.store.embedding.EmbeddingMatch;
 import java.util.List;
 import java.util.stream.Collectors;
 
-// User's question
+// 用户问题
 String question = "What is the refund policy?";
 
-// Generate embedding for the question
+// 为问题生成嵌入
 Embedding questionEmbedding = embeddingModel.embed(question).content();
 
-// Search for the most similar text segments (top 3 results)
+// 搜索最相似的文本段（前 3 个结果）
 List<EmbeddingMatch<TextSegment>> relevantSegments = embeddingStore.search(
         EmbeddingSearchRequest.builder()
                 .queryEmbedding(questionEmbedding)
-                .maxResults(3)  // Retrieve top 3 most similar chunks
+                .maxResults(3)  // 检索前 3 个最相似的块
                 .build()
 );
 
-// Build context from retrieved segments
+// 从检索到的片段构建上下文
 String context = relevantSegments.stream()
         .map(match -> match.embedded().text())
         .collect(Collectors.joining("\n\n"));
 
-// Create prompt with retrieved context
+// 使用检索到的上下文创建提示词
 String promptWithContext = String.format("""
         Answer the question based on the following context.
         If the context doesn't contain relevant information, say "I don't have enough information to answer."
@@ -386,7 +371,7 @@ String promptWithContext = String.format("""
         Answer:
         """, context, question);
 
-// Send to LLM with context
+// 带上下文发送给 LLM
 ChatModel chatModel = OpenAiChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
         .modelName("gpt-4")
@@ -396,12 +381,12 @@ String answer = chatModel.generate(promptWithContext);
 System.out.println("Answer: " + answer);
 ```
 
-### Production Considerations
+### 生产注意事项
 
-Based on real-world usage, here are important considerations for production deployments:
+以下是基于实际使用经验的生产部署重要注意事项：
 
-#### 1. Connection Pooling
-For production environments, use a `DataSource` with connection pooling instead of individual connection parameters:
+#### 1. 连接池
+对于生产环境，使用带连接池的 `DataSource` 而不是单独的连接参数：
 
 ```java
 import com.zaxxer.hikari.HikariConfig;
@@ -423,54 +408,53 @@ EmbeddingStore<TextSegment> embeddingStore = HibernateEmbeddingStore.dynamicData
         .build();
 ```
 
-#### 2. Index Optimization
-For large datasets (>100k embeddings), enable IVFFlat indexing on PostgreSQL to improve query performance:
+#### 2. 索引优化
+对于大型数据集（>10 万个嵌入），在 PostgreSQL 上启用 IVFFlat 索引以提升查询性能：
 
 ```java
 HibernateEmbeddingStore embeddingStore = HibernateEmbeddingStore.dynamicBuilder()
-        // ... other config ...
+        // ... 其他配置 ...
         .createIndex(true)
-        .indexOptions("lists = 100")  // Adjust based on dataset size
+        .indexOptions("lists = 100")  // 根据数据集大小调整
         .build();
 ```
 
-**Note**: Index creation can take time on large datasets. Balance between query speed and index build time.
-**Note**: Index maintenance can slow down data ingestion, so consider dropping and recreating indexes when ingesting big amounts of data.
+**注意**：在大型数据集上创建索引可能需要时间，需在查询速度和索引构建时间之间取得平衡。
+**注意**：索引维护可能会降低数据摄取速度，因此在摄取大量数据时，考虑先删除索引再重建。
 
-#### 3. Chunk Size Tuning
-Experiment with different chunk sizes based on your use case:
-- **Smaller chunks (200-300 tokens)**: Better precision, more specific answers
-- **Larger chunks (500-800 tokens)**: More context, but may reduce relevance
+#### 3. 块大小调整
+根据您的使用场景尝试不同的块大小：
+- **较小的块（200-300 个 token）**：精度更高，答案更具体
+- **较大的块（500-800 个 token）**：上下文更多，但可能降低相关性
 
-#### 4. Error Handling
-Always handle database connection failures gracefully:
+#### 4. 错误处理
+始终优雅地处理数据库连接失败：
 
 ```java
 try {
     embeddingStore.add(embedding, textSegment);
 } catch (Exception e) {
     logger.error("Failed to store embedding", e);
-    // Implement retry logic or fallback behavior
+    // 实现重试逻辑或回退行为
 }
 ```
 
-#### 5. Custom Hibernate entity DDL
-When using a custom Hibernate entity, you are in charge of managing the DDL.
-Consider creating an `import.sql` file to create indexes, e.g. for PostgreSQL:
+#### 5. 自定义 Hibernate 实体 DDL
+使用自定义 Hibernate 实体时，您需要自行管理 DDL。
+考虑创建 `import.sql` 文件来创建索引，例如对于 PostgreSQL：
 
 ```sql
 create index if not exists my_entity_ivfflat_index 
     on my_entity using ivfflat(embedding vector_cosine_ops) with (lists = 1);
 ```
 
-Refer to [Hibernate ORM documentation](https://docs.hibernate.org/orm/7.2/userguide/html_single/) for details about the configuration of `SessionFactory`.
+请参阅 [Hibernate ORM 文档](https://docs.hibernate.org/orm/7.2/userguide/html_single/)了解 `SessionFactory` 配置的详细信息。
 
-Vector indexes for other databases have different syntax and options. Refer to the documentation of the respective database provider for details.
+其他数据库的向量索引语法和选项各不相同，请参阅相应数据库提供商的文档。
 
 ##### DB2
 
-See the [vector index article](https://community.ibm.com/community/user/blogs/christian-garcia-arellano/2025/10/04/vector-indexes-in-db2-an-early-preview)
-for details.
+有关详细信息，请参阅[向量索引文章](https://community.ibm.com/community/user/blogs/christian-garcia-arellano/2025/10/04/vector-indexes-in-db2-an-early-preview)。
 
 ```sql
 create vector index my_entity_vector_index 
@@ -479,8 +463,7 @@ create vector index my_entity_vector_index
 
 ##### MariaDB
 
-See the [`create index` statement documentation](https://mariadb.com/docs/server/reference/sql-statements/data-definition/create/create-index)
-for details.
+有关详细信息，请参阅 [`create index` 语句文档](https://mariadb.com/docs/server/reference/sql-statements/data-definition/create/create-index)。
 
 ```sql
 create vector index if not exists my_entity_vector_index 
@@ -489,11 +472,11 @@ create vector index if not exists my_entity_vector_index
 
 ##### MySQL
 
-MySQL HeatWave [creates indexes automatically](https://dev.mysql.com/doc/heatwave/en/mys-hw-genai-vector-index-creation.html) and doesn't require a manual index creation.
+MySQL HeatWave [自动创建索引](https://dev.mysql.com/doc/heatwave/en/mys-hw-genai-vector-index-creation.html)，不需要手动创建索引。
 
 ##### PostgreSQL
 
-See the [pgvector documentation](https://github.com/pgvector/pgvector?tab=readme-ov-file#indexing) for details.
+有关详细信息，请参阅 [pgvector 文档](https://github.com/pgvector/pgvector?tab=readme-ov-file#indexing)。
 
 ```sql
 create index if not exists my_entity_ivfflat_index
@@ -502,8 +485,7 @@ create index if not exists my_entity_ivfflat_index
 
 ##### Oracle
 
-See the [`create index` statement documentation](https://docs.oracle.com/en/database/oracle/oracle-database/26/sqlrf/create-vector-index.html)
-for details.
+有关详细信息，请参阅 [`create index` 语句文档](https://docs.oracle.com/en/database/oracle/oracle-database/26/sqlrf/create-vector-index.html)。
 
 ```sql
 create vector index my_entity_vector_index 
@@ -512,8 +494,7 @@ create vector index my_entity_vector_index
 
 ##### SQL Server
 
-See the [`create vector index` statement documentation](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-vector-index-transact-sql?view=sql-server-ver17)
-for details.
+有关详细信息，请参阅 [`create vector index` 语句文档](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-vector-index-transact-sql?view=sql-server-ver17)。
 
 ```sql
 create vector index my_entity_vector_index 

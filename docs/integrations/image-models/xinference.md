@@ -6,10 +6,9 @@ sidebar_position: 7
 
 - https://inference.readthedocs.io/
 
+## Maven 依赖
 
-## Maven Dependency
-
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及更高版本：
 
 ```xml
 <dependency>
@@ -19,7 +18,7 @@ sidebar_position: 7
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或者，可以使用 BOM 统一管理依赖：
 
 ```xml
 <dependencyManagement>
@@ -33,11 +32,10 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `XinferenceImageModel`
 
-
-## Examples
+## 示例
 
 - [XinferenceImageModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-xinference/src/test/java/dev/langchain4j/community/model/xinference/XinferenceImageModelIT.java)

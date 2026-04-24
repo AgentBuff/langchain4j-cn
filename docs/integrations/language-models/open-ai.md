@@ -6,27 +6,26 @@ sidebar_position: 15
 
 :::note
 
-This is the documentation for the `OpenAI` integration, that uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
+本文档介绍 `OpenAI` 集成，它使用自定义 Java 实现的 OpenAI REST API，最适合与 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）配合使用。
 
-If you are using Quarkus, please refer to the
-[Quarkus LangChain4j documentation](https://docs.quarkiverse.io/quarkus-langchain4j/dev/openai.html).
+如果您在使用 Quarkus，请参阅 [Quarkus LangChain4j 文档](https://docs.quarkiverse.io/quarkus-langchain4j/dev/openai.html)。
 
-LangChain4j provides 3 different integrations with OpenAI for using chat models, and this is #1 :
+LangChain4j 提供了 3 种不同的 OpenAI 集成方式，本文介绍的是第 1 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用自定义 Java 实现的 OpenAI REST API，最适合与 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）配合使用。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
 
 :::
 
-## OpenAI Documentation
+## OpenAI 文档
 
-- [OpenAI API Documentation](https://platform.openai.com/docs/introduction)
-- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [OpenAI API 文档](https://platform.openai.com/docs/introduction)
+- [OpenAI API 参考](https://platform.openai.com/docs/api-reference)
 
-## Maven Dependency
+## Maven 依赖
 
-### Plain Java
+### 纯 Java
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -44,20 +43,18 @@ LangChain4j provides 3 different integrations with OpenAI for using chat models,
 </dependency>
 ```
 
-## API Key
+## API 密钥 {#api-key}
 
-To use OpenAI models, you will need an API key.
-You can create one [here](https://platform.openai.com/api-keys).
+使用 OpenAI 模型需要 API Key，可在[此处](https://platform.openai.com/api-keys)创建。
 
 <details>
-<summary>What if I don't have an API key?</summary>
+<summary>如果我没有 API Key 怎么办？</summary>
 
-If you don't have your own OpenAI API key, don't worry.
-You can temporarily use `demo` key, which we provide for free for demonstration purposes.
-Be aware that when using the `demo` key, all requests to the OpenAI API need to go through our proxy,
-which injects the real key before forwarding your request to the OpenAI API.
-We do not collect or use your data in any way.
-The `demo` key has a quota, is restricted to the `gpt-4o-mini` model, and should only be used for demonstration purposes.
+如果您还没有自己的 OpenAI API Key，不用担心。
+您可以临时使用我们免费提供的 `demo` Key 进行演示。
+注意：使用 `demo` Key 时，所有发往 OpenAI API 的请求都需要经过我们的代理，
+代理会在转发前注入真实的 Key。我们不会以任何方式收集或使用您的数据。
+`demo` Key 有配额限制，仅支持 `gpt-4o-mini` 模型，且仅供演示使用。
 
 ```java
 OpenAiChatModel model = OpenAiChatModel.builder()
@@ -68,9 +65,9 @@ OpenAiChatModel model = OpenAiChatModel.builder()
 ```
 </details>
 
-## Creating `OpenAiChatModel`
+## 创建 `OpenAiChatModel`
 
-### Plain Java
+### 纯 Java
 ```java
 ChatModel model = OpenAiChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
@@ -78,7 +75,7 @@ ChatModel model = OpenAiChatModel.builder()
         .build();
 
 
-// You can also specify default chat request parameters using ChatRequestParameters or OpenAiChatRequestParameters
+// 也可使用 ChatRequestParameters 或 OpenAiChatRequestParameters 指定默认请求参数
 ChatModel model = OpenAiChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
         .defaultRequestParameters(OpenAiChatRequestParameters.builder()
@@ -86,16 +83,16 @@ ChatModel model = OpenAiChatModel.builder()
                 .build())
         .build();
 ```
-This will create an instance of `OpenAiChatModel` with the specified default parameters.
+这将使用指定的默认参数创建 `OpenAiChatModel` 实例。
 
 ### Spring Boot
-Add to the `application.properties`:
+在 `application.properties` 中添加：
 ```properties
-# Mandatory properties:
+# 必填属性：
 langchain4j.open-ai.chat-model.api-key=${OPENAI_API_KEY}
 langchain4j.open-ai.chat-model.model-name=gpt-4o-mini
 
-# Optional properties:
+# 可选属性：
 langchain4j.open-ai.chat-model.base-url=...
 langchain4j.open-ai.chat-model.custom-headers=...
 langchain4j.open-ai.chat-model.frequency-penalty=...
@@ -125,14 +122,14 @@ langchain4j.open-ai.chat-model.timeout=...
 langchain4j.open-ai.chat-model.top-p=
 langchain4j.open-ai.chat-model.user=...
 
-# Optional Property: Custom Parameters (user-defined key=value) 
+# 可选属性：自定义参数（用户自定义键值对）
 langchain4j.open-ai.chat-model.custom-parameters.<key>=<value>
 ```
-See the description of most of the parameters above [here](https://platform.openai.com/docs/api-reference/chat/create).
+大部分参数说明请参阅[此处](https://platform.openai.com/docs/api-reference/chat/create)。
 
-This configuration will create an `OpenAiChatModel` bean,
-which can be either used by an [AI Service](https://docs.langchain4j.dev/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter)
-or autowired where needed, for example:
+该配置将创建一个 `OpenAiChatModel` Bean，
+可供 [AI Service](https://docs.langchain4j.dev/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter) 使用，
+也可在需要的地方自动注入，例如：
 
 ```java
 @RestController
@@ -151,26 +148,26 @@ class ChatModelController {
 }
 ```
 
-## Structured Outputs
-The [Structured Outputs](https://openai.com/index/introducing-structured-outputs-in-the-api/) feature is supported
-for both [tools](/tutorials/tools) and [response format](/tutorials/ai-services#json-mode).
+## 结构化输出 {#structured-outputs}
+[结构化输出](https://openai.com/index/introducing-structured-outputs-in-the-api/)功能支持
+[工具](/tutorials/tools)和[响应格式](/tutorials/ai-services#json-mode)两种场景。
 
-See more info on Structured Outputs [here](/tutorials/structured-outputs).
+更多结构化输出信息请参阅[此处](/tutorials/structured-outputs)。
 
-### Structured Outputs for Tools
-To enable Structured Outputs feature for tools, set `.strictTools(true)` when building the model:
+### 工具的结构化输出 {#structured-outputs-for-tools}
+要为工具启用结构化输出功能，请在构建模型时设置 `.strictTools(true)`：
 ```java
 OpenAiChatModel.builder()
     ...
     .strictTools(true)
     .build(),
 ```
-Please note that this will automatically make all tool parameters mandatory (`required` in json schema)
-and set `additionalProperties=false` for each `object` in json schema. This is due to the current OpenAI limitations.
+请注意，这将自动使所有工具参数变为必填（json schema 中的 `required`），
+并为 json schema 中每个 `object` 设置 `additionalProperties=false`。这是当前 OpenAI 的限制。
 
-### Structured Outputs for Response Format
-To enable the Structured Outputs feature for response formatting when using AI Services,
-set `.supportedCapabilities(RESPONSE_FORMAT_JSON_SCHEMA)` and `.strictJsonSchema(true)` when building the model:
+### 响应格式的结构化输出 {#structured-outputs-for-response-format}
+要在使用 AI Services 时为响应格式启用结构化输出功能，
+请在构建模型时设置 `.supportedCapabilities(RESPONSE_FORMAT_JSON_SCHEMA)` 和 `.strictJsonSchema(true)`：
 ```java
 OpenAiChatModel.builder()
     ...
@@ -178,20 +175,19 @@ OpenAiChatModel.builder()
     .strictJsonSchema(true)
     .build();
 ```
-In this case AI Service will automatically generate a JSON schema from the given POJO and pass it to the LLM.
+此时 AI Service 将自动从给定的 POJO 生成 JSON Schema 并传递给 LLM。
 
-### Thinking / Reasoning
-This setting is intended for [DeepSeek](https://api-docs.deepseek.com/guides/reasoning_model).
+### 思考 / 推理
+此设置适用于 [DeepSeek](https://api-docs.deepseek.com/guides/reasoning_model)。
 
-When the `returnThinking` parameter is enabled while building `OpenAiChatModel` or `OpenAiStreamingChatModel`,
-the `reasoning_content` field of the DeepSeek API response will be parsed
-and returned inside `AiMessage.thinking()`.
+在构建 `OpenAiChatModel` 或 `OpenAiStreamingChatModel` 时启用 `returnThinking` 参数，
+DeepSeek API 响应中的 `reasoning_content` 字段将被解析并在 `AiMessage.thinking()` 中返回。
 
-When the `returnThinking` parameter is enabled for `OpenAiStreamingChatModel`,
-the `StreamingChatResponseHandler.onPartialThinking()` and `TokenStream.onPartialThinking()`
-callbacks will be invoked when the DeepSeek API streams `reasoning_content`.
+为 `OpenAiStreamingChatModel` 启用 `returnThinking` 参数后，
+当 DeepSeek API 流式传输 `reasoning_content` 时，
+将触发 `StreamingChatResponseHandler.onPartialThinking()` 和 `TokenStream.onPartialThinking()` 回调。
 
-Here is an example of how to configure thinking:
+思考功能配置示例：
 ```java
 ChatModel model = OpenAiChatModel.builder()
         .baseUrl("https://api.deepseek.com/v1")
@@ -201,21 +197,21 @@ ChatModel model = OpenAiChatModel.builder()
         .build();
 ```
 
-When the `sendThinking` parameter is enabled while building `OpenAiChatModel` or `OpenAiStreamingChatModel`,
-the `AiMessage.thinking()` will be sent in the request to the DeepSeek API.
-The name of the field can be configured by using the `sendThinking(boolean, String)` builder method.
-By default, the `reasoning_content` field name is used.
+在构建 `OpenAiChatModel` 或 `OpenAiStreamingChatModel` 时启用 `sendThinking` 参数后，
+`AiMessage.thinking()` 内容将随请求发送给 DeepSeek API。
+可通过 `sendThinking(boolean, String)` 构建器方法配置字段名称。
+默认使用 `reasoning_content` 字段名。
 
-## Creating `OpenAiStreamingChatModel`
+## 创建 `OpenAiStreamingChatModel`
 
-### Plain Java
+### 纯 Java
 ```java
 StreamingChatModel model = OpenAiStreamingChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
         .modelName("gpt-4o-mini")
         .build();
 
-// You can also specify default chat request parameters using ChatRequestParameters or OpenAiChatRequestParameters
+// 也可使用 ChatRequestParameters 或 OpenAiChatRequestParameters 指定默认请求参数
 StreamingChatModel model = OpenAiStreamingChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
         .defaultRequestParameters(OpenAiChatRequestParameters.builder()
@@ -225,13 +221,13 @@ StreamingChatModel model = OpenAiStreamingChatModel.builder()
 ```
 
 ### Spring Boot
-Add to the `application.properties`:
+在 `application.properties` 中添加：
 ```properties
-# Mandatory properties:
+# 必填属性：
 langchain4j.open-ai.streaming-chat-model.api-key=${OPENAI_API_KEY}
 langchain4j.open-ai.streaming-chat-model.model-name=gpt-4o-mini
 
-# Optional properties:
+# 可选属性：
 langchain4j.open-ai.streaming-chat-model.base-url=...
 langchain4j.open-ai.streaming-chat-model.custom-headers=...
 langchain4j.open-ai.streaming-chat-model.frequency-penalty=...
@@ -260,14 +256,14 @@ langchain4j.open-ai.streaming-chat-model.timeout=...
 langchain4j.open-ai.streaming-chat-model.top-p=...
 langchain4j.open-ai.streaming-chat-model.user=...
 
-# Optional Property: Custom Parameters (user-defined key=value) 
+# 可选属性：自定义参数（用户自定义键值对）
 langchain4j.open-ai.streaming-chat-model.custom-parameters.<key>=<value>
 ```
 
 
-## Creating `OpenAiModerationModel`
+## 创建 `OpenAiModerationModel`
 
-### Plain Java
+### 纯 Java
 ```java
 ModerationModel model = OpenAiModerationModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
@@ -276,13 +272,13 @@ ModerationModel model = OpenAiModerationModel.builder()
 ```
 
 ### Spring Boot
-Add to the `application.properties`:
+在 `application.properties` 中添加：
 ```properties
-# Mandatory properties:
+# 必填属性：
 langchain4j.open-ai.moderation-model.api-key=${OPENAI_API_KEY}
 langchain4j.open-ai.moderation-model.model-name=text-moderation-stable
 
-# Optional properties:
+# 可选属性：
 langchain4j.open-ai.moderation-model.base-url=...
 langchain4j.open-ai.moderation-model.custom-headers=...
 langchain4j.open-ai.moderation-model.log-requests=...
@@ -294,17 +290,17 @@ langchain4j.open-ai.moderation-model.timeout=...
 ```
 
 
-## Creating `OpenAiTokenCountEstimator`
+## 创建 `OpenAiTokenCountEstimator`
 
 ```java
 TokenCountEstimator tokenCountEstimator = new OpenAiTokenCountEstimator("gpt-4o-mini");
 ```
 
-## Setting custom chat request parameters
+## 设置自定义聊天请求参数
 
-When using `OpenAiChatModel` and `OpenAiStreamingChatModel`,
-you can configure custom parameters for the chat request within the HTTP request's JSON body.
-Here is an example of how to enable web search:
+使用 `OpenAiChatModel` 和 `OpenAiStreamingChatModel` 时，
+可在 HTTP 请求的 JSON 请求体中配置自定义参数。
+以下示例展示如何启用网络搜索：
 ```java
 record ApproximateLocation(String city) {}
 record UserLocation(String type, ApproximateLocation approximate) {}
@@ -313,7 +309,7 @@ WebSearchOptions webSearchOptions = new WebSearchOptions(new UserLocation("appro
 Map<String, Object> customParameters = Map.of("web_search_options", webSearchOptions);
 
 ChatRequest chatRequest = ChatRequest.builder()
-    .messages(UserMessage.from("Where can I buy good coffee?"))
+    .messages(UserMessage.from("在哪里可以买到好咖啡？"))
     .parameters(OpenAiChatRequestParameters.builder()
         .modelName("gpt-4o-mini-search-preview")
         .customParameters(customParameters)
@@ -328,13 +324,13 @@ ChatModel model = OpenAiChatModel.builder()
 ChatResponse chatResponse = model.chat(chatRequest);
 ```
 
-This will produce an HTTP request with the following body:
+这将生成如下请求体的 HTTP 请求：
 ```json
 {
   "model" : "gpt-4o-mini-search-preview",
   "messages" : [ {
     "role" : "user",
-    "content" : "Where can I buy good coffee?"
+    "content" : "在哪里可以买到好咖啡？"
   } ],
   "web_search_options" : {
     "user_location" : {
@@ -347,7 +343,7 @@ This will produce an HTTP request with the following body:
 }
 ```
 
-Alternatively, custom parameters can also be specified as a structure of nested maps:
+自定义参数也可以用嵌套 Map 的方式指定：
 ```java
 Map<String, Object> customParameters = Map.of(
     "web_search_options", Map.of(
@@ -359,9 +355,9 @@ Map<String, Object> customParameters = Map.of(
 );
 ```
 
-## Accessing raw HTTP responses and Server-Sent Events (SSE)
+## 访问原始 HTTP 响应和服务器发送事件（SSE）
 
-When using `OpenAiChatModel`, you can access the raw HTTP response:
+使用 `OpenAiChatModel` 时，可访问原始 HTTP 响应：
 ```java
 SuccessfulHttpResponse rawHttpResponse = ((OpenAiChatResponseMetadata) chatResponse.metadata()).rawHttpResponse();
 System.out.println(rawHttpResponse.body());
@@ -369,38 +365,34 @@ System.out.println(rawHttpResponse.headers());
 System.out.println(rawHttpResponse.statusCode());
 ```
 
-When using `OpenAiStreamingChatModel`, you can access the raw HTTP response (see above) and raw Server-Sent Events:
+使用 `OpenAiStreamingChatModel` 时，可访问原始 HTTP 响应（同上）和原始服务器发送事件：
 ```java
 List<ServerSentEvent> rawServerSentEvents = ((OpenAiChatResponseMetadata) chatResponse.metadata()).rawServerSentEvents();
 System.out.println(rawServerSentEvents.get(0).data());
 System.out.println(rawServerSentEvents.get(0).event());
 ```
 
-## HTTP Client
+## HTTP 客户端
 
-### Plain Java
-When using the `langchain4j-open-ai` module,
-the JDK's `java.net.http.HttpClient` is used as the default HTTP client.
+### 纯 Java
+使用 `langchain4j-open-ai` 模块时，默认使用 JDK 的 `java.net.http.HttpClient` 作为 HTTP 客户端。
 
-You can customize it or use any other HTTP client of your choice.
-More information can be found [here](/tutorials/customizable-http-client).
+可进行自定义或选用其他 HTTP 客户端，详情请参阅[此处](/tutorials/customizable-http-client)。
 
 ### Spring Boot
-When using the `langchain4j-open-ai-spring-boot-starter` Spring Boot starter,
-the Spring's `RestClient` is used as the default HTTP client.
+使用 `langchain4j-open-ai-spring-boot-starter` Spring Boot Starter 时，默认使用 Spring 的 `RestClient` 作为 HTTP 客户端。
 
-You can customize it or use any other HTTP client of your choice.
-More information can be found [here](/tutorials/customizable-http-client).
+可进行自定义或选用其他 HTTP 客户端，详情请参阅[此处](/tutorials/customizable-http-client)。
 
 ## OpenAI Responses API
 
 :::note
-This feature is experimental and may change in future releases.
+此功能为实验性功能，未来版本可能发生变化。
 :::
 
-OpenAI's [Responses API](https://platform.openai.com/docs/api-reference/responses) (`/v1/responses`) is an alternative to the Chat Completions API.
+OpenAI 的 [Responses API](https://platform.openai.com/docs/api-reference/responses)（`/v1/responses`）是 Chat Completions API 的替代方案。
 
-### Creating `OpenAiResponsesChatModel`
+### 创建 `OpenAiResponsesChatModel`
 
 ```java
 ChatModel model = OpenAiResponsesChatModel.builder()
@@ -409,7 +401,7 @@ ChatModel model = OpenAiResponsesChatModel.builder()
         .build();
 ```
 
-### Creating `OpenAiResponsesStreamingChatModel`
+### 创建 `OpenAiResponsesStreamingChatModel`
 
 ```java
 StreamingChatModel model = OpenAiResponsesStreamingChatModel.builder()
@@ -420,13 +412,13 @@ StreamingChatModel model = OpenAiResponsesStreamingChatModel.builder()
 
 ### `OpenAiResponsesChatRequestParameters`
 
-`OpenAiResponsesChatRequestParameters` extends `DefaultChatRequestParameters` with Responses API-specific fields:
-`previousResponseId`, `maxToolCalls`, `parallelToolCalls`, `topLogprobs`, `truncation`, `include`,
-`serviceTier`, `safetyIdentifier`, `promptCacheKey`, `promptCacheRetention`, `reasoningEffort`,
-`reasoningSummary`, `textVerbosity`, `streamIncludeObfuscation`, `store`, `strictTools`, `strictJsonSchema`.
+`OpenAiResponsesChatRequestParameters` 继承 `DefaultChatRequestParameters`，并增加了 Responses API 专属字段：
+`previousResponseId`、`maxToolCalls`、`parallelToolCalls`、`topLogprobs`、`truncation`、`include`、
+`serviceTier`、`safetyIdentifier`、`promptCacheKey`、`promptCacheRetention`、`reasoningEffort`、
+`reasoningSummary`、`textVerbosity`、`streamIncludeObfuscation`、`store`、`strictTools`、`strictJsonSchema`。
 
-These parameters can be configured as defaults when creating the model (via `defaultRequestParameters` on the builder),
-or passed per-request via `ChatRequest` (per-request parameters override the defaults):
+这些参数可在创建模型时作为默认值配置（通过构建器上的 `defaultRequestParameters`），
+也可通过 `ChatRequest` 按请求传入（每次请求的参数会覆盖默认值）：
 ```java
 ChatRequest chatRequest = ChatRequest.builder()
         .messages(UserMessage.from("Hello"))
@@ -438,14 +430,13 @@ ChatRequest chatRequest = ChatRequest.builder()
         .build();
 ```
 
-### Thinking / Reasoning
-OpenAI reasoning models (e.g. `gpt-5.4`, `gpt-5-mini`) support
-[reasoning summaries](https://developers.openai.com/api/docs/guides/reasoning#reasoning-summaries)
-that expose a summary of the model's internal reasoning.
+### 思考 / 推理
+OpenAI 推理模型（如 `gpt-5.4`、`gpt-5-mini`）支持
+[推理摘要](https://developers.openai.com/api/docs/guides/reasoning#reasoning-summaries)，
+可展示模型内部推理的摘要。
 
-To enable reasoning summaries, set `reasoningSummary` to `"auto"` on the builder
-(or via `OpenAiResponsesChatRequestParameters`).
-You can also control how much effort the model puts into reasoning with `reasoningEffort`.
+要启用推理摘要，请在构建器上（或通过 `OpenAiResponsesChatRequestParameters`）将 `reasoningSummary` 设置为 `"auto"`。
+也可通过 `reasoningEffort` 控制模型在推理上投入的精力。
 
 ```java
 ChatModel model = OpenAiResponsesChatModel.builder()
@@ -455,14 +446,13 @@ ChatModel model = OpenAiResponsesChatModel.builder()
         .reasoningSummary("auto")
         .build();
 
-ChatResponse response = model.chat("What is the capital of Germany?");
-response.aiMessage().text();     // "The capital of Germany is Berlin."
-response.aiMessage().thinking(); // reasoning summary text
+ChatResponse response = model.chat("德国的首都是哪里？");
+response.aiMessage().text();     // "德国的首都是柏林。"
+response.aiMessage().thinking(); // 推理摘要文本
 ```
 
-When `reasoningSummary` is set for `OpenAiResponsesStreamingChatModel`,
-the `StreamingChatResponseHandler.onPartialThinking()` callback will be invoked
-as reasoning summary tokens are streamed:
+当为 `OpenAiResponsesStreamingChatModel` 设置 `reasoningSummary` 后，
+在流式传输推理摘要 token 时将触发 `StreamingChatResponseHandler.onPartialThinking()` 回调：
 
 ```java
 StreamingChatModel model = OpenAiResponsesStreamingChatModel.builder()
@@ -473,15 +463,14 @@ StreamingChatModel model = OpenAiResponsesStreamingChatModel.builder()
         .build();
 ```
 
-Unlike some other providers (e.g. DeepSeek), OpenAI reasoning tokens do not persist
-across conversation turns, so there is no need to send the reasoning summary back in follow-up requests.
+与某些其他提供商（如 DeepSeek）不同，OpenAI 推理 token 不会跨对话轮次持久化，
+因此无需在后续请求中发回推理摘要。
 
-#### Encrypted Reasoning (Keeping Reasoning in Context)
+#### 加密推理（在上下文中保留推理）
 
-When `store` is `false` (by default) or your organization has zero data retention,
-the model's reasoning context is lost between turns.
-To preserve it, request [encrypted reasoning content](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context)
-via the `include` parameter:
+当 `store` 为 `false`（默认值）或您的组织启用了零数据保留时，
+模型的推理上下文将在轮次间丢失。
+可通过 `include` 参数请求[加密推理内容](https://developers.openai.com/api/docs/guides/reasoning#keeping-reasoning-items-in-context)来保留：
 
 ```java
 ChatModel model = OpenAiResponsesChatModel.builder()
@@ -492,16 +481,14 @@ ChatModel model = OpenAiResponsesChatModel.builder()
         .build();
 ```
 
-When `include` contains `"reasoning.encrypted_content"`, the response's reasoning items
-will contain an opaque encrypted blob. This is automatically stored in
-`AiMessage.attributes()` under the key `"encrypted_reasoning"`.
+当 `include` 包含 `"reasoning.encrypted_content"` 时，响应的推理项将包含一个不透明的加密数据块，
+该数据块会自动存储在 `AiMessage.attributes()` 中，键名为 `"encrypted_reasoning"`。
 
-When you pass that `AiMessage` back in a follow-up request (e.g. after a tool call),
-the encrypted reasoning is automatically included in the request,
-allowing the model to resume its reasoning context:
+当您在后续请求（如工具调用后）中传回该 `AiMessage` 时，
+加密推理内容会自动包含在请求中，从而使模型能恢复推理上下文：
 
 ```java
-// Turn 1: model calls a tool
+// 第一轮：模型调用工具
 ChatResponse response1 = model.chat(ChatRequest.builder()
         .messages(userMessage)
         .parameters(ChatRequestParameters.builder()
@@ -510,13 +497,13 @@ ChatResponse response1 = model.chat(ChatRequest.builder()
         .build());
 
 AiMessage aiMessage1 = response1.aiMessage();
-// aiMessage1.attribute("encrypted_reasoning", String.class) is not null
+// aiMessage1.attribute("encrypted_reasoning", String.class) 不为 null
 
-// Turn 2: send tool result back — encrypted reasoning is sent automatically
+// 第二轮：发送工具结果——加密推理内容自动发送
 ChatResponse response2 = model.chat(ChatRequest.builder()
         .messages(
                 userMessage,
-                aiMessage1, // contains encrypted reasoning in attributes
+                aiMessage1, // attributes 中包含加密推理内容
                 ToolExecutionResultMessage.from(aiMessage1.toolExecutionRequests().get(0), "sunny"))
         .parameters(ChatRequestParameters.builder()
                 .toolSpecifications(weatherTool)
@@ -524,28 +511,28 @@ ChatResponse response2 = model.chat(ChatRequest.builder()
         .build());
 ```
 
-This works identically for `OpenAiResponsesStreamingChatModel`.
+`OpenAiResponsesStreamingChatModel` 同样适用。
 
 ### `OpenAiResponsesChatResponseMetadata`
 
-The response metadata for the Responses API provides additional fields beyond the standard `ChatResponseMetadata`:
+Responses API 的响应元数据在标准 `ChatResponseMetadata` 基础上提供了额外字段：
 
 ```java
 OpenAiResponsesChatResponseMetadata metadata =
         (OpenAiResponsesChatResponseMetadata) chatResponse.metadata();
 
-metadata.id();               // Response ID (can be used as previousResponseId)
-metadata.modelName();        // Model name used for the request
-metadata.finishReason();     // Finish reason (STOP, LENGTH, TOOL_EXECUTION, OTHER)
-metadata.tokenUsage();       // Returns OpenAiTokenUsage with detailed token counts
-metadata.createdAt();        // Timestamp when the response was created
-metadata.completedAt();      // Timestamp when the response was completed
-metadata.serviceTier();      // Service tier used for the request
+metadata.id();               // 响应 ID（可用作 previousResponseId）
+metadata.modelName();        // 请求使用的模型名称
+metadata.finishReason();     // 完成原因（STOP、LENGTH、TOOL_EXECUTION、OTHER）
+metadata.tokenUsage();       // 返回包含详细 token 计数的 OpenAiTokenUsage
+metadata.createdAt();        // 响应创建的时间戳
+metadata.completedAt();      // 响应完成的时间戳
+metadata.serviceTier();      // 请求使用的服务层级
 
-// Raw HTTP access (same as Chat Completions API)
+// 原始 HTTP 访问（与 Chat Completions API 相同）
 metadata.rawHttpResponse();
 metadata.rawServerSentEvents();
 ```
 
-## Examples
-- [OpenAI Examples](https://github.com/langchain4j/langchain4j-examples/tree/main/open-ai-examples/src/main/java)
+## 示例
+- [OpenAI 示例](https://github.com/langchain4j/langchain4j-examples/tree/main/open-ai-examples/src/main/java)

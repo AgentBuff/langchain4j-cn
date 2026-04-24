@@ -2,23 +2,23 @@
 sidebar_position: 18
 ---
 
-# Qianfan
+# Qianfan（千帆）
 
 [百度智能云千帆大模型](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)
 ![image](https://github.com/langchain4j/langchain4j/assets/95265298/600f8006-4484-4a75-829c-c8c16a3130c2)
 
 
-## Maven Dependency
+## Maven 依赖
 
-You can use DashScope with LangChain4j in plain Java or Spring Boot applications.
+千帆可在纯 Java 或 Spring Boot 应用中使用。
 
-### Plain Java
+### 纯 Java
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-qianfan` has migrated to `langchain4j-community` and is renamed to `langchain4j-community-qianfan`.
+自 `1.0.0-alpha1` 起，`langchain4j-qianfan` 已迁移至 `langchain4j-community`，并更名为 `langchain4j-community-qianfan`。
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
 <dependency>
@@ -28,7 +28,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 <dependency>
@@ -41,11 +41,11 @@ Before `1.0.0-alpha1`:
 ### Spring Boot
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-qianfan-spring-boot-starter` has migrated to `langchain4j-community` and is renamed
-to `langchain4j-community-qianfan-spring-boot-starter`.
+自 `1.0.0-alpha1` 起，`langchain4j-qianfan-spring-boot-starter` 已迁移至 `langchain4j-community`，并更名为
+`langchain4j-community-qianfan-spring-boot-starter`。
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
 
@@ -56,7 +56,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 
@@ -67,7 +67,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或者，使用 BOM 统一管理依赖版本：
 
 ```xml
 
@@ -96,7 +96,7 @@ String answer = model.chat("雷军");
 
 System.out.println(answer);
 ```
-### Customizing
+### 自定义配置
 
 ```java
 QianfanChatModel model = QianfanChatModel.builder()
@@ -115,20 +115,22 @@ QianfanChatModel model = QianfanChatModel.builder()
     .build();
 ```
 
-See the description of some of the parameters above [here](https://console.bce.baidu.com/tools/?u=qfdc#/api?product=QIANFAN&project=%E5%8D%83%E5%B8%86%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%B3%E5%8F%B0&parent=Yi-34B-Chat&api=rpc%2F2.0%2Fai_custom%2Fv1%2Fwenxinworkshop%2Fchat%2Fyi_34b_chat&method=post).
-### functions
-**IAiService(重点)**
+部分参数说明请参阅[此处](https://console.bce.baidu.com/tools/?u=qfdc#/api?product=QIANFAN&project=%E5%8D%83%E5%B8%86%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%B9%B3%E5%8F%B0&parent=Yi-34B-Chat&api=rpc%2F2.0%2Fai_custom%2Fv1%2Fwenxinworkshop%2Fchat%2Fyi_34b_chat&method=post)。
+
+### 函数功能
+**IAiService（重点）**
 ```java
 public interface IAiService {
     /**
-     * Ai Services 提供了一种更简单、更灵活的替代方案。 您可以定义自己的 API（具有一个或多个方法的 Java 接口）， 并将为其提供实现。
+     * Ai Services 提供了一种更简单、更灵活的替代方案。您可以定义自己的 API（具有一个或多个方法的 Java 接口），
+     * 并将为其提供实现。
      * @param userMessage
      * @return String
      */
     String chat(String userMessage);
 }
 ```
-#### QianfanChatWithOnePersonMemory (带有一个人的聊天记忆)
+#### QianfanChatWithOnePersonMemory（单人对话记忆）
 
 ```java
 
@@ -138,40 +140,39 @@ public interface IAiService {
           .modelName("Yi-34B-Chat")
           .build();
   /* MessageWindowChatMemory
-     functions as a sliding window, retaining the N most recent messages and evicting older ones that no longer fit.
-     However, because each message can contain a varying number of tokens, MessageWindowChatMemory is mostly useful for fast prototyping.
-     保留最新的n条消息(包括回复)
+     类似滑动窗口，保留最新的 N 条消息，自动淘汰较旧的消息。
+     但由于每条消息包含的 token 数量不同，MessageWindowChatMemory 主要适用于快速原型开发。
    */
   /* TokenWindowChatMemory
-    which also operates as a sliding window but focuses on keeping the N most recent tokens, evicting older messages as needed. Messages are indivisible.
-    If a message doesn't fit, it is evicted completely.
-    MessageWindowChatMemory requires a TokenCountEstimator to count the tokens in each ChatMessage.
+    也以滑动窗口方式工作，但关注的是保留最新的 N 个 token，按需淘汰旧消息。消息不可分割——
+    如果一条消息放不下，整条消息将被淘汰。
+    MessageWindowChatMemory 需要 TokenCountEstimator 来计算每条 ChatMessage 的 token 数。
   */
   ChatMemory chatMemory = MessageWindowChatMemory.builder()
           .maxMessages(10)
           .build();
 
   IAiService assistant = AiServices.builder(IAiService.class)
-          .chatModel(model) // the model
-          .chatMemory(chatMemory)  // memory
+          .chatModel(model)
+          .chatMemory(chatMemory)
           .build();
         String answer = assistant.chat("Hello,my name is xiaoyu");
-        System.out.println(answer); // Hello xiaoyu!******
+        System.out.println(answer);
 
         String answerWithName = assistant.chat("What's my name?");
-        System.out.println(answerWithName); // Your name is xiaoyu.******
+        System.out.println(answerWithName);
 
         String answer1 = assistant.chat("I like playing football.");
-        System.out.println(answer1); // The answer
+        System.out.println(answer1);
 
         String answer2 = assistant.chat("I want to go eat delicious food.");
-        System.out.println(answer2); // The answer
+        System.out.println(answer2);
 
         String answerWithLike = assistant.chat("What I like to do?");
-        System.out.println(answerWithLike);//Playing football.******
+        System.out.println(answerWithLike);
 ```
 
-#### QianfanChatWithMorePersonMemory (带有多个人的聊天记忆)
+#### QianfanChatWithMorePersonMemory（多人对话记忆）
 
 ```java
   QianfanChatModel model = QianfanChatModel.builder()
@@ -180,22 +181,22 @@ public interface IAiService {
           .modelName("Yi-34B-Chat")
           .build();
   IAiService assistant = AiServices.builder(IAiService.class)
-          .chatModel(model)         // the model
-          .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10)) // chatMemory
+          .chatModel(model)
+          .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10))
           .build();
 
   String answer = assistant.chat(1,"Hello, my name is xiaoyu");
-  System.out.println(answer); // Hello xiaoyu!******
+  System.out.println(answer);
   String answer1 = assistant.chat(2,"Hello, my name is xiaomi");
-  System.out.println(answer1); // Hello xiaomi!******
+  System.out.println(answer1);
 
   String answerWithName1 = assistant.chat(1,"What's my name?");
-  System.out.println(answerWithName1); // Your name is xiaoyu.
+  System.out.println(answerWithName1);
   String answerWithName2 = assistant.chat(2,"What's my name?");
-  System.out.println(answerWithName2); // Your name is xiaomi.
+  System.out.println(answerWithName2);
 ```
 
-#### QianfanChatWithPersistentMemory(持久化聊天记忆)
+#### QianfanChatWithPersistentMemory（持久化对话记忆）
 
 ```xml
     <dependency>
@@ -249,7 +250,7 @@ class PersistentChatMemoryTest{
     
     String answer = assistant.chat("My name is xiaoyu");
     System.out.println(answer);
-    // Run it once and then comment the top to run the bottom(运行一次后注释上面运行下面)
+    // 运行一次后注释上面运行下面
     // String answerWithName = assistant.chat("What is my name?");
     // System.out.println(answerWithName);
   }
@@ -257,9 +258,11 @@ class PersistentChatMemoryTest{
 
 ```
 
-#### QianfanStreamingChatModel(流式回复)
-LLMs generate text one token at a time, so many LLM providers offer a way to stream the response token-by-token instead of waiting for the entire text to be generated. This significantly improves the user experience, as the user does not need to wait an unknown amount of time and can start reading the response almost immediately.（因此许多LLM提供者提供了一种逐个token地传输响应的方法，而不是等待生成整个文本。这极大地改善了用户体验，因为用户不需要等待未知的时间，几乎可以立即开始阅读响应。）
-以下是一个通过StreamingChatResponseHandler来实现
+#### QianfanStreamingChatModel（流式回复）
+LLM 逐 token 生成文本，因此许多 LLM 提供商支持逐 token 流式传输响应，而无需等待完整文本生成。
+这极大改善了用户体验，用户无需等待不确定的时间，几乎可以立即开始阅读响应。
+
+以下通过 `StreamingChatResponseHandler` 实现：
 ```java
   QianfanStreamingChatModel qianfanStreamingChatModel = QianfanStreamingChatModel.builder()
           .apiKey("apiKey")
@@ -283,7 +286,7 @@ LLMs generate text one token at a time, so many LLM providers offer a way to str
         }
   });
 ```
-以下是另一个通过TokenStream来实现
+以下通过 `TokenStream` 实现：
 ```java
   QianfanStreamingChatModel qianfanStreamingChatModel = QianfanStreamingChatModel.builder()
           .apiKey("apiKey")
@@ -299,11 +302,11 @@ LLMs generate text one token at a time, so many LLM providers offer a way to str
 ```
 #### QianfanRAG
 
-程序自动将匹配的内容与用户问题组装成一个Prompt，向大语言模型提问，大语言模型返回答案
+程序自动将匹配的内容与用户问题组装成 Prompt，向大语言模型提问，大语言模型返回答案。
 
-LangChain4j has an "Easy RAG" feature that makes it as easy as possible to get started with RAG. You don't have to learn about embeddings, choose a vector store, find the right embedding model, figure out how to parse and split documents, etc. Just point to your document(s), and LangChain4j will do its magic.
+LangChain4j 提供了"Easy RAG"功能，让入门 RAG 尽可能简单。无需学习嵌入知识、选择向量存储、寻找合适的嵌入模型、研究如何解析和分割文档等——只需指向您的文档，LangChain4j 会自动完成其余工作。
 
-- Import the dependency:langchain4j-easy-rag
+- 引入依赖：langchain4j-easy-rag
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -311,7 +314,7 @@ LangChain4j has an "Easy RAG" feature that makes it as easy as possible to get s
     <version>1.13.0-beta23</version>
 </dependency>
 ```
-- Use
+- 使用示例：
 ```java
 
   QianfanChatModel chatModel = QianfanChatModel.builder()
@@ -319,9 +322,9 @@ LangChain4j has an "Easy RAG" feature that makes it as easy as possible to get s
         .secretKey(SECRET_KEY)
         .modelName("Yi-34B-Chat")
         .build();
-  // All files in a directory, txt seems to be faster
+  // 加载目录中的所有文件，txt 格式速度较快
   List<Document> documents = FileSystemDocumentLoader.loadDocuments("/home/langchain4j/documentation");
-  // for simplicity, we will use an in-memory one:
+  // 为简单起见，使用内存向量存储
   InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
   EmbeddingStoreIngestor.ingest(documents, embeddingStore);
 
@@ -337,6 +340,6 @@ LangChain4j has an "Easy RAG" feature that makes it as easy as possible to get s
 ```
 
 
-## Examples
+## 示例
 
-- [Qianfan Examples](https://github.com/langchain4j/langchain4j-community/tree/main/models/langchain4j-community-qianfan/src/test/java/dev/langchain4j/community/model/qianfan)
+- [Qianfan 示例](https://github.com/langchain4j/langchain4j-community/tree/main/models/langchain4j-community-qianfan/src/test/java/dev/langchain4j/community/model/qianfan)

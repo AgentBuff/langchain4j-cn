@@ -2,16 +2,16 @@
 sidebar_position: 30
 ---
 
-# Logging
+# 日志
 
-LangChain4j uses [SLF4J](https://www.slf4j.org/) for logging,
-allowing you to plug in any logging backend you prefer,
-such as [Logback](https://logback.qos.ch/) or [Log4j](https://logging.apache.org/log4j/2.x/index.html).
+LangChain4j 使用 [SLF4J](https://www.slf4j.org/) 作为日志门面，
+因此你可以按自己的偏好接入任意日志后端，
+例如 [Logback](https://logback.qos.ch/) 或 [Log4j](https://logging.apache.org/log4j/2.x/index.html)。
 
-## Pure Java
+## 纯 Java
 
-You can enable logging of each request and response to the LLM by setting
-`.logRequests(true)` and `.logResponses(true)` when creating an instance of the model:
+在创建模型实例时，可以通过设置 `.logRequests(true)` 和 `.logResponses(true)`，
+启用对每次发给 LLM 的请求与响应的日志记录：
 ```java
 OpenAiChatModel.builder()
     ...
@@ -20,7 +20,7 @@ OpenAiChatModel.builder()
     .build();
 ```
 
-Make sure you have one of the SLF4J logging backends in your dependencies, for example, Logback:
+请确保你的依赖中包含某个 SLF4J 日志后端，例如 Logback：
 ```xml
 <dependency>
     <groupId>ch.qos.logback</groupId>
@@ -29,10 +29,10 @@ Make sure you have one of the SLF4J logging backends in your dependencies, for e
 </dependency>
 ```
 
-## Quarkus
+## Quarkus 集成 {#quarkus}
 
-When using [Quarkus integration](/tutorials/quarkus-integration),
-logging is configured in the `application.properties` file:
+当使用 [Quarkus 集成](/tutorials/quarkus-integration) 时，
+日志通过 `application.properties` 文件配置：
 
 ```properties
 ...
@@ -42,14 +42,14 @@ quarkus.log.console.enable = true
 quarkus.log.file.enable = false
 ```
 
-These properties can also be set and changed in the Quarkus Dev UI,
-when running the application in dev mode (`mvn quarkus:dev`).
-The Dev UI is then available at `http://localhost:8080/q/dev-ui`.
+当应用以 dev mode（`mvn quarkus:dev`）运行时，
+这些属性也可以在 Quarkus Dev UI 中设置和修改。
+届时 Dev UI 可通过 `http://localhost:8080/q/dev-ui` 访问。
 
-## Spring Boot
+## Spring Boot 集成 {#spring-boot}
 
-When using [Spring Boot integration](/tutorials/spring-boot-integration),
-logging is configured in the `application.properties` file:
+当使用 [Spring Boot 集成](/tutorials/spring-boot-integration) 时，
+日志同样通过 `application.properties` 文件配置：
 
 ```properties
 ...

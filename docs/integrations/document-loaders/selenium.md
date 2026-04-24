@@ -2,10 +2,9 @@
 sidebar_position: 5
 ---
 
-# Selenium
+# Selenium 网页加载 {#selenium}
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -15,12 +14,10 @@ sidebar_position: 5
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `SeleniumDocumentLoader`
 
-
-## Examples
+## 示例
 
 - [SeleniumDocumentLoaderIT](https://github.com/langchain4j/langchain4j/blob/main/document-loaders/langchain4j-document-loader-selenium/src/test/java/dev/langchain4j/data/document/loader/selenium/SeleniumDocumentLoaderIT.java)

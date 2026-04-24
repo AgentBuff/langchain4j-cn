@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# Classpath
+# 类路径加载 {#classpath}
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,12 +14,11 @@ sidebar_position: 3
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `ClassPathSource` / `ClassPathDocumentLoader`
 
-## Examples
+## 示例
 
 - [ClassPathSourceTests](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/test/java/dev/langchain4j/data/document/source/ClassPathSourceTests.java)
 - [ClassPathDocumentLoaderTest](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/test/java/dev/langchain4j/data/document/loader/ClassPathDocumentLoaderTest.java)

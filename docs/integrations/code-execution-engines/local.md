@@ -2,28 +2,25 @@
 sidebar_position: 4
 ---
 
-# Local
+# 本地代码执行
 
-`CommandLineExecutionEngine` uses the local computer env to execute provided command line code.
-There are `CommandLineTool` and `LocalScriptExecutionTool` two implemented tools,
-that can be useful for **Desktop Automation** or **Computer-Use** Agents
-(such as File Management, Application Control). You can control your computer using natural language, something like:
- - `set my mac output volume 50`
- - `list all running applications in my mac`
- - `tell a story and then read it out loud`
- - `tell a story about moon and save it into a text file`
- - ...
+`CommandLineExecutionEngine` 使用本地计算机环境执行提供的命令行代码。
+`CommandLineTool` 和 `LocalScriptExecutionTool` 是两个已实现的工具，可用于**桌面自动化**或**计算机使用（Computer-Use）** Agent（如文件管理、应用控制）。你可以使用自然语言控制计算机，例如：
+- `set my mac output volume 50`
+- `list all running applications in my mac`
+- `tell a story and then read it out loud`
+- `tell a story about moon and save it into a text file`
+- ...
 
 :::danger
-⚠️ Security Warning: High-Risk Code Execution
+⚠️ 安全警告：高风险代码执行
 
-Attention! It might be *dangerous* to execute the code in a production online serving environment.
-It needs to be executed through security sandbox environment if used in online serving.
+注意！在在线生产环境中执行代码可能存在**危险**。如果用于在线服务，需通过安全沙箱环境执行。
 
-❗ Do NOT use in production environments!
+❗ 请勿在生产环境中使用！
 :::
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -33,14 +30,13 @@ It needs to be executed through security sandbox environment if used in online s
 </dependency>
 ```
 
-## APIs
+## API 参考 {#apis}
 
 - `CommandLineExecutionEngine`
 - `CommandLineTool`
 - `LocalScriptExecutionTool`
 
-
-## Examples
+## 示例
 
 ```java
         LocalScriptExecutionTool tool = new LocalScriptExecutionTool();
@@ -59,4 +55,4 @@ It needs to be executed through security sandbox environment if used in online s
 - [CommandLineToolIT](https://github.com/langchain4j/langchain4j-community/blob/main/code-execution-engines/langchain4j-community-code-execution-engine-local/src/test/java/dev/langchain4j/community/code/local/CommandLineToolIT.java)
 - [CommandLineToolTest](https://github.com/langchain4j/langchain4j-community/blob/main/code-execution-engines/langchain4j-community-code-execution-engine-local/src/test/java/dev/langchain4j/community/code/local/CommandLineToolTest.java)
 - [LocalScriptExecutionToolIT](https://github.com/langchain4j/langchain4j-community/blob/main/code-execution-engines/langchain4j-community-code-execution-engine-local/src/test/java/dev/langchain4j/community/code/local/LocalScriptExecutionToolIT.java)
-- [LocalScriptExecutionToolTest](https://github.com/langchain4j/langchain4j-community/blob/main/code-execution-engines/langchain4j-community-code-execution-engine-local/src/test/java/dev/langchain4j/community/code/local/LocalScriptExecutionToolTest.java) 
+- [LocalScriptExecutionToolTest](https://github.com/langchain4j/langchain4j-community/blob/main/code-execution-engines/langchain4j-community-code-execution-engine-local/src/test/java/dev/langchain4j/community/code/local/LocalScriptExecutionToolTest.java)

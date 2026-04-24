@@ -4,50 +4,28 @@ sidebar_position: 15
 
 # MongoDB Atlas
 
-[MongoDB Atlas](https://www.mongodb.com/docs/atlas/) is a fully-managed
-cloud database available in AWS, Azure, and GCP. It supports native
-Vector Search and full-text search (BM25 algorithm) on your MongoDB
-document data.
+[MongoDB Atlas](https://www.mongodb.com/docs/atlas/) 是一个全托管的云数据库，可在 AWS、Azure 和 GCP 上使用。它支持对 MongoDB 文档数据进行原生向量搜索和全文搜索（BM25 算法）。
 
-The [Atlas Vector Search](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/)
-feature allows you to store your embeddings in MongoDB documents, create
-vector search indexes, and perform KNN search with an approximate
-nearest neighbor algorithm called Hierarchical Navigable Small Worlds.
-The MongoDB integration with LangChain4j implements Atlas Vector Search
-internally by using the
-[`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#mongodb-pipeline-pipe.-vectorSearch)
-aggregation stage.
+[Atlas Vector Search](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/) 功能允许您将嵌入存储在 MongoDB 文档中，创建向量搜索索引，并使用称为分层可导航小世界（Hierarchical Navigable Small Worlds）的近似最近邻算法执行 KNN 搜索。
+LangChain4j 与 MongoDB 的集成在内部通过使用 [`$vectorSearch`](https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#mongodb-pipeline-pipe.-vectorSearch) 聚合阶段来实现 Atlas Vector Search。
 
-You can use Atlas Vector Search with LangChain4j to perform semantic
-searches on your data and build a simple RAG implementation. To view a
-full tutorial on performing these tasks, see the [Get Started with the
-LangChain4j Integration](https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain4j/)
-tutorial in the MongoDB Atlas documentation.
+您可以将 Atlas Vector Search 与 LangChain4j 结合使用，对数据执行语义搜索并构建简单的 RAG 实现。关于执行这些任务的完整教程，请参阅 MongoDB Atlas 文档中的 [LangChain4j 集成入门](https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain4j/)教程。
 
-## Prerequisites
+## 前提条件
 
-You must have a deployment running the following MongoDB Server versions
-to use Atlas Vector Search:
+使用 Atlas Vector Search 需要运行以下 MongoDB Server 版本的部署：
 
--   6.0.11 or later
--   7.0.2 or later
+- 6.0.11 或更高版本
+- 7.0.2 或更高版本
 
-MongoDB offers a free forever cluster. See the [Get Started with
-Atlas](https://www.mongodb.com/docs/atlas/getting-started/) tutorial to
-learn more about setting up an account and connecting to a deployment.
+MongoDB 提供永久免费集群。请参阅 [Atlas 入门](https://www.mongodb.com/docs/atlas/getting-started/)教程，了解如何设置账户并连接到部署。
 
-You also must have an API key with credits for an LLM service that has
-provides embedding models, such as [Voyage
-AI](https://www.voyageai.com/), which offers a free tier. For RAG
-applications, you must also an API key for a service that has chat model
-functionality, such as [OpenAI](https://openai.com/api/) or models from
-[HuggingFace](https://huggingface.co/).
+您还需要拥有提供嵌入模型的 LLM 服务的 API 密钥（附带积分），例如提供免费层级的 [Voyage AI](https://www.voyageai.com/)。对于 RAG 应用，还需要提供聊天模型功能的服务 API 密钥，例如 [OpenAI](https://openai.com/api/) 或 [HuggingFace](https://huggingface.co/) 的模型。
 
-## Environment and Installation
+## 环境与安装
 
-1. Create a new Java application in your preferred IDE.
-2. Add the following dependencies to your application to install
-   LangChain4j and the MongoDB Java Sync Driver:
+1. 在首选 IDE 中创建新的 Java 应用程序。
+2. 向应用程序添加以下依赖以安装 LangChain4j 和 MongoDB Java Sync Driver：
 
 ```xml
 <dependency>
@@ -61,8 +39,7 @@ functionality, such as [OpenAI](https://openai.com/api/) or models from
 </dependency>
 ```
 
-You must also install a dependency for your embedding model, for example
-Voyage AI:
+还需要安装嵌入模型的依赖，例如 Voyage AI：
 
 ```xml
 <dependency>
@@ -71,7 +48,7 @@ Voyage AI:
 </dependency>
 ```
 
-We also recommend adding the LangChain4j BOM:
+建议同时添加 LangChain4j BOM：
 
 ```xml
 <dependencyManagement>
@@ -84,14 +61,12 @@ We also recommend adding the LangChain4j BOM:
 </dependencyManagement>
 ```
 
-## Use MongoDB Atlas as an Embedding Store
+## 将 MongoDB Atlas 用作嵌入存储
 
-1. Instantiate an [embedding model](https://docs.langchain4j.dev/category/embedding-models).
-2. Instantiate MongoDB Atlas as the embedding store.
+1. 实例化[嵌入模型](https://docs.langchain4j.dev/category/embedding-models)。
+2. 将 MongoDB Atlas 实例化为嵌入存储。
 
-You can enable automatic index creation by passing `true` to the
-`createIndex()` method when building the `MongoDbEmbeddingStore`
-instance.
+构建 `MongoDbEmbeddingStore` 实例时，可向 `createIndex()` 方法传入 `true` 来启用自动索引创建。
 
 ```java
 import com.mongodb.client.MongoClient;
@@ -122,9 +97,9 @@ EmbeddingModel embeddingModel = VoyageAiEmbeddingModel.builder()
 
 MongoClient mongoClient = MongoClients.create(uri);
 
-System.out.println("Instantiating the embedding store...");
+System.out.println("正在实例化嵌入存储...");
 
-// Set to false if the vector index already exists
+// 如果向量索引已存在则设置为 false
 Boolean createIndex = true;
 
 IndexMapping indexMapping = IndexMapping.builder()
@@ -142,11 +117,9 @@ MongoDbEmbeddingStore embeddingStore = MongoDbEmbeddingStore.builder()
         .build();
 ```
 
-## Store Data in MongoDB
+## 在 MongoDB 中存储数据
 
-This code demonstrates how to persist your documents to the
-embedding store. The `embed()` method generates embeddings for the `text`
-field value in your documents.
+以下代码演示如何将文档持久化到嵌入存储。`embed()` 方法会为文档的 `text` 字段值生成嵌入。
 
 ```java
 ArrayList<Document> docs = new ArrayList<>();
@@ -161,7 +134,7 @@ docs.add(new Document()
 
 docs.add(...);
 
-System.out.println("Persisting document embeddings...");
+System.out.println("正在持久化文档嵌入...");
 
 for (Document doc : docs) {
     TextSegment segment = TextSegment.from(
@@ -173,12 +146,9 @@ for (Document doc : docs) {
 }
 ```
 
-## Perform Semantic/Similarity Searches
+## 执行语义/相似度搜索
 
-This code demonstrates how to create a search request that converts your
-query into a vector and returns semantically similar documents. The
-resulting `EmbeddingMatch` instances contain the document contents as
-well as a score that describes how well each result matches your query.
+以下代码演示如何创建将查询转换为向量并返回语义相似文档的搜索请求。返回的 `EmbeddingMatch` 实例包含文档内容以及描述每个结果与查询匹配程度的评分。
 
 ```java
 String query = "Where do penguins live?";
@@ -189,27 +159,23 @@ EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
         .maxResults(3)
         .build();
 
-System.out.println("Performing the query...");
+System.out.println("正在执行查询...");
 
 EmbeddingSearchResult<TextSegment> searchResult = embeddingStore.search(searchRequest);
 List<EmbeddingMatch<TextSegment>> matches = searchResult.matches();
 
 for (EmbeddingMatch<TextSegment> embeddingMatch : matches) {
-    System.out.println("Response: " + embeddingMatch.embedded().text());
-    System.out.println("Author: " + embeddingMatch.embedded().metadata().getString("author"));
-    System.out.println("Score: " + embeddingMatch.score());
+    System.out.println("响应: " + embeddingMatch.embedded().text());
+    System.out.println("作者: " + embeddingMatch.embedded().metadata().getString("author"));
+    System.out.println("评分: " + embeddingMatch.score());
 }
 ```
 
-### Metadata Filtering
+### 元数据过滤
 
-You can implement metadata filtering by using the `filter()` method when
-building a `EmbeddingSearchRequest`. The `filter()` method takes a
-parameter that inherits from
-[Filter](https://docs.langchain4j.dev/apidocs/dev/langchain4j/store/embedding/filter/Filter.html).
+可在构建 `EmbeddingSearchRequest` 时使用 `filter()` 方法实现元数据过滤。`filter()` 方法接受继承自 [Filter](https://docs.langchain4j.dev/apidocs/dev/langchain4j/store/embedding/filter/Filter.html) 的参数。
 
-This code implements metadata filtering for only documents in which the
-value of `website` is one of the listed values.
+以下代码仅对 `website` 值为列表中所列值的文档实施元数据过滤：
 
 ```java
 EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
@@ -221,17 +187,14 @@ EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
 
 ## RAG
 
-To view instructions on implementing RAG with MongoDB Atlas as your
-vector store, see the [Use Your Data to Answer Questions](https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain4j/#use-your-data-to-answer-questions)
-section of the LangChain4j tutorial in the Atlas documentation.
+关于使用 MongoDB Atlas 作为向量存储实现 RAG 的说明，请参阅 Atlas 文档中 LangChain4j 教程的[使用您的数据回答问题](https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain4j/#use-your-data-to-answer-questions)部分。
 
-## API Documentation
+## API 文档
 
--   [MongoDB Atlas Embedding Store Integration](https://docs.langchain4j.dev/apidocs/dev/langchain4j/store/embedding/mongodb/package-summary.html)
+- [MongoDB Atlas 嵌入存储集成](https://docs.langchain4j.dev/apidocs/dev/langchain4j/store/embedding/mongodb/package-summary.html)
+- [MongoDB Java Sync Driver](https://mongodb.github.io/mongo-java-driver/5.4/apidocs/mongodb-driver-sync/index.html)
 
--   [MongoDB Java Sync Driver](https://mongodb.github.io/mongo-java-driver/5.4/apidocs/mongodb-driver-sync/index.html)
+## 相关链接
 
-## Useful Links
-
--   [Get Started with the LangChain4j Integration](https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain4j/)
--   [How to Make a RAG Application With LangChain4j](https://dev.to/mongodb/how-to-make-a-rag-application-with-langchain4j-1mad)
+- [LangChain4j 集成入门](https://www.mongodb.com/docs/atlas/atlas-vector-search/ai-integrations/langchain4j/)
+- [如何使用 LangChain4j 构建 RAG 应用](https://dev.to/mongodb/how-to-make-a-rag-application-with-langchain4j-1mad)

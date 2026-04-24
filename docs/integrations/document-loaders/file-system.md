@@ -2,9 +2,9 @@
 sidebar_position: 3
 ---
 
-# File System
+# 文件系统
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,12 +14,10 @@ sidebar_position: 3
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `FileSystemSource` / `FileSystemDocumentLoader`
 
-
-## Examples
+## 示例
 
 - [FileSystemDocumentLoaderTest](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/test/java/dev/langchain4j/data/document/loader/FileSystemDocumentLoaderTest.java)

@@ -7,18 +7,17 @@ sidebar_position: 22
 https://redis.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
-You can use Redis with LangChain4j in plain Java or Spring Boot applications.
+可在纯 Java 或 Spring Boot 应用中使用 Redis 与 LangChain4j 集成。
 
-### Plain Java
+### 纯 Java
 
 :::note
-Since `1.0.0-beta1`, `langchain4j-redis` has migrated to `langchain4j-community` and is renamed to
-`langchain4j-community-redis`.
+自 `1.0.0-beta1` 起，`langchain4j-redis` 已迁移到 `langchain4j-community` 并重命名为 `langchain4j-community-redis`。
 :::
 
-Before `1.0.0-beta1`:
+`1.0.0-beta1` 之前：
 
 ```xml
 
@@ -29,7 +28,7 @@ Before `1.0.0-beta1`:
 </dependency>
 ```
 
-`1.0.0-beta1` and later:
+`1.0.0-beta1` 及以上版本：
 
 ```xml
 
@@ -43,11 +42,10 @@ Before `1.0.0-beta1`:
 ### Spring Boot
 
 :::note
-Since `1.0.0-beta1`, `langchain4j-redis-spring-boot-starter` has migrated to `langchain4j-community` and is renamed
-to `langchain4j-community-redis-spring-boot-starter`.
+自 `1.0.0-beta1` 起，`langchain4j-redis-spring-boot-starter` 已迁移到 `langchain4j-community` 并重命名为 `langchain4j-community-redis-spring-boot-starter`。
 :::
 
-Before `1.0.0-beta1`:
+`1.0.0-beta1` 之前：
 
 ```xml
 
@@ -58,7 +56,7 @@ Before `1.0.0-beta1`:
 </dependency>
 ```
 
-`1.0.0-beta1` and later:
+`1.0.0-beta1` 及以上版本：
 
 ```xml
 
@@ -69,7 +67,7 @@ Before `1.0.0-beta1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或使用 BOM 统一管理依赖：
 
 ```xml
 
@@ -85,11 +83,11 @@ Or, you can use BOM to manage dependencies consistently:
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `RedisEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [RedisEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/redis-example/src/main/java/RedisEmbeddingStoreExample.java)

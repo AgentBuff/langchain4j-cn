@@ -7,7 +7,7 @@ sidebar_position: 11
 https://localai.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ https://localai.io/
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `LocalAiEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [LocalAiEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-local-ai/src/test/java/dev/langchain4j/model/localai/LocalAiEmbeddingModelIT.java)

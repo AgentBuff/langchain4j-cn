@@ -1,0 +1,62 @@
+{
+  "site.tagline": {
+    "message": "Supercharge your Java application with the power of LLMs - LangChain4j Chinese Documentation",
+    "description": "Site tagline"
+  },
+  "homepage.hero.title": {
+    "message": "LangChain4j Documentation",
+    "description": "Homepage hero title"
+  },
+  "homepage.hero.logoAlt": {
+    "message": "LangChain4j Documentation - Java LLM application development framework logo",
+    "description": "Alt text for the homepage hero logo"
+  },
+  "homepage.header.button": {
+    "message": "Introduction",
+    "description": "Homepage hero button"
+  },
+  "homepage.meta.description": {
+    "message": "LangChain4j is an idiomatic Java framework for building LLM applications. Unified API for 20+ LLM providers (OpenAI, Azure, Gemini, Claude, Qwen, DeepSeek, Ollama) and 30+ vector stores; built-in RAG, Agents, Tools (Function Calling), MCP, AI Services, with first-class Spring Boot / Quarkus / Helidon / Micronaut integrations.",
+    "description": "Homepage meta description"
+  },
+  "homepage.seo.heading": {
+    "message": "LangChain4j - the Java LLM application framework",
+    "description": "Homepage SEO content heading"
+  },
+  "homepage.seo.paragraph1": {
+    "message": "LangChain4j is the Java-native framework for building LLM-powered applications. It offers a unified API to access 20+ major LLMs (OpenAI, Azure OpenAI, Google Gemini, Anthropic Claude, Qwen, DeepSeek, ERNIE, ZhipuAI GLM, Ollama, etc.) and 30+ vector stores (Milvus, Pinecone, Weaviate, Qdrant, Elasticsearch, PgVector, and more).",
+    "description": "Homepage SEO first paragraph"
+  },
+  "homepage.seo.paragraph2": {
+    "message": "It ships high-level building blocks for RAG, Agents, Tools (Function Calling), MCP (Model Context Protocol), AI Services, Chat Memory and Guardrails, with first-class Spring Boot, Quarkus, Helidon and Micronaut integrations - so Java engineers can ship production-grade AI applications fast.",
+    "description": "Homepage SEO second paragraph"
+  },
+  "homepage.features.easy.title": {
+    "message": "Easy interaction with LLMs and Vector Stores",
+    "description": "Homepage feature title"
+  },
+  "homepage.features.easy.description": {
+    "message": "All major commercial and open-source LLMs and Vector Stores are easily accessible through a unified API, enabling you to build chatbots, assistants and more.",
+    "description": "Homepage feature description"
+  },
+  "homepage.features.java.title": {
+    "message": "Tailored for Java",
+    "description": "Homepage feature title"
+  },
+  "homepage.features.java.description": {
+    "message": "Smooth integration into your Java applications is made possible thanks to Quarkus, Spring Boot and Helidon integrations. There is two-way integration between LLMs and Java: you can call LLMs from Java and allow LLMs to call your Java code in return.",
+    "description": "Homepage feature description"
+  },
+  "homepage.features.toolbox.title": {
+    "message": "Agents, Tools, RAG",
+    "description": "Homepage feature title"
+  },
+  "homepage.features.toolbox.description": {
+    "message": "Our extensive toolbox provides a wide range of tools for common LLM operations, from low-level prompt templating, chat memory management, and output parsing, to high-level patterns like Agents and RAG.",
+    "description": "Homepage feature description"
+  },
+  "faq.heading": {
+    "message": "LangChain4j FAQ",
+    "description": "FAQ page heading"
+  }
+}

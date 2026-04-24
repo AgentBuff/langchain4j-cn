@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Cohere
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,11 +14,9 @@ sidebar_position: 2
 </dependency>
 ```
 
-
-## Cohere Models
+## Cohere 模型
 
 - `CohereScoringModel`
 
-
-## Examples
-- [Advanced RAG with re-ranking using Cohere](https://github.com/langchain4j/langchain4j-examples/blob/main/rag-examples/src/main/java/_3_advanced/_03_Advanced_RAG_with_ReRanking_Example.java)
+## 示例
+- [使用 Cohere 重排序的高级 RAG](https://github.com/langchain4j/langchain4j-examples/blob/main/rag-examples/src/main/java/_3_advanced/_03_Advanced_RAG_with_ReRanking_Example.java)

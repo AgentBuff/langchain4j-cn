@@ -4,15 +4,13 @@ sidebar_position: 22
 # GPULlama3.java
 [GPULlama3.java](https://github.com/beehive-lab/GPULlama3.java)
 
-GPULlama3.java builds on [TornadoVM](https://github.com/beehive-lab/TornadoVM) to leverage GPU and heterogeneous computing for faster LLM inference directly from Java.
-Currently, GPULlama3.java supports inference on NVIDIA, AMD GPUs and Apple Silicon through PTX and OPENCL backends.
+GPULlama3.java 基于 [TornadoVM](https://github.com/beehive-lab/TornadoVM) 构建，直接在 Java 中利用 GPU 和异构计算加速 LLM 推理。
+目前，GPULlama3.java 通过 PTX 和 OPENCL 后端支持在 NVIDIA、AMD GPU 以及 Apple Silicon 上进行推理。
 
 ----
-## Project setup
+## 项目配置
 
-To install langchain4j to your project, add the following dependency:
-
-For Maven project `pom.xml`
+在 Maven 项目的 `pom.xml` 中添加以下依赖：
 
 ```xml
 
@@ -30,18 +28,18 @@ For Maven project `pom.xml`
 
 ```
 
-For Gradle project `build.gradle`
+在 Gradle 项目的 `build.gradle` 中：
 
 ```groovy
 implementation 'dev.langchain4j:langchain4j:1.13.0'
 implementation 'dev.langchain4j:langchain4j-gpu-llama3:1.13.0-beta23'
 ```
 ---
-## Model Compatibility
+## 模型兼容性
 
-Currently, GPULlama3.java supports the following models in GGUF format in FP16, Q8 and Q4 formats:
-Note, for Q8 and Q4 models models are dequantized to FP16 during loading.
-We maintain collection of models that are tested in the [HuggingFace](https://huggingface.co/beehive-lab/collections) repository.
+目前，GPULlama3.java 支持 FP16、Q8 和 Q4 格式的 GGUF 格式模型。
+注意：Q8 和 Q4 模型在加载时会反量化为 FP16。
+我们在 [HuggingFace](https://huggingface.co/beehive-lab/collections) 仓库中维护了经过测试的模型集合。
 
 * Llama3
 * Mistral
@@ -50,11 +48,11 @@ We maintain collection of models that are tested in the [HuggingFace](https://hu
 * Phi-3
 * DeepSeek-R1-Distill-Qwen-1.5B-GGUF
 ----
-## Chat Completion
-The chat models allow you to generate human-like responses with a model fined-tuned on conversational data.
+## 对话补全
+对话模型使用经过对话数据微调的模型生成类人回复。
 
-### Synchronous
-Create a class and add the following code.
+### 同步模式
+创建一个类并添加以下代码：
 
 ```java
 prompt = "What is the capital of France?";
@@ -67,15 +65,15 @@ Path modelPath = Paths.get("beehive-llama-3.2-1b-instruct-fp16.gguf");
 
 GPULlama3ChatModel model = GPULlama3ChatModel.builder()
         .modelPath(modelPath)
-        .onGPU(Boolean.TRUE) //if false, runs on CPU though a lightweight implementation of llama3.java
+        .onGPU(Boolean.TRUE) // 如果为 false，则通过 llama3.java 的轻量级实现在 CPU 上运行
         .build();
 ChatResponse response = model.chat(request);
 System.out.println("\n" + response.aiMessage().text());
 ```
 
-### Streaming
+### 流式模式
 
-Create a class and add the following code.
+创建一个类并添加以下代码：
 
 ```java
 public static void main(String[] args) {
@@ -100,7 +98,7 @@ public static void main(String[] args) {
 
 
     GPULlama3StreamingChatModel model = GPULlama3StreamingChatModel.builder()
-            .onGPU(Boolean.TRUE) // if false, runs on CPU though a lightweight implementation of llama3.java
+            .onGPU(Boolean.TRUE) // 如果为 false，则通过 llama3.java 的轻量级实现在 CPU 上运行
             .modelPath(modelPath)
             .build();
 
@@ -127,19 +125,19 @@ public static void main(String[] args) {
 }
 ```
 
-## How to run:
+## 运行方法：
 
-One need to configure TornadoVM to run the example 
-Detailed instructions can be found **[Setup & Configure](https://github.com/beehive-lab/GPULlama3.java?tab=readme-ov-file#prerequisites)**
-#### **Step 1 — Get Tornado JVM flags**
+需要配置 TornadoVM 才能运行示例。
+详细说明请参阅 **[配置与安装](https://github.com/beehive-lab/GPULlama3.java?tab=readme-ov-file#prerequisites)**
+#### **步骤 1 — 获取 Tornado JVM 标志**
 
-Run the following command (You need to have Tornado installed):
+运行以下命令（需要已安装 Tornado）：
 
 ```bash
 tornado --printJavaFlags
 ```
 
-Example output:
+示例输出：
 
 ```bash
 /home/mikepapadim/.sdkman/candidates/java/current/bin/java -server \
@@ -159,27 +157,27 @@ Example output:
 --add-modules ALL-SYSTEM,tornado.runtime,tornado.annotation,tornado.drivers.common,tornado.drivers.opencl
 ```
 
-#### **Step 2 — Build the Maven classpath**
+#### **步骤 2 — 构建 Maven 类路径**
 
-From the project root, run:
+在项目根目录运行：
 
 ```bash
 mvn dependency:build-classpath -Dmdep.outputFile=cp.txt
 ```
 
-#### **Step 3 — Build the Maven classpath**
+#### **步骤 3 — 构建 Maven 项目**
 
 ```bash
 mvn clean package
 ```
 
-Your main JAR will be located at:
+主 JAR 文件位于：
 ```bash
 target/gpullama3.java-example-1.13.0-beta23.jar
 ```
 
-#### **Step 4 — Run the program directly with Java**
-You can now run the example with all JVM and Tornado flags:
+#### **步骤 4 — 使用 Java 直接运行程序**
+现在可以使用所有 JVM 和 Tornado 标志运行示例：
 
 ```bash
 JAVA_BIN=/home/mikepapadim/.sdkman/candidates/java/current/bin/java
@@ -208,7 +206,7 @@ $JAVA_BIN \
   GPULlama3ChatModelExamples
 ```
 
-## Expected output:
+## 预期输出：
 
 ```bash
 WARNING: Using incubator modules: jdk.incubator.vector
@@ -221,6 +219,6 @@ Wow, I'm so glad you asked. I've been waiting for someone to finally ask me this
 achieved tok/s: 48.86. Tokens: 87, seconds: 1.78
 ```
 
-## Notes:
+## 注意事项：
 
-* GPU utulization can be monitored with `nvidia-smi` for NVIDIA GPUs or 'nvtop' appropriate tools for AMD/Apple Silicon.
+* GPU 使用率可通过 `nvidia-smi`（NVIDIA GPU）或 `nvtop` 等适当工具（AMD/Apple Silicon）进行监控。

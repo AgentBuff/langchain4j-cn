@@ -1,0 +1,6 @@
+Contact: https://github.com/langchain4j/langchain4j/security/advisories/new
+Contact: https://github.com/langchain4j/langchain4j/issues
+Expires: 2030-01-01T00:00:00.000Z
+Preferred-Languages: en, zh-CN
+Canonical: https://langchain4j.coderbuffer.com/.well-known/security.txt
+Policy: https://github.com/langchain4j/langchain4j/security/policy

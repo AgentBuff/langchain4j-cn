@@ -1,8 +1,8 @@
 {
-  "label": "Tutorials",
+  "label": "教程",
   "position": 5,
   "link": {
     "type": "generated-index",
-    "description": "Tutorials"
+    "description": "教程"
   }
 }

@@ -7,7 +7,7 @@ sidebar_position: 21
 https://qdrant.tech/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,11 +18,11 @@ https://qdrant.tech/
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `QdrantEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [QdrantEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/qdrant-example/src/main/java/QdrantEmbeddingStoreExample.java)

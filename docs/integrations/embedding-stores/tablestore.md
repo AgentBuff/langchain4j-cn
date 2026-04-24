@@ -6,7 +6,7 @@ sidebar_position: 24
 
 https://www.aliyun.com/product/ots
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 
@@ -17,10 +17,10 @@ https://www.aliyun.com/product/ots
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `TablestoreEmbeddingStore`
 
-## Examples
+## 示例
 
 - [TablestoreEmbeddingStoreExampleIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-tablestore/src/test/java/dev/langchain4j/store/embedding/tablestore/TablestoreEmbeddingStoreExampleIT.java)

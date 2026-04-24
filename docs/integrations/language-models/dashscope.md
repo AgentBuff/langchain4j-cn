@@ -2,34 +2,28 @@
 sidebar_position: 5
 ---
 
-# DashScope (Qwen)
+# DashScope（通义千问）
 
-[DashScope](https://dashscope.aliyun.com/) is a platform developed by [Alibaba Cloud](https://www.alibabacloud.com/).
-It provides an interface for model visualization, monitoring, and debugging, particularly when working with AI/ML
-models in production environments. The platform allows users to visualize performance metrics, track model behavior, and
-identify potential issues early on in the deployment cycle.
+[DashScope](https://dashscope.aliyun.com/) 是[阿里云](https://www.alibabacloud.com/)开发的平台，
+提供模型可视化、监控和调试接口，尤其适用于生产环境中的 AI/ML 模型。该平台支持性能指标可视化、行为追踪，以及在部署周期早期发现潜在问题。
 
-[Qwen](https://tongyi.aliyun.com/) models are a series of generative AI models developed
-by [Alibaba Cloud](https://www.alibabacloud.com/). The Qwen family of models are specifically designed for tasks like
-text generation, summarization, question answering, and various NLP tasks.
+[通义千问（Qwen）](https://tongyi.aliyun.com/) 模型是[阿里云](https://www.alibabacloud.com/)开发的一系列生成式 AI 模型，专为文本生成、摘要、问答和各类 NLP 任务设计。
 
-You can refer
-to [DashScope Document](https://help.aliyun.com/zh/model-studio/getting-started/?spm=a2c4g.11186623.help-menu-2400256.d_0.6655453aLIyxGp)
-for more details. LangChain4j integrates with DashScope by
-Using [DashScope Java SDK](https://help.aliyun.com/zh/dashscope/java-sdk-best-practices?spm=a2c4g.11186623.0.0.272a1507Ne69ja)
+详细信息请参阅 [DashScope 文档](https://help.aliyun.com/zh/model-studio/getting-started/?spm=a2c4g.11186623.help-menu-2400256.d_0.6655453aLIyxGp)。
+LangChain4j 通过 [DashScope Java SDK](https://help.aliyun.com/zh/dashscope/java-sdk-best-practices?spm=a2c4g.11186623.0.0.272a1507Ne69ja) 与 DashScope 集成。
 
-## Maven Dependency
+## Maven 依赖
 
-You can use DashScope with LangChain4j in plain Java or Spring Boot applications.
+DashScope 可在纯 Java 或 Spring Boot 应用中使用。
 
-### Plain Java
+### 纯 Java
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-dashscope` has migrated to `langchain4j-community` and is renamed to
-`langchain4j-community-dashscope`.
+自 `1.0.0-alpha1` 起，`langchain4j-dashscope` 已迁移至 `langchain4j-community`，并更名为
+`langchain4j-community-dashscope`。
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
 
@@ -40,7 +34,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 
@@ -54,11 +48,11 @@ Before `1.0.0-alpha1`:
 ### Spring Boot
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-dashscope-spring-boot-starter` has migrated to `langchain4j-community` and is renamed
-to `langchain4j-community-dashscope-spring-boot-starter`.
+自 `1.0.0-alpha1` 起，`langchain4j-dashscope-spring-boot-starter` 已迁移至 `langchain4j-community`，并更名为
+`langchain4j-community-dashscope-spring-boot-starter`。
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
 
@@ -69,7 +63,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 
@@ -80,7 +74,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或者，使用 BOM 统一管理依赖版本：
 
 ```xml
 
@@ -95,54 +89,54 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## Configurable Parameters
+## 可配置参数
 
-`langchain4j-community-dashscope` has 4 models to use:
+`langchain4j-community-dashscope` 提供 4 种模型：
 
 - `QwenChatModel`
 - `QwenStreamingChatModel`
 - `QwenLanguageModel`
 - `QwenStreamingLanguageModel`
 
-`langchain4j-dashscope` Provide text generation image model
+`langchain4j-dashscope` 提供文本生成图像模型：
 - `WanxImageModel`
 
 ### `QwenChatModel`
 
-`QwenChatModel` has following parameters to configure when you initialize it:
+`QwenChatModel` 初始化时可配置以下参数：
 
-| Property          | Description                                                                                                                                                                                                                                                                  | Default Value                                                                                                                                                                                            |
-|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| baseUrl           | The URL to connect to. You can use HTTP or websocket to connect to DashScope                                                                                                                                                                                                 | [Text Inference](https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation) and [Multi-Modal](https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation) |
-| apiKey            | The API Key                                                                                                                                                                                                                                                                  |                                                                                                                                                                                                          |
-| modelName         | The model to use.                                                                                                                                                                                                                                                            | qwen-plus                                                                                                                                                                                                |
-| topP              | The probability threshold for kernel sampling controls the diversity of texts generated by the model. the higher the `top_p`, the more diverse the generated texts, and vice versa. Value range: (0, 1.0]. We generally recommend altering this or temperature but not both. |                                                                                                                                                                                                          |
-| topK              | The size of the sampled candidate set during the generation process.                                                                                                                                                                                                         |                                                                                                                                                                                                          |
-| enableSearch      | Whether the model uses Internet search results for reference when generating text or not.                                                                                                                                                                                    |                                                                                                                                                                                                          |
-| seed              | Setting the seed parameter will make the text generation process more deterministic, and is typically used to make the results consistent.                                                                                                                                   |                                                                                                                                                                                                          |
-| repetitionPenalty | Repetition in a continuous sequence during model generation. Increasing `repetition_penalty` reduces the repetition in model generation, 1.0 means no penalty. Value range: (0, +inf)                                                                                        |                                                                                                                                                                                                          |
-| temperature       | Sampling temperature that controls the diversity of the text generated by the model. the higher the temperature, the more diverse the generated text, and vice versa. Value range: [0, 2)                                                                                    |                                                                                                                                                                                                          |
-| stops             | With the stop parameter, the model will automatically stop generating text when it is about to contain the specified string or token_id.                                                                                                                                     |                                                                                                                                                                                                          |
-| maxTokens         | The maximum number of tokens returned by this request.                                                                                                                                                                                                                       |                                                                                                                                                                                                          |
-| listeners         | Listeners that listen for request, response and errors.                                                                                                                                                                                                                      |                                                                                                                                                                                                          |
+| 属性                | 说明                                                                                                                                                                           | 默认值                                                                                                                                                                    |
+|-------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| baseUrl           | 连接的 URL，可使用 HTTP 或 WebSocket 连接到 DashScope                                                                                                                           | [文本推理](https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation) 和 [多模态](https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation) |
+| apiKey            | API Key                                                                                                                                                                       |                                                                                                                                                                          |
+| modelName         | 使用的模型                                                                                                                                                                     | qwen-plus                                                                                                                                                                |
+| topP              | 核采样的概率阈值，控制模型生成文本的多样性。`top_p` 越高，生成文本越多样，反之亦然。取值范围：(0, 1.0]。通常建议只调整 `top_p` 或 `temperature` 其中一个。                                     |                                                                                                                                                                          |
+| topK              | 生成过程中采样候选集的大小                                                                                                                                                       |                                                                                                                                                                          |
+| enableSearch      | 是否让模型在生成文本时参考互联网搜索结果                                                                                                                                           |                                                                                                                                                                          |
+| seed              | 设置 seed 参数可使文本生成过程更具确定性，通常用于保证结果的一致性                                                                                                                    |                                                                                                                                                                          |
+| repetitionPenalty | 模型生成过程中连续序列的重复惩罚。增大 `repetition_penalty` 可减少生成中的重复，1.0 表示不惩罚。取值范围：(0, +inf)                                                                        |                                                                                                                                                                          |
+| temperature       | 采样温度，控制模型生成文本的多样性。温度越高，生成文本越多样，反之亦然。取值范围：[0, 2)                                                                                               |                                                                                                                                                                          |
+| stops             | 停止词参数，当模型即将生成指定字符串或 token_id 时，将自动停止生成。                                                                                                                |                                                                                                                                                                          |
+| maxTokens         | 本次请求返回的最大 token 数                                                                                                                                                     |                                                                                                                                                                          |
+| listeners         | 监听请求、响应和错误的监听器                                                                                                                                                     |                                                                                                                                                                          |
 
 ### `QwenStreamingChatModel`
 
-Same as `QwenChatModel`
+与 `QwenChatModel` 相同。
 
 ### `QwenLanguageModel`
 
-Same as `QwenChatModel`, except `listeners`.
+与 `QwenChatModel` 相同，但不含 `listeners`。
 
 ### `QwenStreamingLanguageModel`
 
-Same as `QwenChatModel`, except `listeners`.
+与 `QwenChatModel` 相同，但不含 `listeners`。
 
-## Examples
+## 示例
 
-### Plain Java
+### 纯 Java
 
-You can initialize `QwenChatModel` by using following code:
+使用以下代码初始化 `QwenChatModel`：
 
 ```java
 ChatModel qwenModel = QwenChatModel.builder()
@@ -151,7 +145,7 @@ ChatModel qwenModel = QwenChatModel.builder()
                     .build();
 ```
 
-Or more custom for other parameters:
+或更多自定义参数：
 
 ```java
 ChatModel qwenModel = QwenChatModel.builder()
@@ -165,7 +159,7 @@ ChatModel qwenModel = QwenChatModel.builder()
 ```
 
 
-How to call text to generate pictures:
+文本生成图片的调用方式：
 
 ```java
 WanxImageModel wanxImageModel = WanxImageModel.builder()
@@ -179,17 +173,17 @@ System.out.println(response.content().url());
 
 ### Spring Boot
 
-After introduce `langchain4j-community-dashscope-spring-boot-starter` dependency, you can simply register `QwenChatModel` bean by using below configuration:
+引入 `langchain4j-community-dashscope-spring-boot-starter` 依赖后，可通过以下配置注册 `QwenChatModel` Bean：
 
 ```properties
 langchain4j.community.dashscope.chat-model.api-key=<You API Key here>
 langchain4j.community.dashscope.chat-model.model-name=qwen-max
-# The properties are the same as `QwenChatModel`
-# e.g.
+# 参数与 `QwenChatModel` 相同
+# 例如：
 # langchain4j.community.dashscope.chat-model.temperature=0.7
 # langchain4j.community.dashscope.chat-model.max-tokens=4096
 ```
 
-### More Examples
+### 更多示例
 
-You can check more details in [LangChain4j Community](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-dashscope/src/test/java/dev/langchain4j/community/model/dashscope)
+可在 [LangChain4j Community](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-dashscope/src/test/java/dev/langchain4j/community/model/dashscope) 查看更多详情。

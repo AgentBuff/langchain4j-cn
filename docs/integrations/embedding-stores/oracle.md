@@ -3,10 +3,9 @@ sidebar_position: 18
 ---
 
 # Oracle
-The Oracle Embedding Store integrates with
-the [AI Vector Search Feature](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/overview-ai-vector-search.html) of Oracle Database.
+Oracle 嵌入存储集成了 Oracle Database 的 [AI Vector Search 功能](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/overview-ai-vector-search.html)。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,27 +16,24 @@ the [AI Vector Search Feature](https://docs.oracle.com/en/database/oracle/oracle
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `OracleEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [OracleEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/oracle-example/src/main/java/OracleEmbeddingStoreExample.java)
 
-## Usage
+## 使用方式
 
-Instances of this store can be created by configuring a builder. The builder 
-requires that a DataSource and an embedding table be provided. The distance 
-between two vectors is calculated using [cosine similarity](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/cosine-similarity.html)
-which measures the cosine of the angle between two vectors.
+可通过配置 builder 创建此存储的实例。builder 需要提供 DataSource 和嵌入表。
+两个向量之间的距离使用[余弦相似度](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/cosine-similarity.html)计算，
+该方法测量两个向量之间夹角的余弦值。
 
-It is recommended to configure a DataSource which pools connections, such as the
-Universal Connection Pool or Hikari. A connection pool will avoid the latency of
-repeatedly creating new database connections.
+建议配置连接池的 DataSource，如 Universal Connection Pool 或 Hikari，以避免重复创建数据库连接带来的延迟。
 
-If an embedding table already exists in your database provide the table name.
+如果数据库中已存在嵌入表，请提供表名：
 
 ```java
 EmbeddingStore embeddingStore = OracleEmbeddingStore.builder()
@@ -46,8 +42,7 @@ EmbeddingStore embeddingStore = OracleEmbeddingStore.builder()
    .build();
 ```
 
-If the table does not already exist, it can be created by passing a CreateOption
-to the builder.
+如果表不存在，可通过向 builder 传入 CreateOption 来创建：
 
 ```java
 EmbeddingStore embeddingStore = OracleEmbeddingStore.builder()
@@ -56,25 +51,23 @@ EmbeddingStore embeddingStore = OracleEmbeddingStore.builder()
    .build();
 ```
 
-By default the embedding table will have the following columns:
+默认情况下，嵌入表包含以下列：
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| id | VARCHAR(36) | Primary key. Used to store UUID strings which are generated when the embedding store |
-| embedding | VECTOR(*, FLOAT32) | Stores the embedding |
-| text | CLOB | Stores the text segment |
-| metadata | JSON | Stores the metadata |
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| id | VARCHAR(36) | 主键，存储嵌入存储生成的 UUID 字符串 |
+| embedding | VECTOR(*, FLOAT32) | 存储嵌入向量 |
+| text | CLOB | 存储文本段 |
+| metadata | JSON | 存储元数据 |
 
-If the columns of your existing table do not match the predefined column names 
-or you would like to use different column names, you can use a EmbeddingTable 
-builder to configure your embedding table.
+如果已有表的列名与预定义列名不匹配，或希望使用不同的列名，可使用 EmbeddingTable builder 进行配置：
 
 ```java
 OracleEmbeddingStore embeddingStore =
 OracleEmbeddingStore.builder()
     .dataSource(myDataSource)
     .embeddingTable(EmbeddingTable.builder()
-            .createOption(CREATE_OR_REPLACE) // use NONE if the table already exists
+            .createOption(CREATE_OR_REPLACE) // 若表已存在则使用 NONE
             .name("my_embedding_table")
             .idColumn("id_column_name")
             .embeddingColumn("embedding_column_name")
@@ -84,19 +77,17 @@ OracleEmbeddingStore.builder()
     .build();
 ```
 
-The builder allows to create an indexes on the embedding and metadata columns of the
-EmbeddingTable by providing an instance of the Index class. Two builders allow to
-create instances of the Index class: IVFIndexBuilder and JSONIndexBuilder.
+builder 还支持通过提供 Index 类实例，在 EmbeddingTable 的嵌入列和元数据列上创建索引。
+有两个 builder 可用于创建 Index 类实例：IVFIndexBuilder 和 JSONIndexBuilder。
 
-*IVFIndexBuilder* allows to configure an **IVF (Inverted File Flat)** index on the embedding
-column of the EmbeddingTable.
+*IVFIndexBuilder* 可在 EmbeddingTable 的嵌入列上配置 **IVF（Inverted File Flat）** 索引：
 
 ```java
 OracleEmbeddingStore embeddingStore =
     OracleEmbeddingStore.builder()
         .dataSource(myDataSource)
         .embeddingTable(EmbeddingTable.builder()
-            .createOption(CreateOption.CREATE_OR_REPLACE) // use NONE if the table already exists
+            .createOption(CreateOption.CREATE_OR_REPLACE) // 若表已存在则使用 NONE
             .name("my_embedding_table")
             .idColumn("id_column_name")
             .embeddingColumn("embedding_column_name")
@@ -107,14 +98,13 @@ OracleEmbeddingStore embeddingStore =
         .build();
 ```
 
-*JSONIndexBuilder* allows to configure a **function-based index** on keys of the metadata
-column of the EmbeddingTable.
+*JSONIndexBuilder* 可在 EmbeddingTable 元数据列的键上配置**基于函数的索引**：
 
 ```java
 OracleEmbeddingStore.builder()
     .dataSource(myDataSource)
     .embeddingTable(EmbeddingTable.builder()
-        .createOption(CreateOption.CREATE_OR_REPLACE) // use NONE if the table already exists
+        .createOption(CreateOption.CREATE_OR_REPLACE) // 若表已存在则使用 NONE
         .name("my_embedding_table")
         .idColumn("id_column_name")
         .embeddingColumn("embedding_column_name")
@@ -129,4 +119,4 @@ OracleEmbeddingStore.builder()
     .build();
 ```
 
-For more information about Oracle AI Vector Search refer to the [documentation](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/overview-ai-vector-search.html).
+更多关于 Oracle AI Vector Search 的信息，请参阅[文档](https://docs.oracle.com/en/database/oracle/oracle-database/23/vecse/overview-ai-vector-search.html)。

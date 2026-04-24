@@ -7,7 +7,7 @@ sidebar_position: 12
 https://www.elastic.co/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,20 +17,16 @@ https://www.elastic.co/
 </dependency>
 ```
 
-## Overview
+## 概述
 
-The `langchain4j-elasticsearch` module provides integration with Elasticsearch as an embedding store and content
-retriever.
+`langchain4j-elasticsearch` 模块提供与 Elasticsearch 的集成，可用作嵌入存储和内容检索器。
 
-It comes with two main classes:
+它包含两个主要类：
 
-- [`ElasticsearchEmbeddingStore`](#elasticsearchembeddingstore): an implementation of the `EmbeddingStore` interface 
-  that uses Elasticsearch to store and retrieve embeddings.
-- [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever): an implementation of the `ContentRetriever`
-  interface that uses Elasticsearch to retrieve relevant documents based on vector similarity search.
+- [`ElasticsearchEmbeddingStore`](#elasticsearchembeddingstore)：`EmbeddingStore` 接口的实现，使用 Elasticsearch 存储和检索嵌入。
+- [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever)：`ContentRetriever` 接口的实现，使用 Elasticsearch 通过向量相似度搜索检索相关文档。
 
-Both classes need an [Elasticsearch Client](https://www.elastic.co/docs/reference/elasticsearch/clients/java) to 
-connect to the Elasticsearch server.
+两个类都需要 [Elasticsearch Client](https://www.elastic.co/docs/reference/elasticsearch/clients/java) 来连接 Elasticsearch 服务器。
 
 ```java
 String apiKey = "VnVhQ2ZHY0JDZGJrU...";
@@ -39,14 +35,13 @@ ElasticsearchClient client = ElasticsearchClient.of(ec -> ec
         .apiKey(apiKey));
 ```
 
-**Note:**
+**注意：**
 
-> See the [Elasticsearch documentation](https://www.elastic.co/docs/reference/elasticsearch/clients/java/setup/connecting) 
-> on how to create an ElasticsearchClient instance.
+> 请参阅 [Elasticsearch 文档](https://www.elastic.co/docs/reference/elasticsearch/clients/java/setup/connecting)了解如何创建 ElasticsearchClient 实例。
 
 ## ElasticsearchEmbeddingStore
 
-To create the `ElasticsearchEmbeddingStore` instance, you need to provide an `ElasticsearchClient`:
+创建 `ElasticsearchEmbeddingStore` 实例需要提供 `ElasticsearchClient`：
 
 ```java
 ElasticsearchEmbeddingStore store = ElasticsearchEmbeddingStore.builder()
@@ -54,12 +49,12 @@ ElasticsearchEmbeddingStore store = ElasticsearchEmbeddingStore.builder()
     .build();
 ```
 
-It comes with the following options:
+支持以下选项：
 
-* `indexName`: the name of the Elasticsearch index to use. Default is `default`.
-* `configuration`: the `ElasticsearchConfiguration` to use. Default is `ElasticsearchConfigurationKnn`.
+* `indexName`：要使用的 Elasticsearch 索引名称。默认为 `default`。
+* `configuration`：要使用的 `ElasticsearchConfiguration`。默认为 `ElasticsearchConfigurationKnn`。
 
-The previous code is equivalent to:
+上述代码等效于：
 
 ```java
 ElasticsearchEmbeddingStore store = ElasticsearchEmbeddingStore.builder()
@@ -71,14 +66,13 @@ ElasticsearchEmbeddingStore store = ElasticsearchEmbeddingStore.builder()
 
 ## ElasticsearchContentRetriever
 
-A ContentRetriever needs an embedding model:
+ContentRetriever 需要嵌入模型：
 
 ```java
 EmbeddingModel embeddingModel = new AllMiniLmL6V2QuantizedEmbeddingModel();
 ```
 
-To create an `ElasticsearchContentRetriever` instance, you need to provide the `ElasticsearchClient` and 
-the `EmbeddingModel`:
+创建 `ElasticsearchContentRetriever` 实例需要提供 `ElasticsearchClient` 和 `EmbeddingModel`：
 
 ```java
 ElasticsearchContentRetriever contentRetriever = ElasticsearchContentRetriever.builder()
@@ -87,16 +81,15 @@ ElasticsearchContentRetriever contentRetriever = ElasticsearchContentRetriever.b
     .build();
 ```
 
-It comes with the following options:
+支持以下选项：
 
-* `configuration`: the `ElasticsearchConfiguration` to use (see [below](#elasticsearchconfiguration)). Default is `ElasticsearchConfigurationKnn`.
-* `indexName`: the name of the Elasticsearch index to use. Default is `default`. Index will be created automatically 
-  if not exists.
-* `maxResults`: the maximum number of results to retrieve. Default is `3`.
-* `minScore`: the minimum score threshold for retrieved results. Default is `0.0`.
-* `filter`: a `Filter` to apply during retrieval if any. Default is `null`.
+* `configuration`：要使用的 `ElasticsearchConfiguration`（见[下文](#elasticsearchconfiguration)）。默认为 `ElasticsearchConfigurationKnn`。
+* `indexName`：要使用的 Elasticsearch 索引名称。默认为 `default`。如果不存在则自动创建。
+* `maxResults`：检索的最大结果数。默认为 `3`。
+* `minScore`：检索结果的最低评分阈值。默认为 `0.0`。
+* `filter`：检索时应用的 `Filter`（如有）。默认为 `null`。
 
-The previous code is equivalent to:
+上述代码等效于：
 
 ```java
 ElasticsearchContentRetriever contentRetriever = ElasticsearchContentRetriever.builder()
@@ -112,20 +105,14 @@ ElasticsearchContentRetriever contentRetriever = ElasticsearchContentRetriever.b
 
 ## ElasticsearchConfiguration
 
-An `ElasticsearchConfiguration` defines how the embedding store or content retriever will interact with the
-Elasticsearch server. You can create your own configuration by implementing the `ElasticsearchConfiguration` interface,
-or use one of the provided implementations:
+`ElasticsearchConfiguration` 定义了嵌入存储或内容检索器与 Elasticsearch 服务器的交互方式。可以通过实现 `ElasticsearchConfiguration` 接口创建自定义配置，或使用以下提供的实现之一：
 
-- [`ElasticsearchConfigurationKnn`](#elasticsearchconfigurationknn): uses approximate [kNN queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-knn-query.html)
-  (default).
-- [`ElasticsearchConfigurationScript`](#elasticsearchconfigurationscript): uses [scriptScore queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html).
-  Note that this implementation is using cosine similarity.
-- [`ElasticsearchConfigurationFullText`](#elasticsearchconfigurationfulltext): uses [full text search](https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-match-query)
-  (for content retriever only).
-- [`ElasticsearchConfigurationHybrid`](#elasticsearchconfigurationhybrid): uses [hybrid search](https://www.elastic.co/search-labs/tutorials/search-tutorial/vector-search/hybrid-search)
-  (for content retriever only, requires paid license). It combines a kNN vector query with a full text query.
+- [`ElasticsearchConfigurationKnn`](#elasticsearchconfigurationknn)：使用近似 [kNN 查询](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-knn-query.html)（默认）。
+- [`ElasticsearchConfigurationScript`](#elasticsearchconfigurationscript)：使用 [scriptScore 查询](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-script-score-query.html)，此实现使用余弦相似度。
+- [`ElasticsearchConfigurationFullText`](#elasticsearchconfigurationfulltext)：使用[全文搜索](https://www.elastic.co/docs/reference/query-languages/query-dsl/query-dsl-match-query)（仅限内容检索器）。
+- [`ElasticsearchConfigurationHybrid`](#elasticsearchconfigurationhybrid)：使用[混合搜索](https://www.elastic.co/search-labs/tutorials/search-tutorial/vector-search/hybrid-search)（仅限内容检索器，需要付费许可证），结合 kNN 向量查询和全文查询。
 
-To create a configuration instance, you can use the builder provided by each implementation. For example:
+创建配置实例可使用每个实现提供的 builder，例如：
 
 ```java
 ElasticsearchConfiguration configuration = ElasticsearchConfigurationKnn.builder().build();
@@ -133,26 +120,23 @@ ElasticsearchConfiguration configuration = ElasticsearchConfigurationKnn.builder
 
 ### ElasticsearchConfigurationKnn
 
-The `ElasticsearchConfigurationKnn` uses approximate kNN queries to perform vector similarity search.
+`ElasticsearchConfigurationKnn` 使用近似 kNN 查询执行向量相似度搜索。
 
-It is the default configuration used by both [`ElasticsearchEmbeddingStore`](#elasticsearchembeddingstore) 
-and [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever).
+它是 [`ElasticsearchEmbeddingStore`](#elasticsearchembeddingstore) 和 [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever) 的默认配置。
 
-To create an instance, you can use the builder:
+创建实例可使用 builder：
 
 ```java
 ElasticsearchConfiguration configuration = ElasticsearchConfigurationKnn.builder().build();
 ```
 
-It comes with the following options:
+支持以下选项：
 
-* `numCandidates`: the number of candidate neighbors to consider during the search. Default is `null`, meaning using
-  the default Elasticsearch value.
-* `includeVectorResponse`: whether to include vector fields in the search response. Default is `false`.
+* `numCandidates`：搜索期间考虑的候选邻居数量。默认为 `null`，即使用 Elasticsearch 默认值。
+* `includeVectorResponse`：是否在搜索响应中包含向量字段。默认为 `false`。
 
-> **Note:**
-> From version 9.2 of the elasticsearch server, vector fields are excluded from the response by default. To include
-> vector fields in the responses (not recommended), set the `includeVectorResponse` in the builder:
+> **注意：**
+> 从 elasticsearch 服务器 9.2 版本起，响应中默认不包含向量字段。如需在响应中包含向量字段（不推荐），可在 builder 中设置 `includeVectorResponse`：
 >
 > ```java
 > ElasticsearchConfigurationKnn configuration = ElasticsearchConfigurationKnn.builder()
@@ -162,25 +146,22 @@ It comes with the following options:
 
 ### ElasticsearchConfigurationScript
 
-The `ElasticsearchConfigurationScript` uses scriptScore queries to perform vector similarity search. Note that this
-implementation is using cosine similarity.
+`ElasticsearchConfigurationScript` 使用 scriptScore 查询执行向量相似度搜索，此实现使用余弦相似度。
 
-It is available for both [`ElasticsearchEmbeddingStore`](#elasticsearchembeddingstore)
-and [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever).
+适用于 [`ElasticsearchEmbeddingStore`](#elasticsearchembeddingstore) 和 [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever)。
 
-To create an instance, you can use the builder:
+创建实例可使用 builder：
 
 ```java
 ElasticsearchConfiguration configuration = ElasticsearchConfigurationScript.builder().build();
 ```
 
-It comes with the following options:
+支持以下选项：
 
-* `includeVectorResponse`: whether to include vector fields in the search response. Default is `false`.
+* `includeVectorResponse`：是否在搜索响应中包含向量字段。默认为 `false`。
 
-> **Note:**
-> From version 9.2 of the elasticsearch server, vector fields are excluded from the response by default. To include
-> vector fields in the responses (not recommended), set the `includeVectorResponse` in the builder:
+> **注意：**
+> 从 elasticsearch 服务器 9.2 版本起，响应中默认不包含向量字段。如需在响应中包含向量字段（不推荐），可在 builder 中设置 `includeVectorResponse`：
 >
 > ```java
 > ElasticsearchConfiguration configuration = ElasticsearchConfigurationScript.builder()
@@ -190,11 +171,11 @@ It comes with the following options:
 
 ### ElasticsearchConfigurationFullText
 
-The `ElasticsearchConfigurationFullText` uses full text search to retrieve relevant documents.
+`ElasticsearchConfigurationFullText` 使用全文搜索检索相关文档。
 
-It is available [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever) only.
+仅适用于 [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever)。
 
-To create an instance, you can use the builder:
+创建实例可使用 builder：
 
 ```java
 ElasticsearchConfiguration configuration = ElasticsearchConfigurationFullText.builder().build();
@@ -202,26 +183,23 @@ ElasticsearchConfiguration configuration = ElasticsearchConfigurationFullText.bu
 
 ### ElasticsearchConfigurationHybrid
 
-The `ElasticsearchConfigurationHybrid` uses hybrid search to combine a kNN vector query with a full text query. Note
-that hybrid search requires an elasticsearch enterprise license or a trial.
+`ElasticsearchConfigurationHybrid` 使用混合搜索将 kNN 向量查询与全文查询相结合。注意混合搜索需要 Elasticsearch 企业许可证或试用许可证。
 
-It is available [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever) only.
+仅适用于 [`ElasticsearchContentRetriever`](#elasticsearchcontentretriever)。
 
-To create an instance, you can use the builder:
+创建实例可使用 builder：
 
 ```java
 ElasticsearchConfiguration configuration = ElasticsearchConfigurationHybrid.builder().build();
 ```
 
-It comes with the following options:
+支持以下选项：
 
-* `numCandidates`: the number of candidate neighbors to consider during the search. Default is `null`, meaning using
-  the default Elasticsearch value.
-* `includeVectorResponse`: whether to include vector fields in the search response. Default is `false`.
+* `numCandidates`：搜索期间考虑的候选邻居数量。默认为 `null`，即使用 Elasticsearch 默认值。
+* `includeVectorResponse`：是否在搜索响应中包含向量字段。默认为 `false`。
 
-> **Note:**
-> From version 9.2 of the elasticsearch server, vector fields are excluded from the response by default. To include
-> vector fields in the responses (not recommended), set the `includeVectorResponse` in the builder:
+> **注意：**
+> 从 elasticsearch 服务器 9.2 版本起，响应中默认不包含向量字段。如需在响应中包含向量字段（不推荐），可在 builder 中设置 `includeVectorResponse`：
 >
 > ```java
 > ElasticsearchConfiguration configuration = ElasticsearchConfigurationHybrid.builder()
@@ -229,9 +207,9 @@ It comes with the following options:
 >     .build();
 > ```
 
-### Creating Custom Configurations
+### 创建自定义配置
 
-You can create your own Elasticsearch configuration by implementing the `ElasticsearchConfiguration` interface. For example:
+可以通过实现 `ElasticsearchConfiguration` 接口创建自定义 Elasticsearch 配置，例如：
 
 ```java
 public class MyElasticsearchConfiguration implements ElasticsearchConfiguration {
@@ -240,7 +218,7 @@ public class MyElasticsearchConfiguration implements ElasticsearchConfiguration 
             ElasticsearchClient client,
             String indexName,
             EmbeddingSearchRequest embeddingSearchRequest) {
-        // Your optional custom vector search implementation here
+        // 自定义向量搜索实现
     }
 
     @Override
@@ -248,7 +226,7 @@ public class MyElasticsearchConfiguration implements ElasticsearchConfiguration 
             ElasticsearchClient client, 
             String indexName, 
             String textQuery) {
-        // Your optional custom full text search implementation here
+        // 自定义全文搜索实现
     }
 
     @Override
@@ -257,18 +235,18 @@ public class MyElasticsearchConfiguration implements ElasticsearchConfiguration 
             String indexName,
             EmbeddingSearchRequest embeddingSearchRequest,
             String textQuery) {
-        // Your optional custom hybrid search implementation here
+        // 自定义混合搜索实现
     }
 }
 ```
 
-Please note that you can implement only the methods relevant to your use case:
+注意只需实现与您的使用场景相关的方法：
 
-* `vectorSearch` for vector similarity search (used by both `ElasticsearchEmbeddingStore` and `ElasticsearchContentRetriever`).
-* `fullTextSearch` for full text search (used by `ElasticsearchContentRetriever` only).
-* `hybridSearch` for hybrid search (used by `ElasticsearchContentRetriever` only).
+* `vectorSearch` 用于向量相似度搜索（`ElasticsearchEmbeddingStore` 和 `ElasticsearchContentRetriever` 均使用）。
+* `fullTextSearch` 用于全文搜索（仅 `ElasticsearchContentRetriever` 使用）。
+* `hybridSearch` 用于混合搜索（仅 `ElasticsearchContentRetriever` 使用）。
 
-## Examples
+## 示例
 
 - [ElasticsearchEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/elasticsearch-example/src/main/java/ElasticsearchEmbeddingStoreExample.java)
 - [ElasticsearchEmbeddingStoreWithScriptExample](https://github.com/langchain4j/langchain4j-examples/blob/main/elasticsearch-example/src/main/java/ElasticsearchEmbeddingStoreWithScriptExample.java)

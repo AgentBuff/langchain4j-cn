@@ -6,7 +6,7 @@ sidebar_position: 9
 
 https://coherence.community/
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -16,11 +16,11 @@ https://coherence.community/
 </dependency>
 ```
 
-The `langchain4j-coherence` module has Coherence as a provided dependency as it works with various Coherence versions.
-Developers should include the relevant Coherence dependency, either Community Edition or Commercial version.
-Coherence CE has a groupId of `com.oracle.coherence.ce` and commercial versions have a groupId of `com.oracle.coherence`.
+`langchain4j-coherence` 模块将 Coherence 作为 provided 依赖，可与多个 Coherence 版本配合使用。
+开发者需要自行引入相关 Coherence 依赖，可选社区版（Community Edition）或商业版。
+Coherence CE 的 groupId 为 `com.oracle.coherence.ce`，商业版为 `com.oracle.coherence`。
 
-For example, to use Community Edition (CE), add the Coherence BOM to the dependency management section then add Coherence as a dependency. Other Coherence modules can then be added to the project as required.
+例如，使用社区版（CE）时，在 dependencyManagement 中添加 Coherence BOM，然后添加 Coherence 依赖。其他 Coherence 模块可按需添加。
 
 ```xml
 <dependencyManagement>
@@ -48,11 +48,11 @@ For example, to use Community Edition (CE), add the Coherence BOM to the depende
 </dependencies>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `CoherenceEmbeddingStore`
 - `CoherenceChatMemoryStore`
 
-## Examples
+## 示例
 
 - [CoherenceEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/oracle-coherence-example/src/main/java/CoherenceEmbeddingStoreExample.java)

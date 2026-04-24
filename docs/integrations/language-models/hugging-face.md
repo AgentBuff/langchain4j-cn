@@ -4,11 +4,11 @@ sidebar_position: 10
 
 # Hugging Face
 
-In order to use [Hugging Face Inference Providers](https://huggingface.co/docs/inference-providers/index),
-you need to import the `langchain4j-open-ai` module, as Hugging Face Inference Providers API is OpenAI-compatible.
+如需使用 [Hugging Face Inference Providers](https://huggingface.co/docs/inference-providers/index)，
+请引入 `langchain4j-open-ai` 模块，因为 Hugging Face Inference Providers API 与 OpenAI 兼容。
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,7 +18,7 @@ you need to import the `langchain4j-open-ai` module, as Hugging Face Inference P
 </dependency>
 ```
 
-## Examples
+## 示例
 
 ```java
 ChatModel model = OpenAiChatModel.builder()

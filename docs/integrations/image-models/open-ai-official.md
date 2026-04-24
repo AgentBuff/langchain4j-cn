@@ -6,32 +6,32 @@ sidebar_position: 5
 
 :::note
 
-This is the documentation for the `OpenAI Official SDK` integration, that uses the [official OpenAI Java SDK](https://github.com/openai/openai-java).
+这是 `OpenAI Official SDK` 集成的文档，使用[官方 OpenAI Java SDK](https://github.com/openai/openai-java)。
 
-LangChain4j provides 3 different integrations with OpenAI for generating images, and this is #2 :
+LangChain4j 提供 3 种不同的 OpenAI 图像生成集成，这是第 2 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用 OpenAI REST API 的自定义 Java 实现，最适合 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合与微软 Java 技术栈结合使用，包括高级 Azure 身份验证机制。
 
 :::
 
-## Use cases for this integration
+## 此集成的使用场景
 
-This integration uses the [OpenAI Java SDK GitHub Repository](https://github.com/openai/openai-java), and will work for all OpenAI models which can be provided by:
+此集成使用 [OpenAI Java SDK GitHub 仓库](https://github.com/openai/openai-java)，适用于以下平台提供的所有 OpenAI 模型：
 
 - OpenAI
 - Microsoft Foundry
 
-It will also work with models supporting the OpenAI API.
+也适用于支持 OpenAI API 的模型。
 
-## OpenAI Documentation
+## OpenAI 文档
 
-- [OpenAI Java SDK GitHub Repository](https://github.com/openai/openai-java)
-- [OpenAI API Documentation](https://platform.openai.com/docs/introduction)
-- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [OpenAI Java SDK GitHub 仓库](https://github.com/openai/openai-java)
+- [OpenAI API 文档](https://platform.openai.com/docs/introduction)
+- [OpenAI API 参考](https://platform.openai.com/docs/api-reference)
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -41,12 +41,11 @@ It will also work with models supporting the OpenAI API.
 </dependency>
 ```
 
-## Configuring the models
+## 配置模型
 
-To use OpenAI models, you usually need an endpoint URL, an API key, and a model name. This depends on where the model is hosted, and this integration tries
-to make it easier with some auto-configuration:
+要使用 OpenAI 模型，通常需要提供端点 URL、API 密钥和模型名称。具体内容取决于模型的托管位置，此集成尝试通过一些自动配置简化这一过程。
 
-### Generic configuration
+### 通用配置
 
 ```java
 import com.openai.models.images.ImageModel;
@@ -64,10 +63,9 @@ ImageModel model = OpenAiOfficialImageModel.builder()
         .build();
 ```
 
-### Specific configurations for Microsoft Foundry and GitHub Models.
+### Microsoft Foundry 和 GitHub Models 的专用配置
 
-Similar to configuring the [OpenAI Official Chat Model](/integrations/language-models/open-ai-official), you can configure the `OpenAiOfficialImageModel` with
-Microsoft Foundry and GitHub Models, using the `isAzure()` and `isGitHubModels()` methods.
+与配置 [OpenAI Official Chat Model](/integrations/language-models/open-ai-official) 类似，你可以使用 `isAzure()` 和 `isGitHubModels()` 方法为 Microsoft Foundry 和 GitHub Models 配置 `OpenAiOfficialImageModel`。
 
 #### Microsoft Foundry
 
@@ -76,11 +74,11 @@ ImageModel model = OpenAiOfficialImageModel.builder()
         .baseUrl(System.getenv("AZURE_OPENAI_ENDPOINT"))
         .apiKey(System.getenv("AZURE_OPENAI_KEY"))
         .modelName(GPT_IMAGE_1_MINI)
-        .isAzure(true) // Not necessary if the base URL ends with `openai.azure.com`
+        .isAzure(true) // 如果 base URL 以 `openai.azure.com` 结尾则不必要
         .build();
 ```
 
-You can also use "passwordless" authentication, as described in the [OpenAI Official Chat Model](/integrations/language-models/open-ai-official) documentation.
+也可以使用"无密码"身份验证，详情请参阅 [OpenAI Official Chat Model](/integrations/language-models/open-ai-official) 文档。
 
 #### GitHub Models
 
@@ -91,9 +89,9 @@ ImageModel model = OpenAiOfficialImageModel.builder()
         .build();
 ```
 
-## Using the models
+## 使用模型
 
-Once the model is configured, you can use it to generate images:
+配置好模型后，可以使用它来生成图像：
 
 ```java
 String imageUrl = imageModel

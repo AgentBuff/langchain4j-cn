@@ -4,8 +4,7 @@ sidebar_position: 2
 
 # Apache Tika
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -15,12 +14,10 @@ sidebar_position: 2
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `ApacheTikaDocumentParser`
 
-
-## Examples
+## 示例
 
 - [ApacheTikaDocumentParserTest](https://github.com/langchain4j/langchain4j/blob/main/document-parsers/langchain4j-document-parser-apache-tika/src/test/java/dev/langchain4j/data/document/parser/apache/tika/ApacheTikaDocumentParserTest.java)

@@ -6,27 +6,27 @@ sidebar_position: 3
 
 :::note
 
-This is the documentation for the `Azure OpenAI` integration, that uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+本文档介绍 `Azure OpenAI` 集成，它使用微软 Azure SDK，最适合与微软 Java 技术栈配合使用，包括高级 Azure 认证机制。
 
-LangChain4j provides 3 different integrations with OpenAI for using chat models, and this is #3 :
+LangChain4j 提供了 3 种不同的 OpenAI 集成方式，本文介绍的是第 3 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用自定义 Java 实现的 OpenAI REST API，最适合与 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）配合使用。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
 
 :::
 
-Azure OpenAI provides language models from OpenAI (`gpt-4`, `gpt-4o`, etc.) hosted on Azure, using the [Azure OpenAI Java SDK](https://learn.microsoft.com/en-us/java/api/overview/azure/ai-openai-readme).
+Azure OpenAI 提供托管在 Azure 上的 OpenAI 语言模型（`gpt-4`、`gpt-4o` 等），使用 [Azure OpenAI Java SDK](https://learn.microsoft.com/en-us/java/api/overview/azure/ai-openai-readme)。
 
-## Azure OpenAI Documentation
+## Azure OpenAI 文档
 
-- [Azure OpenAI Documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
+- [Azure OpenAI 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/)
 
-## Maven Dependencies
+## Maven 依赖
 
-### Plain Java
+### 纯 Java
 
-The `langchain4j-azure-open-ai` library is available on Maven Central.
+`langchain4j-azure-open-ai` 库已发布至 Maven Central。
 
 ```xml
 <dependency>
@@ -38,7 +38,7 @@ The `langchain4j-azure-open-ai` library is available on Maven Central.
 
 ### Spring Boot
 
-A Spring Boot starter is available to configure the `langchain4j-azure-open-ai` library more easily.
+提供了 Spring Boot Starter，可更便捷地配置 `langchain4j-azure-open-ai` 库。
 
 ```xml
 <dependency>
@@ -49,12 +49,12 @@ A Spring Boot starter is available to configure the `langchain4j-azure-open-ai` 
 ```
 
 :::note
-Before using any of the Azure OpenAI models, you need to [deploy](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal) them.
+在使用任何 Azure OpenAI 模型之前，需要先[部署](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/create-resource?pivots=web-portal)模型。
 :::
 
-## Creating `AzureOpenAiChatModel` with an API Key
+## 使用 API Key 创建 `AzureOpenAiChatModel`
 
-### Plain Java
+### 纯 Java
 
 ```java
 ChatModel model = AzureOpenAiChatModel.builder()
@@ -65,12 +65,12 @@ ChatModel model = AzureOpenAiChatModel.builder()
         .build();
 ```
 
-This will create an instance of `AzureOpenAiChatModel` with the specified endpoint, API key and deployment name.
-Other parameters can be customized by providing values in the builder.
+此操作将使用指定的端点、API Key 和部署名称创建 `AzureOpenAiChatModel` 实例。
+其他参数可通过构建器设置进行自定义。
 
 ### Spring Boot
 
-Add to the `application.properties`:
+在 `application.properties` 中添加：
 ```properties
 langchain4j.azure-open-ai.chat-model.endpoint=${AZURE_OPENAI_URL}
 langchain4j.azure-open-ai.chat-model.service-version=...
@@ -95,11 +95,11 @@ langchain4j.azure-open-ai.chat-model.user-agent-suffix=
 langchain4j.azure-open-ai.chat-model.custom-headers=...
 langchain4j.azure-open-ai.chat-model.reasoningEffort=...
 ```
-See the description of some of the parameters above [here](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions).
+部分参数说明请参阅[此处](https://learn.microsoft.com/en-us/azure/ai-services/openai/reference#completions)。
 
-This configuration will create an `AzureOpenAiChatModel` bean (with default model parameters),
-which can be either used by an [AI Service](/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter)
-or autowired where needed, for example:
+该配置将创建一个 `AzureOpenAiChatModel` Bean（使用默认模型参数），
+可供 [AI Service](/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter) 使用，
+也可在需要的地方自动注入，例如：
 
 ```java
 @RestController
@@ -118,11 +118,11 @@ class ChatModelController {
 }
 ```
 
-## Creating `AzureOpenAiChatModel` with Azure Credentials
+## 使用 Azure 凭证创建 `AzureOpenAiChatModel`
 
-API key can have a few security issues (can be committed, can be passed around, etc.).
-If you want to improve security, it is recommended to use Azure Credentials instead.
-For that, it is necessary to add the `azure-identity` dependency to the project.
+API Key 存在一些安全隐患（可能被提交到代码库、四处传递等）。
+如需提升安全性，建议改用 Azure 凭证。
+为此，需要在项目中添加 `azure-identity` 依赖。
 
 ```xml
 <dependency>
@@ -132,7 +132,7 @@ For that, it is necessary to add the `azure-identity` dependency to the project.
 </dependency>
 ```
 
-Then, you can create an `AzureOpenAiChatModel` using the [DefaultAzureCredentialBuilder](https://learn.microsoft.com/en-us/java/api/com.azure.identity.defaultazurecredentialbuilder?view=azure-java-stable) API:  
+然后可使用 [DefaultAzureCredentialBuilder](https://learn.microsoft.com/en-us/java/api/com.azure.identity.defaultazurecredentialbuilder?view=azure-java-stable) API 创建 `AzureOpenAiChatModel`：
 
 ```java
 ChatModel model = AzureOpenAiChatModel.builder()
@@ -143,28 +143,28 @@ ChatModel model = AzureOpenAiChatModel.builder()
 ```
 
 :::note
-Notice that you need to deploy your model using Managed Identities. Check the [Azure CLI deployment script](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/script/deploy-azure-openai-security.sh) for more information.
+注意：您需要使用托管身份来部署模型。更多信息请参阅 [Azure CLI 部署脚本](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/script/deploy-azure-openai-security.sh)。
 :::
 
-## Tools
+## 工具
 
-Tools, also known as "Function Calling", is supported an allows the model to call methods within your Java code, including parallel tools calling.
-"Function Calling" is described in the OpenAI documentation [here](https://platform.openai.com/docs/guides/function-calling).
+工具（也称为"函数调用"）受到支持，允许模型调用 Java 代码中的方法，包括并行工具调用。
+"函数调用"在 OpenAI 文档中的说明见[此处](https://platform.openai.com/docs/guides/function-calling)。
 
 :::note
-There is a complete tutorial on how to use "Function Calling" in LangChain4j [here](/tutorials/tools/).
+LangChain4j 中关于"函数调用"的完整教程请参阅[此处](/tutorials/tools/)。
 :::
 
-Functions can be specified using the `ToolSpecification` class, or more easily using the `@Tool` annotation, like in the following example:
+可使用 `ToolSpecification` 类或更便捷的 `@Tool` 注解来指定函数，示例如下：
 
 ```java
 class StockPriceService {
 
     private Logger log = Logger.getLogger(StockPriceService.class.getName());
 
-    @Tool("Get the stock price of a company by its ticker")
-    public double getStockPrice(@P("Company ticker") String ticker) {
-        log.info("Getting stock price for " + ticker);
+    @Tool("根据公司股票代码获取股价")
+    public double getStockPrice(@P("公司股票代码") String ticker) {
+        log.info("正在获取 " + ticker + " 的股价");
         if (Objects.equals(ticker, "MSFT")) {
             return 400.0;
         } else {
@@ -174,7 +174,7 @@ class StockPriceService {
 }
 ```
 
-Then, you can use the `StockPriceService` in an AI `Assistant` like this:
+然后可在 AI `Assistant` 中使用 `StockPriceService`：
 
 ```java
 
@@ -184,7 +184,7 @@ interface Assistant {
 
 public class Demo {
     String functionCalling(Model model) {
-        String question = "Is the current Microsoft stock higher than $450?";
+        String question = "微软当前股价是否高于 $450？";
         StockPriceService stockPriceService = new StockPriceService();
 
         Assistant assistant = AiServices.builder(Assistant.class)
@@ -200,15 +200,15 @@ public class Demo {
 }
 ```
 
-## Structured Outputs
+## 结构化输出
 
-Structured Outputs ensure that a model's responses adhere to a JSON schema.
+结构化输出确保模型的响应符合 JSON Schema。
 
 :::note
-The documentation for using Structured Outputs in LangChain4j is available [here](/tutorials/structured-outputs), and in the section below you will find Azure OpenAI-specific information.
+LangChain4j 中关于结构化输出的文档请参阅[此处](/tutorials/structured-outputs)，以下部分包含 Azure OpenAI 专属信息。
 :::
 
-The model needs to be configured with the `strictJsonSchema` parameter set to `true` in order to force the adherence to a JSON Schema:
+需要将模型的 `strictJsonSchema` 参数设置为 `true` 以强制遵循 JSON Schema：
 
 ```java
 ChatModel model = AzureOpenAiChatModel.builder()
@@ -221,15 +221,15 @@ ChatModel model = AzureOpenAiChatModel.builder()
 ```
 
 :::note
-If `strictJsonSchema` is set to `false` and you provide a JSON Schema, the model will still try to generate a response that adheres to the schema, but it will not fail if the response does not adhere to the schema. One reason to do this is for better performance.
+如果 `strictJsonSchema` 设置为 `false` 且提供了 JSON Schema，模型仍会尝试生成符合 Schema 的响应，但若响应不符合 Schema 也不会报错。这样做的一个原因是获得更好的性能。
 :::
 
-You can then use this model either with the high level `Assistant` API or the low level `ChatModel` API, as detailed below.
-When using it with the high level `Assistant` API, configure `supportedCapabilities(Set.of(RESPONSE_FORMAT_JSON_SCHEMA))` to enable structured outputs with a JSON schema.
+然后可通过高级 `Assistant` API 或低级 `ChatModel` API 使用该模型，详见下文。
+使用高级 `Assistant` API 时，请配置 `supportedCapabilities(Set.of(RESPONSE_FORMAT_JSON_SCHEMA))` 以启用带 JSON Schema 的结构化输出。
 
-### Using the high level `Assistant` API
+### 使用高级 `Assistant` API
 
-Like for Tools in the previous section, Structured Output can be automatically used with an AI `Assistant`:
+与上一节的工具类似，结构化输出可与 AI `Assistant` 自动配合使用：
 
 ```java
 
@@ -256,10 +256,10 @@ class Person {
 }
 ```
 
-This `Assistant` will make sure that the response adheres to a JSON schema corresponding in the `Person` class, like in the following example:
+该 `Assistant` 将确保响应符合 `Person` 类对应的 JSON Schema，示例如下：
 
 ```java
-String question = "Julien likes the colors blue, white and red";
+String question = "Julien 喜欢蓝色、白色和红色";
 
 PersonAssistant assistant = AiServices.builder(PersonAssistant.class)
                 .chatModel(chatModel)
@@ -268,16 +268,16 @@ PersonAssistant assistant = AiServices.builder(PersonAssistant.class)
 Person person = assistant.extractPerson(question);
 ```
 
-### Using the low level `ChatModel` API
+### 使用低级 `ChatModel` API
 
-This is a similar process to the high level API, but this time the JSON schema needs to be configured manually, as well as mapping the JSON response to a Java object.
+与高级 API 流程类似，但需要手动配置 JSON Schema，并将 JSON 响应映射到 Java 对象。
 
-Once the model is configured, the JSON Schema has to be specified in the `ChatRequest` object for each request.
-The model will then generate a response that adheres to the schema, like in this example:
+配置好模型后，需要在每次请求的 `ChatRequest` 对象中指定 JSON Schema。
+模型将生成符合 Schema 的响应，示例如下：
 
 ```java
 ChatRequest chatRequest = ChatRequest.builder()
-    .messages(UserMessage.from("Julien likes the colors blue, white and red"))
+    .messages(UserMessage.from("Julien 喜欢蓝色、白色和红色"))
     .responseFormat(ResponseFormat.builder()
         .type(JSON)
         .jsonSchema(JsonSchema.builder()
@@ -296,7 +296,7 @@ ChatRequest chatRequest = ChatRequest.builder()
 String answer = chatModel.chat(chatRequest).aiMessage().text();
 ```
 
-In this example, the `answer` will be:
+此示例中，`answer` 将为：
 ```json
 {
   "name": "Julien",
@@ -304,13 +304,13 @@ In this example, the `answer` will be:
 }
 ```
 
-This JSON response will then typically be deserialized into a Java object, using a library like Jackson.
+此 JSON 响应通常会使用 Jackson 等库反序列化为 Java 对象。
 
-## Creating `AzureOpenAiStreamingChatModel` to stream results
+## 创建 `AzureOpenAiStreamingChatModel` 以流式返回结果
 
-This implementation is similar to the `AzureOpenAiChatModel` above, but it streams the response token by token.
+该实现与上述 `AzureOpenAiChatModel` 类似，但逐 token 流式传输响应。
 
-### Plain Java
+### 纯 Java
 ```java
 StreamingChatModel model = AzureOpenAiStreamingChatModel.builder()
         .endpoint(System.getenv("AZURE_OPENAI_URL"))
@@ -321,7 +321,7 @@ StreamingChatModel model = AzureOpenAiStreamingChatModel.builder()
 ```
 
 ### Spring Boot
-Add to the `application.properties`:
+在 `application.properties` 中添加：
 ```properties
 langchain4j.azure-open-ai.streaming-chat-model.endpoint=${AZURE_OPENAI_URL}
 langchain4j.azure-open-ai.streaming-chat-model.service-version=...
@@ -345,14 +345,13 @@ langchain4j.azure-open-ai.streaming-chat-model.customHeaders=...
 langchain4j.azure-open-ai.streaming-chat-model.reasoningEffort=...
 ```
 
+## 音频转录
 
-## Audio Transcription
+Azure OpenAI 现已支持音频转录功能，可使用 Azure 上托管的先进模型将音频文件中的语音转换为文本。
 
-Azure OpenAI now supports audio transcription, enabling you to convert spoken language from audio files into text using state-of-the-art models hosted on Azure.
+### Maven 依赖
 
-### Maven Dependency
-
-The audio transcription feature is included in the main `langchain4j-azure-open-ai` package:
+音频转录功能已包含在主包 `langchain4j-azure-open-ai` 中：
 
 ```xml
 <dependency>
@@ -362,9 +361,9 @@ The audio transcription feature is included in the main `langchain4j-azure-open-
 </dependency>
 ```
 
-### Plain Java Usage
+### 纯 Java 用法
 
-You can transcribe audio files with the `AzureOpenAiAudioTranscriptionModel`:
+可使用 `AzureOpenAiAudioTranscriptionModel` 转录音频文件：
 
 ```java
 import dev.langchain4j.data.audio.Audio;
@@ -376,40 +375,39 @@ import java.nio.file.Files;
 AzureOpenAiAudioTranscriptionModel model = AzureOpenAiAudioTranscriptionModel.builder()
     .endpoint(System.getenv("AZURE_OPENAI_URL"))
     .apiKey(System.getenv("AZURE_OPENAI_KEY"))
-    .deploymentName("your-audio-model-deployment-name") // e.g., "whisper"
+    .deploymentName("your-audio-model-deployment-name") // 例如 "whisper"
     .build();
 
-// Read audio file as binary data
+// 以二进制数据读取音频文件
 File audioFile = new File("path/to/audio-file.wav");
 byte[] audioData = Files.readAllBytes(audioFile.toPath());
 
-// Create Audio object with binary data
+// 使用二进制数据创建 Audio 对象
 Audio audio = Audio.builder()
     .binaryData(audioData)
     .build();
 
-// Create transcription request
+// 创建转录请求
 AudioTranscriptionRequest request = AudioTranscriptionRequest.builder()
     .audio(audio)
-    .prompt("This is an audio file containing ...") // optional
-    .language("en") // optional
-    .temperature(0.0) // optional
+    .prompt("这是一个包含……的音频文件") // 可选
+    .language("zh") // 可选
+    .temperature(0.0) // 可选
     .build();
 
-// Transcribe audio
+// 转录音频
 AudioTranscriptionResponse response = model.transcribe(request);
 String transcript = response.text();
 System.out.println(transcript);
 ```
 
-### Notes
+### 注意事项
 
-- **Deployment**: You must deploy an audio transcription model (such as Whisper) in your Azure OpenAI resource. See the [Azure OpenAI documentation](https://learn.microsoft.com/en-us/azure/ai-services/openai/) for details.
-- **Supported Formats**: Common audio formats such as WAV, MP3, and FLAC are supported.
-- **Quotas and Pricing**: Audio transcription consumes resources from your Azure subscription. Review the applicable quotas and pricing in your Azure portal.
+- **部署**：您必须在 Azure OpenAI 资源中部署音频转录模型（如 Whisper）。详情请参阅 [Azure OpenAI 文档](https://learn.microsoft.com/en-us/azure/ai-services/openai/)。
+- **支持的格式**：支持 WAV、MP3、FLAC 等常见音频格式。
+- **配额与定价**：音频转录会消耗 Azure 订阅资源，请在 Azure 门户中查看相关配额和定价。
 
+## 示例
 
-## Examples
-
-- [Azure OpenAI Examples](https://github.com/langchain4j/langchain4j-examples/tree/main/azure-open-ai-examples/src/main/java)
-- [AzureOpenAiSecurityExamples](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/java/AzureOpenAiSecurityExamples.java) with its [Azure CLI deployment script](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/script/deploy-azure-openai-security.sh)
+- [Azure OpenAI 示例](https://github.com/langchain4j/langchain4j-examples/tree/main/azure-open-ai-examples/src/main/java)
+- [AzureOpenAiSecurityExamples](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/java/AzureOpenAiSecurityExamples.java)（含 [Azure CLI 部署脚本](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/script/deploy-azure-openai-security.sh)）

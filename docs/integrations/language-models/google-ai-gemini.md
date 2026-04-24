@@ -6,33 +6,33 @@ sidebar_position: 7
 
 https://ai.google.dev/gemini-api/docs
 
-## Table of Contents
+## 目录
 
-- [Maven Dependency](#maven-dependency)
+- [Maven 依赖](#maven-依赖)
 - [API Key](#api-key)
-- [Models Available](#models-available)
+- [可用模型](#可用模型)
 - [GoogleAiGeminiChatModel](#googleaigeminichatmodel)
-    - [Configuring](#configuring)
+    - [配置](#配置)
 - [GoogleAiGeminiStreamingChatModel](#googleaigeministreamingchatmodel)
-- [Tools](#tools)
-- [Structured Outputs](#structured-outputs)
-- [Python Code Execution](#python-code-execution)
-- [Multimodality](#multimodality)
-- [Thinking](#thinking)
+- [工具](#工具)
+- [结构化输出](#structured-outputs)
+- [Python 代码执行](#python-代码执行)
+- [多模态](#多模态)
+- [思考](#思考)
     - [Gemini 3 Pro](#gemini-3-pro)
 - [Gemini Files API](#gemini-files-api)
-    - [Uploading Files](#uploading-files)
-    - [Managing Files](#managing-files)
-    - [File States](#file-states)
-- [Batch Processing](#batch-processing)
+    - [上传文件](#上传文件)
+    - [管理文件](#管理文件)
+    - [文件状态](#文件状态)
+- [批量处理](#批量处理)
     - [GoogleAiBatchChatModel](#googleaibatchchatmodel)
-    - [Creating Batch Jobs](#creating-batch-jobs)
-    - [Handling Batch Responses](#handling-batch-responses)
-    - [Polling for Results](#polling-for-results)
-    - [Managing Batch Jobs](#managing-batch-jobs)
-    - [File-Based Batch Processing](#file-based-batch-processing)
+    - [创建批量任务](#创建批量任务)
+    - [处理批量响应](#处理批量响应)
+    - [轮询结果](#轮询结果)
+    - [管理批量任务](#管理批量任务)
+    - [基于文件的批量处理](#基于文件的批量处理)
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -42,13 +42,13 @@ https://ai.google.dev/gemini-api/docs
 </dependency>
 ```
 
-## API Key
+## API 密钥 {#api-key}
 
-Get an API key for free here: https://ai.google.dev/gemini-api/docs/api-key .
+在此免费获取 API Key：https://ai.google.dev/gemini-api/docs/api-key
 
-## Models available
+## 可用模型
 
-Check the list of [available models](https://ai.google.dev/gemini-api/docs/models/gemini) in the documentation.
+请查阅文档中的[可用模型列表](https://ai.google.dev/gemini-api/docs/models/gemini)。
 
 * `gemini-3-pro-preview`
 * `gemini-2.5-pro`
@@ -59,7 +59,7 @@ Check the list of [available models](https://ai.google.dev/gemini-api/docs/model
 
 ## GoogleAiGeminiChatModel
 
-The usual `chat(...)` methods are available:
+常用的 `chat(...)` 方法均可使用：
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -71,7 +71,7 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
 String response = gemini.chat("Hello Gemini!");
 ```
 
-As well, as the `ChatResponse chat(ChatRequest req)` method:
+以及 `ChatResponse chat(ChatRequest req)` 方法：
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -81,13 +81,13 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
 
 ChatResponse chatResponse = gemini.chat(ChatRequest.builder()
     .messages(UserMessage.from(
-        "How many R's are there in the word 'strawberry'?"))
+        "'strawberry' 这个单词里有几个 R？"))
     .build());
 
 String response = chatResponse.aiMessage().text();
 ```
 
-### Configuring
+### 配置
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -105,14 +105,14 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
     .presencePenalty(...)
     .maxOutputTokens(8192)
     .timeout(Duration.ofSeconds(60))
-    .responseFormat(ResponseFormat.JSON) // or .responseFormat(ResponseFormat.builder()...build()) 
+    .responseFormat(ResponseFormat.JSON) // 或 .responseFormat(ResponseFormat.builder()...build())
     .stopSequences(List.of(...))
-    .toolConfig(GeminiFunctionCallingConfig.builder()...build()) // or below
+    .toolConfig(GeminiFunctionCallingConfig.builder()...build()) // 或见下方
     .toolConfig(GeminiMode.ANY, List.of("fnOne", "fnTwo"))
     .allowCodeExecution(true)
     .includeCodeExecution(true)
     .logRequestsAndResponses(true)
-    .safetySettings(List<GeminiSafetySetting> or Map<GeminiHarmCategory, GeminiHarmBlockThreshold>)
+    .safetySettings(List<GeminiSafetySetting> 或 Map<GeminiHarmCategory, GeminiHarmBlockThreshold>)
     .thinkingConfig(...)
     .returnThinking(true)
     .sendThinking(true)
@@ -127,8 +127,8 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
 ```
 
 ## GoogleAiGeminiStreamingChatModel
-The `GoogleAiGeminiStreamingChatModel` allows streaming the text of a response token by token.
-The response must be handled by a `StreamingChatResponseHandler`.
+`GoogleAiGeminiStreamingChatModel` 支持逐 token 流式传输响应文本，响应需通过 `StreamingChatResponseHandler` 处理。
+
 ```java
 StreamingChatModel gemini = GoogleAiGeminiStreamingChatModel.builder()
         .apiKey(System.getenv("GEMINI_AI_KEY"))
@@ -137,7 +137,7 @@ StreamingChatModel gemini = GoogleAiGeminiStreamingChatModel.builder()
 
 CompletableFuture<ChatResponse> futureResponse = new CompletableFuture<>();
 
-gemini.chat("Tell me a joke about Java", new StreamingChatResponseHandler() {
+gemini.chat("讲一个关于 Java 的笑话", new StreamingChatResponseHandler() {
 
     @Override
     public void onPartialResponse(String partialResponse) {
@@ -158,14 +158,11 @@ gemini.chat("Tell me a joke about Java", new StreamingChatResponseHandler() {
         futureResponse.join();
 ```
 
-## Tools
+## 工具
 
-Tools (aka Function Calling) is supported, including parallel calls.
-You can either use the `chat(ChatRequest)` method that accepts a `ChatRequest` that can be configured with
-one or more `ToolSpecification`s to let Gemini know it can request a function to be called.
-Or you can use LangChain4j's `AiServices` to define them.
+支持工具（即函数调用），包括并行调用。可使用接受配置了一个或多个 `ToolSpecification` 的 `ChatRequest` 的 `chat(ChatRequest)` 方法，让 Gemini 知道它可以请求调用函数。也可以使用 LangChain4j 的 `AiServices` 来定义工具。
 
-Here is an example of a weather tool, using `AiServices`:
+以下是使用 `AiServices` 定义天气工具的示例：
 
 ```java
 record WeatherForecast(
@@ -174,9 +171,9 @@ record WeatherForecast(
     int temperature) {}
 
 class WeatherForecastService {
-    @Tool("Get the weather forecast for a location")
+    @Tool("获取某地点的天气预报")
     WeatherForecast getForecast(
-        @P("Location to get the forecast for") String location) {
+        @P("需要获取预报的地点") String location) {
         if (location.equals("Paris")) {
             return new WeatherForecast("Paris", "sunny", 20);
         } else if (location.equals("London")) {
@@ -209,45 +206,43 @@ WeatherAssistant weatherAssistant =
         .build();
 
 String tokyoWeather = weatherAssistant.chat(
-        "What is the weather forecast for Tokyo?");
+        "东京的天气预报是什么？");
 
 System.out.println("Gemini> " + tokyoWeather);
-// Gemini> The weather forecast for Tokyo is warm
-//         with a temperature of 32 degrees.
+// Gemini> 东京的天气预报是温暖的，温度为 32 度。
 ```
 
-## Structured Outputs
+## 结构化输出 {#structured-outputs}
 
-See more info on Structured Outputs [here](/tutorials/structured-outputs).
+有关结构化输出的更多信息，请参阅[此处](/tutorials/structured-outputs)。
 
-### Type-safe data extraction from free form text
-Large Language Models are great at extracting structured information out of unstructured text.
-In the following example, we retrieve a type-safe `WeatherForecast` object from a weather forecast text, thanks to `AiServices`:
+### 从自由文本中进行类型安全的数据提取
+大型语言模型非常擅长从非结构化文本中提取结构化信息。以下示例展示了如何借助 `AiServices`，从天气预报文本中提取类型安全的 `WeatherForecast` 对象：
+
 ```java
-// A type-safe / strongly-typed object 
-// representing the weather forecast
+// 代表天气预报的类型安全 / 强类型对象
 
 record WeatherForecast(
-    @Description("minimum temperature")
+    @Description("最低温度")
     Integer minTemperature,
-    @Description("maximum temperature")
+    @Description("最高温度")
     Integer maxTemperature,
-    @Description("chances of rain")
+    @Description("降雨概率")
     boolean rain
 ) { }
 
-// An interface contract, to interact with Gemini
+// 与 Gemini 交互的接口契约
 
 interface WeatherForecastAssistant {
     WeatherForecast extract(String forecast);
 }
 
-// Let's extract the data:
+// 提取数据：
 
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .modelName("gemini-2.5-flash")
-    .supportedCapabilities(RESPONSE_FORMAT_JSON_SCHEMA) // this is required to enable structured outputs feature
+    .supportedCapabilities(RESPONSE_FORMAT_JSON_SCHEMA) // 启用结构化输出功能必需
     .build();
 
 WeatherForecastAssistant forecastAssistant =
@@ -277,17 +272,18 @@ WeatherForecast forecast = forecastAssistant.extract("""
     """);
 ```
 
-### Response Format / Response Schema
-You can specify a `ResponseFormat` either when creating a `GoogleAiGeminiChatModel` or when calling it.
+### 响应格式 / 响应 Schema {#response-json-schema}
+可以在创建 `GoogleAiGeminiChatModel` 时或调用时指定 `ResponseFormat`。
 
-Especially, in cases of Json format, you can choose to define schema programmatically by creating the respective java objects or by providing raw json schema. 
-#### Response Schema {#response-json-schema}
-Let's have a look at an example to define a JSON schema for a recipe when creating the `GoogleAiGeminiChatModel`.
-In this example we declare the json schema using `JsonObjectSchema` class.
+对于 JSON 格式，尤其可以通过创建相应的 Java 对象或提供原始 JSON Schema 来以编程方式定义 Schema。
+
+#### 响应 Schema
+以下示例展示了在创建 `GoogleAiGeminiChatModel` 时为食谱定义 JSON Schema 的方式，使用 `JsonObjectSchema` 类声明 JSON Schema：
+
 ```java
 ResponseFormat responseFormat = ResponseFormat.builder()
         .type(ResponseFormatType.JSON)
-        .jsonSchema(JsonSchema.builder() // see [1] below
+        .jsonSchema(JsonSchema.builder() // 参见下方 [1]
                 .rootElement(JsonObjectSchema.builder()
                         .addStringProperty("title")
                         .addIntegerProperty("preparationTimeMinutes")
@@ -307,17 +303,17 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
         .responseFormat(responseFormat)
         .build();
 
-String recipeResponse = gemini.chat("Suggest a dessert recipe with strawberries");
+String recipeResponse = gemini.chat("推荐一道草莓甜点食谱");
 
 System.out.println(recipeResponse);
 ```
-Notes:
-- [1] - The `JsonSchema` can be generated automatically from your class using `JsonSchemas.jsonSchemaFrom()` helper method.
+注意：
+- [1] - 可以使用 `JsonSchemas.jsonSchemaFrom()` 辅助方法从类自动生成 `JsonSchema`：
 ```java
 JsonSchema jsonSchema = JsonSchemas.jsonSchemaFrom(TripItinerary.class).get();
 ```
 
-Let's have a look at an example to define a JSON schema for a recipe when calling the `GoogleAiGeminiChatModel`:
+以下示例展示了在调用 `GoogleAiGeminiChatModel` 时为食谱定义 JSON Schema 的方式：
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
         .apiKey(System.getenv("GEMINI_AI_KEY"))
@@ -327,7 +323,7 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
 ResponseFormat responseFormat = ...;
 
 ChatRequest chatRequest = ChatRequest.builder()
-        .messages(UserMessage.from("Suggest a dessert recipe with strawberries"))
+        .messages(UserMessage.from("推荐一道草莓甜点食谱"))
         .responseFormat(responseFormat)
         .build();
 
@@ -336,9 +332,9 @@ ChatResponse chatResponse = gemini.chat(chatRequest);
 System.out.println(chatResponse.aiMessage().text());
 ```
 
-#### Raw Response Schema
-Another example shows how we can use the `responseJsonSchema` of the Gemini API to provide a raw JSON schema using `JsonRawSchema` class.  
-Please be cautious to use only the [supported types](https://ai.google.dev/gemini-api/docs/structured-output?example=recipe#json_schema_support) of the Gemini API.
+#### 原始响应 Schema
+以下示例展示了如何使用 Gemini API 的 `responseJsonSchema`，通过 `JsonRawSchema` 类提供原始 JSON Schema。请注意仅使用 Gemini API [支持的类型](https://ai.google.dev/gemini-api/docs/structured-output?example=recipe#json_schema_support)。
+
 ```
 String rawSchema = """
 {
@@ -406,20 +402,22 @@ GoogleAiGeminiChatModel gemini = GoogleAiGeminiChatModel.builder()
         
 UserMessage userMessage = UserMessage.from(
         """
-           Tell me about a detective named Sherlock Holmes,
-           who was born on November 28 1852 and sees the world over six feet from the ground.
-           He is a trouble-seeker, an active volunteer and lives in London at 221B Baker Street.
-           He plays the violin and he likes to conduct various physics and chemistry experiments.
-           He accepts clients or prefers to be contacted at 09:00am.
+           告诉我关于一位名叫夏洛克·福尔摩斯的侦探，
+           他出生于 1852 年 11 月 28 日，身高超过 6 英尺。
+           他是一个惹麻烦的人，积极参与志愿活动，
+           居住在伦敦贝克街 221B。
+           他拉小提琴，喜欢进行各种物理和化学实验。
+           他接受客户，或偏好在早上 09:00 联系。
            """);
 
 ChatResponse response = gemini.chat(ChatRequest.builder()
         .messages(userMessage)
         .build());
 ```
-### JSON Mode
 
-You can force Gemini to reply in JSON:
+### JSON 模式
+
+可强制 Gemini 以 JSON 格式回复：
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -428,21 +426,18 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
     .responseFormat(ResponseFormat.JSON)
     .build();
 
-String roll = gemini.chat("Roll a 6-sided dice");
+String roll = gemini.chat("掷一个 6 面骰子");
 
 System.out.println(roll);
 // {"roll": "3"}
 ```
 
-A system prompt can further describe what the JSON output should look like.
-Gemini normally follows the suggested schema, but it is not guaranteed.
-If you want a guaranteed application of a JSON schema, you should define a response format, as explained in the previous section.
+系统提示词可进一步描述 JSON 输出应是什么样的。Gemini 通常会遵循建议的 Schema，但不保证。如需严格应用 JSON Schema，应如上一节所述定义响应格式。
 
 
-## Python code execution
+## Python 代码执行
 
-Beyond function calling, Google AI Gemini allows to create and execute Python code in a sandboxed environment.
-This is particularly interesting for situations where more advanced calculations or logic is needed.
+除函数调用外，Google AI Gemini 还允许在沙盒环境中创建和执行 Python 代码。这对于需要更复杂计算或逻辑的场景特别有用。
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -453,30 +448,29 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
     .build();
 ```
 
-There are 2 builder methods:
-* `allowCodeExecution(true)`: to let Gemini know it can do some Python coding
-* `includeCodeExecutionOutput(true)`: if you want to see the actual Python script it came up with, and the output of its execution
+有两个构建器方法：
+* `allowCodeExecution(true)`：让 Gemini 知道它可以编写 Python 代码
+* `includeCodeExecutionOutput(true)`：如果想查看它生成的实际 Python 脚本及其执行输出
 
 ```java
 ChatResponse mathQuizz = gemini.chat(
     SystemMessage.from("""
-        You are an expert mathematician.
-        When asked a math problem or logic problem,
-        you can solve it by creating a Python program,
-        and execute it to return the result.
+        你是一位数学专家。
+        当遇到数学或逻辑问题时，
+        你可以通过编写 Python 程序并执行它来返回结果。
         """),
     UserMessage.from("""
-        Implement the Fibonacci and Ackermann functions.
-        What is the result of `fibonacci(22)` - ackermann(3, 4)?
+        实现斐波那契和阿克曼函数。
+        `fibonacci(22)` - ackermann(3, 4) 的结果是什么？
         """)
 );
 ```
 
-Gemini will craft a Python script, execute it on its server, and return the result.
-Since we asked to see the code and output of the execution, the answer will look as follows:
+Gemini 将编写一个 Python 脚本，在其服务器上执行，并返回结果。
+由于我们要求查看代码和执行输出，回答将如下所示：
 
 ~~~
-Code executed:
+执行的代码：
 ```python
 def fibonacci(n):
     if n <= 1:
@@ -494,41 +488,41 @@ def ackermann(m, n):
 
 print(fibonacci(22) - ackermann(3, 4))
 ```
-Output:
+输出：
 ```
 17586
 ```
-The result of `fibonacci(22) - ackermann(3, 4)` is **17586**.
+`fibonacci(22) - ackermann(3, 4)` 的结果是 **17586**。
 
-I implemented the Fibonacci and Ackermann functions in Python.
-Then I called `fibonacci(22) - ackermann(3, 4)` and printed the result.
+我用 Python 实现了斐波那契和阿克曼函数。
+然后调用 `fibonacci(22) - ackermann(3, 4)` 并打印结果。
 ~~~
 
-If we hadn't asked for the code / output, we would have received only the following text:
+如果未要求查看代码/输出，则只会收到以下文本：
 
 ```
-The result of `fibonacci(22) - ackermann(3, 4)` is **17586**.
+`fibonacci(22) - ackermann(3, 4)` 的结果是 **17586**。
 
-I implemented the Fibonacci and Ackermann functions in Python.
-Then I called `fibonacci(22) - ackermann(3, 4)` and printed the result.
+我用 Python 实现了斐波那契和阿克曼函数。
+然后调用 `fibonacci(22) - ackermann(3, 4)` 并打印结果。
 ```
 
-## Multimodality
+## 多模态
 
-Gemini is a multimodal model, which means it can both accept and generate different _modalities_ besides text.
+Gemini 是一个多模态模型，这意味着它不仅能接受文本，还能接受和生成多种不同的**模态**。
 
-### Input Modalities
+### 输入模态
 
-In input, Gemini accepts:
-* pictures (`ImageContent`)
-* videos (`VideoContent`)
-* audio files (`AudioContent`)
-* PDF files (`PdfFileContent`)
+输入方面，Gemini 支持：
+* 图片（`ImageContent`）
+* 视频（`VideoContent`）
+* 音频文件（`AudioContent`）
+* PDF 文件（`PdfFileContent`）
 
-The example below shows how to mix a text prompt with an image:
+以下示例展示了如何将文本提示与图片混合使用：
 
 ```java
-// PNG of the cute colorful parrot mascot of the LangChain4j project
+// LangChain4j 项目可爱彩色鹦鹉吉祥物的 PNG 图片
 String base64Img = b64encoder.encodeToString(readBytes(
   "https://avatars.githubusercontent.com/u/132277850?v=4"));
 
@@ -541,16 +535,15 @@ ChatResponse response = gemini.chat(
     UserMessage.from(
         ImageContent.from(base64Img, "image/png"),
         TextContent.from("""
-            Do you think this logo fits well
-            with the project description?
+            你认为这个 Logo 与项目描述搭配得好吗？
             """)
     )
 );
 ```
 
-### Image Generation Output
+### 图片生成输出
 
-Some Gemini models (such as `gemini-2.5-flash-image`) can generate images as part of their response. When images are generated, they are stored in the `AiMessage` attributes and can be accessed using the `GeneratedImageHelper` utility class.
+部分 Gemini 模型（如 `gemini-2.5-flash-image`）可在响应中生成图片。生成的图片存储在 `AiMessage` 的属性中，可通过 `GeneratedImageHelper` 工具类访问。
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -558,50 +551,49 @@ ChatModel gemini = GoogleAiGeminiChatModel.builder()
     .modelName("gemini-2.5-flash-image")
     .build();
 
-ChatResponse response = gemini.chat(UserMessage.from("A high-resolution, studio-lit product photograph of a minimalist ceramic coffee mug in matte black"));
+ChatResponse response = gemini.chat(UserMessage.from("一张高分辨率、工作室打光的极简哑光黑色陶瓷咖啡杯产品照片"));
 
-// Extract generated images from the response
+// 从响应中提取生成的图片
 AiMessage aiMessage = response.aiMessage();
 List<Image> generatedImages = GeneratedImageHelper.getGeneratedImages(aiMessage);
 
 if (GeneratedImageHelper.hasGeneratedImages(aiMessage)) {
-    System.out.println("Generated " + generatedImages.size() + " image(s)");
-    System.out.println("Text response: " + aiMessage.text());
+    System.out.println("生成了 " + generatedImages.size() + " 张图片");
+    System.out.println("文本响应：" + aiMessage.text());
 
     for (Image image : generatedImages) {
         String base64Data = image.base64Data();
         String mimeType = image.mimeType();
         
-        // You can now save the image, display it, or process it further
-        // For example, save to file:
+        // 现在可以保存图片、显示它或进一步处理
+        // 例如，保存到文件：
         byte[] imageBytes = Base64.getDecoder().decode(base64Data);
         Files.write(Paths.get("generated_image.png"), imageBytes);
     }
 } else {
-    System.out.println("Text response: " + aiMessage.text());
+    System.out.println("文本响应：" + aiMessage.text());
 }
 ```
 
-### Media Resolution
+### 媒体分辨率
 
-You can control the resolution of media (images, videos, PDFs) sent to the model. This can be done globally or per-part (per image).
+可控制发送给模型的媒体（图片、视频、PDF）的分辨率，可以全局设置或按部件（每张图片）设置。
 
-#### Global Media Resolution
+#### 全局媒体分辨率
 
-To set the media resolution for all media parts in a request, use the `.mediaResolution()` builder method:
+使用 `.mediaResolution()` 构建器方法为请求中的所有媒体部件设置分辨率：
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .modelName("gemini-2.5-flash")
-    .mediaResolution(GeminiMediaResolutionLevel.MEDIA_RESOLUTION_LOW) // or MEDIUM, HIGH, ULTRA_HIGH, UNSPECIFIED
+    .mediaResolution(GeminiMediaResolutionLevel.MEDIA_RESOLUTION_LOW) // 或 MEDIUM、HIGH、ULTRA_HIGH、UNSPECIFIED
     .build();
 ```
 
-#### Per-Part Media Resolution (Gemini 3)
+#### 按部件媒体分辨率（Gemini 3）
 
-With Gemini 3, you can specify the resolution for individual images using the `DetailLevel` in `ImageContent`.
-First, enable this feature in the builder, then set the detail level on `ImageContent`:
+使用 Gemini 3 时，可通过 `ImageContent` 中的 `DetailLevel` 为单张图片指定分辨率。先在构建器中启用此功能，然后在 `ImageContent` 上设置详细级别：
 
 ```java
 ChatModel gemini = GoogleAiGeminiChatModel.builder()
@@ -614,40 +606,32 @@ ChatResponse response = gemini.chat(
     UserMessage.from(
         ImageContent.from(url1, ImageContent.DetailLevel.LOW),
         ImageContent.from(url2, ImageContent.DetailLevel.HIGH),
-        TextContent.from("Compare these two images")
+        TextContent.from("比较这两张图片")
     )
 );
 ```
 
-Supported `DetailLevel` values and their mapping to Gemini's resolution levels:
+支持的 `DetailLevel` 值及其与 Gemini 分辨率级别的映射：
 - `LOW` -> `MEDIA_RESOLUTION_LOW`
 - `MEDIUM` -> `MEDIA_RESOLUTION_MEDIUM`
 - `HIGH` -> `MEDIA_RESOLUTION_HIGH`
-- `ULTRA_HIGH` -> `MEDIA_RESOLUTION_ULTRA_HIGH` (Highest token count, required for specific use cases such as computer use)
+- `ULTRA_HIGH` -> `MEDIA_RESOLUTION_ULTRA_HIGH`（最高 token 数，适用于计算机使用等特定场景）
 - `AUTO` -> `MEDIA_RESOLUTION_UNSPECIFIED`
 
-## Thinking
+## 思考
 
-Both `GoogleAiGeminiChatModel` and `GoogleAiGeminiStreamingChatModel`
-support [thinking](https://ai.google.dev/gemini-api/docs/thinking).
+`GoogleAiGeminiChatModel` 和 `GoogleAiGeminiStreamingChatModel` 均支持[思考](https://ai.google.dev/gemini-api/docs/thinking)功能。
 
-The following parameters also control thinking behaviour:
-- `GeminiThinkingConfig.includeThoughts` and `thinkingBudget`: enables thinking, see more details [here](https://ai.google.dev/gemini-api/docs/thinking).
-- `returnThinking`: controls whether to return thinking (if available) inside `AiMessage.thinking()`
-  and whether to invoke `StreamingChatResponseHandler.onPartialThinking()` and `TokenStream.onPartialThinking()`
-  callbacks when using `GoogleAiGeminiStreamingChatModel`.
-  Disabled by default. If enabled, tinking signatures will also be stored and returned inside the `AiMessage.attributes()`.
-- `sendThinking`: controls whether to send thinking and signatures stored in `AiMessage` to the LLM in follow-up requests.
-- Disabled by default.
+以下参数控制思考行为：
+- `GeminiThinkingConfig.includeThoughts` 和 `thinkingBudget`：启用思考功能，详情参见[此处](https://ai.google.dev/gemini-api/docs/thinking)。
+- `returnThinking`：控制是否在 `AiMessage.thinking()` 中返回思考内容（如果可用），以及在使用 `GoogleAiGeminiStreamingChatModel` 时是否触发 `StreamingChatResponseHandler.onPartialThinking()` 和 `TokenStream.onPartialThinking()` 回调。默认禁用。若启用，思考签名也将存储在 `AiMessage.attributes()` 中并随之返回。
+- `sendThinking`：控制是否将存储在 `AiMessage` 中的思考内容和签名发送给后续请求中的 LLM。默认禁用。
 
 :::note
-Please note that when `returnThinking` is not set (is `null`) and `thinkingConfig` is set,
-thinking text will be prepended to the actual response inside the `AiMessage.text()` field
-and `StreamingChatResponseHandler.onPartialResponse()` will be invoked
-instead of `StreamingChatResponseHandler.onPartialThinking()`.
+请注意，当 `returnThinking` 未设置（为 `null`）且 `thinkingConfig` 已设置时，思考文本将被附加到 `AiMessage.text()` 字段中的实际响应之前，并触发 `StreamingChatResponseHandler.onPartialResponse()` 而非 `StreamingChatResponseHandler.onPartialThinking()`。
 :::
 
-Here is an example of how to configure thinking:
+思考功能配置示例：
 ```java
 GeminiThinkingConfig thinkingConfig = GeminiThinkingConfig.builder()
         .includeThoughts(true)
@@ -665,120 +649,118 @@ ChatModel model = GoogleAiGeminiChatModel.builder()
 
 ### Gemini 3 Pro
 
-With Gemini 3 Pro, the thinking configuration introduces a _thinking level_, either `"low"` or `"high"` (high being the default).
-It's possible to set the level within the thinking configuration:
+使用 Gemini 3 Pro 时，思考配置引入了**思考级别**，可选 `"low"` 或 `"high"`（默认为 high）。可在思考配置中设置级别：
+
 ```java
 GoogleAiGeminiChatModel modelHigh = GoogleAiGeminiChatModel.builder()
         .modelName("gemini-3-pro-preview")
         .apiKey(System.getenv("GOOGLE_AI_GEMINI_API_KEY"))
         .thinkingConfig(GeminiThinkingConfig.builder()
-                .thinkingLevel(LOW) // or HIGH
+                .thinkingLevel(LOW) // 或 HIGH
                 .build())
         .sendThinking(true)
         .returnThinking(true)
         .build();
 ```
 
-You can pass either a string `"high"` / `"low"` or a `GeminiThinkingConfig.GeminiThinkingLevel.HIGH`
-/ `GeminiThinkingConfig.GeminiThinkingLevel.LOW` enum value.
+可以传入字符串 `"high"` / `"low"` 或 `GeminiThinkingConfig.GeminiThinkingLevel.HIGH` / `GeminiThinkingConfig.GeminiThinkingLevel.LOW` 枚举值。
 
-When using Gemini 3 Pro, it's mandatory to configure `sendThinking()` and `returnThinking()` to `true`,
-to ensure [thought signatures](https://ai.google.dev/gemini-api/docs/thought-signatures) are properly passed around to the model.
+使用 Gemini 3 Pro 时，必须将 `sendThinking()` 和 `returnThinking()` 设置为 `true`，以确保[思考签名](https://ai.google.dev/gemini-api/docs/thought-signatures)被正确传递给模型。
 
-## Gemini Files API
+## Gemini 文件 API {#gemini-files-api}
 
-The Gemini Files API allows you to upload and manage media files for use with Gemini models. This is particularly useful when your total request size exceeds 20 MB, as files can be uploaded separately and referenced in your content generation requests.
+Gemini Files API 允许您上传和管理媒体文件，供 Gemini 模型使用。当总请求大小超过 20 MB 时尤为有用，因为文件可以单独上传并在内容生成请求中引用。
 
-### Key Features
+### 主要特性
 
-- **Multimodal Support**: Upload images, audio, videos, and documents
-- **Storage**: Files are stored for 48 hours
-- **Capacity**: Up to 20 GB of files per project, with a maximum of 2 GB per individual file
-- **No Cost**: The Files API is available at no charge
+- **多模态支持**：可上传图片、音频、视频和文档
+- **存储**：文件存储 48 小时
+- **容量**：每个项目最多 20 GB 文件，单个文件最大 2 GB
+- **免费**：Files API 免费使用
 
-### Uploading Files
+### 上传文件
 
-You can upload files in two ways:
+有两种上传文件的方式：
 
-**From a file path:**
+**从文件路径上传：**
 
 ```java
 GeminiFiles filesApi = GeminiFiles.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .build();
 
-// Upload from a file path
+// 从文件路径上传
 Path filePath = Paths.get("path/to/your/file.pdf");
-GeminiFile uploadedFile = filesApi.uploadFile(filePath, "My Document");
+GeminiFile uploadedFile = filesApi.uploadFile(filePath, "我的文档");
 
-System.out.println("File uploaded: " + uploadedFile.name());
-System.out.println("File URI: " + uploadedFile.uri());
+System.out.println("文件已上传：" + uploadedFile.name());
+System.out.println("文件 URI：" + uploadedFile.uri());
 ```
 
-**From a byte array:**
+**从字节数组上传：**
 
 ```java
 byte[] fileBytes = Files.readAllBytes(Paths.get("path/to/file.jpg"));
 GeminiFile uploadedFile = filesApi.uploadFile(
     fileBytes,
     "image/jpeg",
-    "My Image"
+    "我的图片"
 );
 ```
 
-### Managing Files
+### 管理文件
 
-**List all uploaded files:**
+**列出所有已上传文件：**
 
 ```java
 List<GeminiFile> files = filesApi.listFiles();
 for (GeminiFile file : files) {
-    System.out.println("File: " + file.displayName() + " (" + file.name() + ")");
+    System.out.println("文件：" + file.displayName() + " (" + file.name() + ")");
 }
 ```
 
-**Get file metadata:**
+**获取文件元数据：**
 
 ```java
 GeminiFile file = filesApi.getMetadata("files/abc123");
-System.out.println("File size: " + file.sizeBytes() + " bytes");
-System.out.println("MIME type: " + file.mimeType());
-System.out.println("Created: " + file.createTime());
-System.out.println("Expires: " + file.expirationTime());
+System.out.println("文件大小：" + file.sizeBytes() + " 字节");
+System.out.println("MIME 类型：" + file.mimeType());
+System.out.println("创建时间：" + file.createTime());
+System.out.println("过期时间：" + file.expirationTime());
 ```
 
-**Delete a file:**
+**删除文件：**
 
 ```java
 filesApi.deleteFile("files/abc123");
-System.out.println("File deleted successfully");
+System.out.println("文件删除成功");
 ```
 
-### File States
+### 文件状态
 
-Files can be in different states during their lifecycle:
+文件在其生命周期中可处于不同状态：
 
 ```java
 GeminiFile file = filesApi.getMetadata("files/abc123");
 
 if (file.isActive()) {
-    System.out.println("File is ready to use");
+    System.out.println("文件已就绪");
 } else if (file.isProcessing()) {
-    System.out.println("File is still being processed");
+    System.out.println("文件正在处理中");
 } else if (file.isFailed()) {
-    System.out.println("File processing failed");
+    System.out.println("文件处理失败");
 }
 ```
 
-## Batch Processing
+## 批量处理
 
 ### GoogleAiBatchChatModel
 
-The `GoogleAiBatchChatModel` provides an interface for processing large volumes of chat requests asynchronously at a reduced cost [(50% of standard pricing)](https://ai.google.dev/gemini-api/docs/batch-api). It is ideal for non-urgent, large-scale tasks with a 24-hour turnaround SLO.
+`GoogleAiBatchChatModel` 提供了以异步方式大批量处理聊天请求的接口，[成本降低 50%](https://ai.google.dev/gemini-api/docs/batch-api)。非常适合无时间紧迫性的大规模任务，SLO 为 24 小时。
 
-### Creating Batch Jobs
+### 创建批量任务
 
-**Inline batch creation:**
+**内联批量创建：**
 
 ```java
 GoogleAiBatchChatModel batchModel = GoogleAiBatchChatModel.builder()
@@ -786,249 +768,246 @@ GoogleAiBatchChatModel batchModel = GoogleAiBatchChatModel.builder()
     .modelName("gemini-2.5-flash")
     .build();
 
-// Create batch requests
+// 创建批量请求
 List<ChatRequest> requests = List.of(
     ChatRequest.builder()
-        .messages(UserMessage.from("What is the capital of France?"))
+        .messages(UserMessage.from("法国的首都是哪里？"))
         .build(),
     ChatRequest.builder()
-        .messages(UserMessage.from("What is the capital of Germany?"))
+        .messages(UserMessage.from("德国的首都是哪里？"))
         .build(),
     ChatRequest.builder()
-        .messages(UserMessage.from("What is the capital of Italy?"))
+        .messages(UserMessage.from("意大利的首都是哪里？"))
         .build()
 );
 
-// Submit the batch
+// 提交批量任务
 BatchResponse response = batchModel.createBatchInline(
-    "Geography Questions Batch",  // display name
-    0L,                            // priority (optional, defaults to 0)
+    "地理问题批次",   // 显示名称
+    0L,             // 优先级（可选，默认为 0）
     requests
 );
 ```
 
-**File-based batch creation:**
+**基于文件的批量创建：**
 
-For larger batches or when you need more control over the request format, you can create a batch from an uploaded file:
+对于较大的批次或需要对请求格式进行更多控制的场景，可从上传的文件创建批次：
 
 ```java
-// First, upload a file with batch requests
+// 首先上传包含批量请求的文件
 GeminiFiles filesApi = GeminiFiles.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .build();
 
 GeminiFile uploadedFile = filesApi.uploadFile(
     Paths.get("batch_chat_requests.jsonl"),
-    "Batch Chat Requests"
+    "批量聊天请求"
 );
 
-// Wait for file to be active
+// 等待文件激活
 while (uploadedFile.isProcessing()) {
     Thread.sleep(1000);
     uploadedFile = filesApi.getMetadata(uploadedFile.name());
 }
 
-// Create batch from file
+// 从文件创建批次
 BatchResponse response = batchModel.createBatchFromFile(
-    "My Batch Job",
+    "我的批量任务",
     uploadedFile
 );
 ```
 
-### Handling Batch Responses
+### 处理批量响应
 
-The `BatchResponse` is a sealed interface with three possible states:
+`BatchResponse` 是一个密封接口，有三种可能的状态：
 
 ```java
-BatchResponse response = batchModel.createBatchInline("My Batch", null, requests);
+BatchResponse response = batchModel.createBatchInline("我的批次", null, requests);
 
 switch (response) {
     case BatchIncomplete incomplete -> {
-        System.out.println("Batch is " + incomplete.state());
-        System.out.println("Batch name: " + incomplete.batchName().value());
+        System.out.println("批次状态：" + incomplete.state());
+        System.out.println("批次名称：" + incomplete.batchName().value());
     }
     case BatchSuccess success -> {
-        System.out.println("Batch completed successfully!");
+        System.out.println("批次成功完成！");
         
-        // Process successful responses
+        // 处理成功的响应
         for (ChatResponse chatResponse : success.responses()) {
             System.out.println(chatResponse.aiMessage().text());
         }
         
-        // Check for individual request errors within the batch
+        // 检查批次中单个请求的错误
         if (!success.errors().isEmpty()) {
-            System.out.println("Some requests failed:");
+            System.out.println("部分请求失败：");
             for (var error : success.errors()) {
-                System.err.println("Error code: " + error.code() + ", message: " + error.message());
+                System.err.println("错误码：" + error.code() + "，消息：" + error.message());
             }
         }
     }
     case BatchError error -> {
-        System.err.println("Batch failed: " + error.message());
-        System.err.println("Error code: " + error.code());
-        System.err.println("State: " + error.state());
+        System.err.println("批次失败：" + error.message());
+        System.err.println("错误码：" + error.code());
+        System.err.println("状态：" + error.state());
     }
 }
 ```
 
-**Note:** A `BatchSuccess` response indicates the batch job completed, but individual requests within the batch may have 
-failed. The `success.errors()` list contains any individual request failures (e.g., timeouts, rate limits), 
-while `success.responses()` contains the successful responses. Always check both lists to handle partial failures 
-gracefully.
+**注意：** `BatchSuccess` 响应表示批量任务已完成，但批次中的单个请求可能已失败。`success.errors()` 列表包含所有单个请求的失败（如超时、速率限制），而 `success.responses()` 包含成功的响应。请务必同时检查两个列表以优雅地处理部分失败。
 
 
-### Polling for Results
+### 轮询结果
 
-Since batch processing is asynchronous, you need to poll for results (results might take up to 24 hours to process):
+由于批量处理是异步的，需要轮询结果（结果最多可能需要 24 小时）：
 
 ```java
 BatchResponse initialResponse = batchModel.createBatchInline(
-    "My Batch",
+    "我的批次",
     null,
     requests
 );
 
-// Extract the batch name for polling
+// 提取批次名称用于轮询
 BatchName batchName = switch (initialResponse) {
     case BatchIncomplete incomplete -> incomplete.batchName();
     case BatchSuccess success -> success.batchName();
-    case BatchError error -> throw new RuntimeException("Batch creation failed");
+    case BatchError error -> throw new RuntimeException("批次创建失败");
 };
 
-// Poll until completion
+// 轮询直到完成
 BatchResponse result;
 do {
-    Thread.sleep(5000); // Wait 5 seconds between polls
+    Thread.sleep(5000); // 每次轮询等待 5 秒
     result = batchModel.retrieveBatchResults(batchName);
 } while (result instanceof BatchIncomplete);
 
-// Process final result
+// 处理最终结果
 if (result instanceof BatchSuccess success) {
-    System.out.println("Successful responses: " + success.responses().size());
+    System.out.println("成功响应数：" + success.responses().size());
     for (ChatResponse chatResponse : success.responses()) {
         System.out.println(chatResponse.aiMessage().text());
     }
     
-    // Handle any individual request failures
+    // 处理单个请求失败
     if (!success.errors().isEmpty()) {
-        System.out.println("Failed requests: " + success.errors().size());
+        System.out.println("失败请求数：" + success.errors().size());
         for (var error : success.errors()) {
-            System.err.println("Error: " + error.code() + " - " + error.message());
+            System.err.println("错误：" + error.code() + " - " + error.message());
         }
     }
 } else if (result instanceof BatchError error) {
-    System.err.println("Batch failed: " + error.message());
+    System.err.println("批次失败：" + error.message());
 }
 ```
 
-### Managing Batch Jobs
+### 管理批量任务
 
-**Cancel a batch job:**
+**取消批量任务：**
 
 ```java
-BatchName batchName = // ... obtained from createBatchInline
+BatchName batchName = // ... 从 createBatchInline 获取
 
 try {
     batchModel.cancelBatchJob(batchName);
-    System.out.println("Batch cancelled successfully");
+    System.out.println("批次取消成功");
 } catch (HttpException e) {
-    System.err.println("Failed to cancel batch: " + e.getMessage());
+    System.err.println("批次取消失败：" + e.getMessage());
 }
 ```
 
-**Delete a batch job:**
+**删除批量任务：**
 
 ```java
 batchModel.deleteBatchJob(batchName);
-System.out.println("Batch deleted successfully");
+System.out.println("批次删除成功");
 ```
 
-**List batch jobs:**
+**列出批量任务：**
 
 ```java
-// List first page of batch jobs
+// 列出第一页批量任务
 BatchList<ChatResponse> batchList = batchModel.listBatchJobs(10, null);
 
 for (BatchResponse<ChatResponse> batch : batchList.batches()) {
-    System.out.println("Batch: " + batch);
+    System.out.println("批次：" + batch);
 }
 
-// Get next page if available
+// 如果有下一页
 if (batchList.nextPageToken() != null) {
     BatchList<ChatResponse> nextPage = batchModel.listBatchJobs(10, batchList.nextPageToken());
 }
 ```
 
-### File-Based Batch Processing
+### 基于文件的批量处理
 
-For advanced use cases, you can write batch requests to a JSONL file and upload it:
+对于高级用例，可将批量请求写入 JSONL 文件并上传：
 
 ```java
-// Create a JSONL file with batch requests
+// 创建包含批量请求的 JSONL 文件
 Path batchFile = Files.createTempFile("batch", ".jsonl");
 
 try (JsonLinesWriter writer = new StreamingJsonLinesWriter(batchFile)) {
     List<BatchFileRequest<ChatRequest>> fileRequests = List.of(
         new BatchFileRequest<>("request-1", ChatRequest.builder()
-            .messages(UserMessage.from("Question 1"))
+            .messages(UserMessage.from("问题 1"))
             .build()),
         new BatchFileRequest<>("request-2", ChatRequest.builder()
-            .messages(UserMessage.from("Question 2"))
+            .messages(UserMessage.from("问题 2"))
             .build())
     );
     
     batchModel.writeBatchToFile(writer, fileRequests);
 }
 
-// Upload the file
+// 上传文件
 GeminiFiles filesApi = GeminiFiles.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .build();
 
-GeminiFile uploadedFile = filesApi.uploadFile(batchFile, "Batch Chat Requests");
+GeminiFile uploadedFile = filesApi.uploadFile(batchFile, "批量聊天请求");
 
-// Create batch from file
+// 从文件创建批次
 BatchResponse response = batchModel.createBatchFromFile(
-    "File-Based Chat Batch",
+    "基于文件的聊天批次",
     uploadedFile
 );
 ```
 
-### Batch Job States
+### 批量任务状态
 
-The `BatchJobState` enum represents the possible states of a batch job:
+`BatchJobState` 枚举代表批量任务的可能状态：
 
-- `BATCH_STATE_PENDING`: Batch is queued and waiting to be processed
-- `BATCH_STATE_RUNNING`: Batch is currently being processed
-- `BATCH_STATE_SUCCEEDED`: Batch completed successfully
-- `BATCH_STATE_FAILED`: Batch processing failed
-- `BATCH_STATE_CANCELLED`: Batch was cancelled by the user
-- `BATCH_STATE_EXPIRED`: Batch expired before completion
-- `UNSPECIFIED`: State is unknown or not provided
+- `BATCH_STATE_PENDING`：批次已排队，等待处理
+- `BATCH_STATE_RUNNING`：批次正在处理中
+- `BATCH_STATE_SUCCEEDED`：批次成功完成
+- `BATCH_STATE_FAILED`：批次处理失败
+- `BATCH_STATE_CANCELLED`：批次已被用户取消
+- `BATCH_STATE_EXPIRED`：批次在完成前已过期
+- `UNSPECIFIED`：状态未知或未提供
 
-### Setting Batch Priority
+### 设置批次优先级
 
-Higher priority batches are processed before lower priority ones:
+优先级较高的批次将优先于优先级较低的批次处理：
 
 ```java
-// High priority batch
+// 高优先级批次
 BatchResponse highPriorityResponse = batchModel.createBatchInline(
-    "Urgent Batch",
-    100L,  // high priority
+    "紧急批次",
+    100L,  // 高优先级
     urgentRequests
 );
 
-// Low priority batch
+// 低优先级批次
 BatchResponse lowPriorityResponse = batchModel.createBatchInline(
-    "Background Batch",
-    -50L,  // low priority
+    "后台批次",
+    -50L,  // 低优先级
     backgroundRequests
 );
 ```
 
-### Configuration
+### 配置
 
-The `GoogleAiBatchChatModel` supports the same configuration options as `GoogleAiGeminiChatModel`:
+`GoogleAiBatchChatModel` 支持与 `GoogleAiGeminiChatModel` 相同的配置选项：
 
 ```java
 GoogleAiBatchChatModel batchModel = GoogleAiBatchChatModel.builder()
@@ -1044,16 +1023,16 @@ GoogleAiBatchChatModel batchModel = GoogleAiBatchChatModel.builder()
     .build();
 ```
 
-### Important Constraints
+### 重要限制
 
-- **Model Consistency**: All requests in a batch must use the same model
-- **Size Limit**: The inline API supports a total request size of 20MB or under
-- **Cost**: Batch processing offers 50% cost reduction compared to real-time requests
-- **Turnaround**: 24-hour SLO, though completion is often much quicker
-- **Use Cases**: Best for large-scale, non-urgent tasks like data pre-processing or evaluations
+- **模型一致性**：批次中的所有请求必须使用相同的模型
+- **大小限制**：内联 API 支持总请求大小不超过 20 MB
+- **成本**：与实时请求相比，批量处理可节省 50% 成本
+- **交付时间**：24 小时 SLO，实际完成通常更快
+- **适用场景**：最适合大规模、非紧急的任务，如数据预处理或评估
 
 
-### Example: Complete Workflow
+### 示例：完整工作流
 
 ```java
 GoogleAiBatchChatModel batchModel = GoogleAiBatchChatModel.builder()
@@ -1061,66 +1040,65 @@ GoogleAiBatchChatModel batchModel = GoogleAiBatchChatModel.builder()
     .modelName("gemini-2.5-flash")
     .build();
 
-// Prepare batch requests
+// 准备批量请求
 List<ChatRequest> requests = new ArrayList<>();
 for (int i = 0; i < 50; i++) {
     requests.add(ChatRequest.builder()
-        .messages(UserMessage.from("Generate a creative story idea #" + i))
+        .messages(UserMessage.from("生成一个创意故事点子 #" + i))
         .build());
 }
 
-// Submit batch
+// 提交批次
 BatchResponse response = batchModel.createBatchInline(
-    "Story Ideas Batch",
+    "故事点子批次",
     0L,
     requests
 );
 
-// Get batch name
+// 获取批次名称
 BatchName batchName = switch (response) {
     case BatchIncomplete incomplete -> incomplete.batchName();
     case BatchSuccess success -> success.batchName();
-    case BatchError error -> throw new RuntimeException("Failed: " + error.message());
+    case BatchError error -> throw new RuntimeException("失败：" + error.message());
 };
 
-// Poll for completion
+// 轮询直到完成
 BatchResponse finalResult;
 int attempts = 0;
-int maxAttempts = 720; // 1 hour with 5-second intervals
+int maxAttempts = 720; // 每 5 秒一次，共 1 小时
 
 do {
     if (attempts++ >= maxAttempts) {
-        throw new RuntimeException("Batch processing timeout");
+        throw new RuntimeException("批量处理超时");
     }
     Thread.sleep(5000);
     finalResult = batchModel.retrieveBatchResults(batchName);
     
     if (finalResult instanceof BatchIncomplete incomplete) {
-        System.out.println("Status: " + incomplete.state());
+        System.out.println("状态：" + incomplete.state());
     }
 } while (finalResult instanceof BatchIncomplete);
 
-// Process results
+// 处理结果
 if (finalResult instanceof BatchSuccess success) {
-    System.out.println("Generated " + success.responses().size() + " stories");
+    System.out.println("生成了 " + success.responses().size() + " 个故事");
     for (int i = 0; i < success.responses().size(); i++) {
         ChatResponse chatResponse = success.responses().get(i);
-        System.out.println("Story #" + i + ": " + chatResponse.aiMessage().text());
+        System.out.println("故事 #" + i + "：" + chatResponse.aiMessage().text());
     }
     
-    // Report any failures
+    // 报告失败
     if (!success.errors().isEmpty()) {
-        System.err.println(success.errors().size() + " requests failed:");
+        System.err.println(success.errors().size() + " 个请求失败：");
         for (var error : success.errors()) {
-            System.err.println("  - Code " + error.code() + ": " + error.message());
+            System.err.println("  - 代码 " + error.code() + "：" + error.message());
         }
     }
 } else if (finalResult instanceof BatchError error) {
-    System.err.println("Batch failed: " + error.message());
+    System.err.println("批次失败：" + error.message());
 }
 ```
 
-## Learn more
+## 了解更多
 
-If you're interested in learning more about the Google AI Gemini model, please have a look at its
-[documentation](https://ai.google.dev/gemini-api/docs/models/gemini).
+如果您想了解更多关于 Google AI Gemini 模型的信息，请查阅其[文档](https://ai.google.dev/gemini-api/docs/models/gemini)。

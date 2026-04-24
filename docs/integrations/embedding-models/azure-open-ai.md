@@ -6,22 +6,22 @@ sidebar_position: 3
 
 :::note
 
-This is the documentation for the `Azure OpenAI` integration, that uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+这是 `Azure OpenAI` 集成的文档，使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
 
-LangChain4j provides 3 different integrations with OpenAI for using embedding models, and this is #3 :
+LangChain4j 提供 3 种不同的 OpenAI 嵌入模型集成，这是第 3 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用自定义的 OpenAI REST API Java 实现，最适合 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
 
 :::
 
-Azure OpenAI provides a few embedding models (`text-embedding-3-small`, `text-embedding-ada-002`, etc.)
-that can be used to transforms text or images into a dimensional vector space.
+Azure OpenAI 提供了一些嵌入模型（`text-embedding-3-small`、`text-embedding-ada-002` 等），
+可将文本或图片转换为多维向量空间。
 
-## Maven Dependency
+## Maven 依赖
 
-### Plain Java
+### 纯 Java
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -40,9 +40,9 @@ that can be used to transforms text or images into a dimensional vector space.
 ```
 
 
-## Creating `AzureOpenAiEmbeddingModel`
+## 创建 `AzureOpenAiEmbeddingModel`
 
-### Plain Java
+### 纯 Java
 ```java
 EmbeddingModel model = AzureOpenAiEmbeddingModel.builder()
         .apiKey(System.getenv("AZURE_OPENAI_KEY"))
@@ -53,7 +53,7 @@ EmbeddingModel model = AzureOpenAiEmbeddingModel.builder()
 ```
 
 ### Spring Boot
-Add to the `application.properties`:
+在 `application.properties` 中添加：
 ```properties
 langchain4j.azure-open-ai.embedding-model.endpoint=https://langchain4j.openai.azure.com/
 langchain4j.azure-open-ai.embedding-model.service-version=...
@@ -68,6 +68,6 @@ langchain4j.azure-open-ai.embedding-model.customHeaders=...
 ```
 
 
-## Examples
+## 示例
 
 - [AzureOpenAiEmbeddingModelExamples](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/java/AzureOpenAiEmbeddingModelExamples.java)

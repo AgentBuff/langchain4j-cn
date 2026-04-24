@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Azure ACA Dynamic Sessions
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,10 +14,10 @@ sidebar_position: 1
 </dependency>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `SessionsREPLTool`
 
-## Examples
+## 示例
 
 - [SessionsREPLToolTest](https://github.com/langchain4j/langchain4j/blob/main/code-execution-engines/langchain4j-code-execution-engine-azure-acads/src/test/java/dev/langchain4j/code/azure/acads/SessionsREPLToolTest.java)

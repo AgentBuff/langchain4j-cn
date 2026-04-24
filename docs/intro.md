@@ -1,128 +1,134 @@
 ---
 sidebar_position: 1
-title: Introduction | LangChain4j Java LLM Framework
-description: LangChain4j is an idiomatic Java framework for building LLM-powered applications. Unified API for 20+ LLM providers (OpenAI, Gemini, Claude, Qwen, DeepSeek, Ollama), 30+ vector stores, RAG, Agents, Tools (Function Calling), MCP, AI Services, and first-class Spring Boot / Quarkus / Helidon / Micronaut integrations.
+title: LangChain4j 中文简介 | Java 大模型（LLM）应用开发框架
+description: LangChain4j 是面向 Java 开发者的大语言模型应用开发框架，提供统一 API 接入 OpenAI、Gemini、Claude、通义千问、DeepSeek、文心一言、智谱 GLM、Ollama 等 20+ 大模型与 30+ 向量数据库，支持 RAG、Agents、Tools/Function Calling、MCP、AI Services，并与 Spring Boot、Quarkus、Helidon、Micronaut 深度集成。
 keywords:
   - LangChain4j
-  - Java LLM framework
-  - Java AI
-  - Java OpenAI
+  - LangChain4j 中文
+  - LangChain4j 教程
+  - Java 大模型
+  - Java 大语言模型
+  - Java LLM 框架
+  - Java AI 开发
   - Java RAG
-  - Java Agents
+  - Java 智能体
+  - Java Agent
   - Function Calling Java
-  - MCP Java
   - Spring Boot AI
-  - Quarkus LLM
+  - Spring Boot LLM
+  - Quarkus LangChain4j
+  - MCP Java
+  - DeepSeek Java
+  - 通义千问 Java
+  - 文心一言 Java
 image: /img/docusaurus-social-card.jpg
 slug: /intro
 ---
 
-# Introduction
+# 简介
 
-Welcome!
+欢迎！
 
-The goal of LangChain4j is to simplify integrating LLMs into Java applications.
+LangChain4j 的目标，是让在 Java 应用中集成 LLM 变得更简单。
 
-Here's how:
-1. **Unified APIs:**
-   LLM providers (like OpenAI or Google Vertex AI) and embedding (vector) stores (such as Pinecone or Milvus)
-   use proprietary APIs. LangChain4j offers a unified API to avoid the need for learning and implementing specific APIs for each of them.
-   To experiment with different LLMs or embedding stores, you can easily switch between them without the need to rewrite your code.
-   LangChain4j currently supports [20+ popular LLM providers](/integrations/language-models/)
-   and [30+ embedding stores](/integrations/embedding-stores/).
-2. **Comprehensive Toolbox:**
-   Since early 2023, the community has been building numerous LLM-powered applications,
-   identifying common abstractions, patterns, and techniques. LangChain4j has refined these into a ready to use package.
-   Our toolbox includes tools ranging from low-level prompt templating, chat memory management, and function calling
-   to high-level patterns like Agents and RAG.
-   For each abstraction, we provide an interface along with multiple ready-to-use implementations based on common techniques.
-   Whether you're building a chatbot or developing a RAG with a complete pipeline from data ingestion to retrieval,
-   LangChain4j offers a wide variety of options.
-3. **Numerous Examples:**
-   These [examples](https://github.com/langchain4j/langchain4j-examples) showcase how to begin creating various LLM-powered applications,
-   providing inspiration and enabling you to start building quickly.
+具体来说：
+1. **统一 API：**
+   LLM 提供商（例如 OpenAI 或 Google Vertex AI）以及 embedding（向量）存储（例如 Pinecone 或 Milvus）都使用各自专有的 API。LangChain4j 提供统一 API，让你无需分别学习和实现每一家厂商的专用接口。
+   如果你想尝试不同的 LLM 或 embedding 存储，也可以轻松切换，而不必重写代码。
+   LangChain4j 目前支持 [20+ 主流 LLM 提供商](/integrations/language-models/)
+   和 [30+ embedding 存储](/integrations/embedding-stores/)。
+2. **完整工具箱：**
+   从 2023 年初开始，社区就在持续构建大量由 LLM 驱动的应用，并逐渐提炼出常见的抽象、模式和技术。LangChain4j 将这些经验打磨成一个开箱即用的工具包。
+   我们的工具箱覆盖从底层的提示词模板、聊天记忆管理、函数调用，
+   到高层的 Agents 与 RAG 等模式。
+   对于每一种抽象，我们都提供接口以及多种基于常见技术的现成实现。
+   无论你是在构建聊天机器人，还是在开发一条完整的数据摄取到检索链路的 RAG，
+   LangChain4j 都能提供丰富的选择。
+3. **大量示例：**
+   这些[示例](https://github.com/langchain4j/langchain4j-examples)展示了如何开始构建各种由 LLM 驱动的应用，
+   既能提供灵感，也能帮助你快速起步。
 
-LangChain4j began development in early 2023 amid the ChatGPT hype.
-We noticed a lack of Java counterparts to the numerous Python and JavaScript LLM libraries and frameworks,
-and we had to fix that!
+LangChain4j 于 2023 年初在 ChatGPT 热潮中启动开发。
+我们注意到，在众多 Python 和 JavaScript 的 LLM 库与框架之外，Java 生态中缺少相应的高质量方案，
+于是我们决定补上这一块。
 
-:::note Not a port of LangChain (Python)
-Despite the name, **LangChain4j is not a Java port of [LangChain](https://github.com/langchain-ai/langchain) (Python) — it is built for Java, not ported to it**.
-It is an **idiomatic Java** library designed from the ground up around Java conventions:
-type safety, POJOs, annotations, interfaces, dependency injection, fluent APIs, and first-class integrations with
-[Quarkus](/tutorials/quarkus-integration), [Spring Boot](/tutorials/spring-boot-integration),
-[Helidon](/tutorials/helidon-integration), and [Micronaut](/tutorials/micronaut-integration).
-Its API, internals, and release cycle are independent of the Python LangChain project.
+:::note 不是 LangChain（Python）的移植版
+尽管名字相似，**LangChain4j 并不是 [LangChain](https://github.com/langchain-ai/langchain)（Python）的 Java 移植版，而是为 Java 原生设计的库**。
+它是一套**符合 Java 习惯**的库，从一开始就围绕 Java 的开发约定构建：
+类型安全、POJO、注解、接口、依赖注入、流式 API，以及对
+[Quarkus](/tutorials/quarkus-integration)、[Spring Boot](/tutorials/spring-boot-integration)、
+[Helidon](/tutorials/helidon-integration) 和 [Micronaut](/tutorials/micronaut-integration) 的一等集成支持。
+它的 API、内部实现和发布节奏都独立于 Python LangChain 项目。
 :::
 
-We actively monitor community developments, aiming to quickly incorporate new techniques and integrations,
-ensuring you stay up-to-date.
-The library is under active development. While some features are still being worked on,
-the core functionality is in place, allowing you to start building LLM-powered apps now!
+我们持续关注社区的新进展，并尽可能快速地引入新的技术和集成能力，
+确保你能够跟上最新实践。
+这个库仍在积极演进中。虽然部分特性还在持续完善，
+但核心能力已经可用，你现在就可以开始构建由 LLM 驱动的应用。
 
-For easier integration, LangChain4j also includes integration with
-[Quarkus](/tutorials/quarkus-integration), [Spring Boot](/tutorials/spring-boot-integration), [Helidon](/tutorials/helidon-integration) and [Micronaut](/tutorials/micronaut-integration)
+为了便于集成，LangChain4j 还提供了对
+[Quarkus](/tutorials/quarkus-integration)、[Spring Boot](/tutorials/spring-boot-integration)、[Helidon](/tutorials/helidon-integration) 和 [Micronaut](/tutorials/micronaut-integration) 的集成支持。
 
 
-## LangChain4j Features
-- Integration with [20+ LLM providers](/integrations/language-models)
-- Integration with [30+ embedding (vector) stores](/integrations/embedding-stores)
-- Integration with [20+ embedding models](/category/embedding-models)
-- Integration with [5+ chat memory stores](/category/chat-memory-stores) 
-- Integration with [5+ image generation models](/category/image-models)
-- Integration with [5+ scoring (re-ranking) models](/category/scoring-reranking-models)
-- Integration with one moderation model (OpenAI)
-- Support for texts and images as inputs (multimodality)
-- [AI Services](/tutorials/ai-services) (high-level LLM API)
-- [Agents and Agentic AI](/tutorials/agents)
+## LangChain4j 特性
+- 集成 [20+ LLM 提供商](/integrations/language-models)
+- 集成 [30+ embedding（向量）存储](/integrations/embedding-stores)
+- 集成 [20+ embedding 模型](/category/embedding-models)
+- 集成 [5+ 聊天记忆存储](/category/chat-memory-stores)
+- 集成 [5+ 图像生成模型](/category/image-models)
+- 集成 [5+ 打分（重排序）模型](/category/scoring-reranking-models)
+- 集成一个内容审核模型（OpenAI）
+- 支持文本和图像作为输入（多模态）
+- [AI Services](/tutorials/ai-services)（高层 LLM API）
+- [Agents 与 Agentic AI](/tutorials/agents)
 - [Skills](/tutorials/skills)
-- Prompt templates
-- Implementation of persistent and in-memory [chat memory](/tutorials/chat-memory) algorithms: message window and token window
-- [Streaming of responses from LLMs](/tutorials/response-streaming)
-- Output parsers for common Java types and custom POJOs
-- [Tools (function calling)](/tutorials/tools)
-- Dynamic Tools (execution of dynamically generated LLM code)
-- [RAG (Retrieval-Augmented-Generation)](/tutorials/rag):
-  - Ingestion:
-    - Importing various types of documents (TXT, PDFs, DOC, PPT, XLS etc.) from multiple sources (file system, URL, GitHub, Azure Blob Storage, Amazon S3, etc.)
-    - Splitting documents into smaller segments using multiple splitting algorithms
-    - Post-processing of documents and segments
-    - Embedding segments using embedding models
-    - Storing embeddings in embedding (vector) store
-  - Retrieval (simple and advanced):
-    - Transformation of queries (expansion, compression)
-    - Routing of queries
-    - Retrieving from vector store and/or any custom sources
-    - Re-ranking
+- 提示词模板
+- 持久化和内存型 [聊天记忆](/tutorials/chat-memory) 算法实现：消息窗口和 token 窗口
+- [LLM 响应流式输出](/tutorials/response-streaming)
+- 面向常见 Java 类型和自定义 POJO 的输出解析器
+- [Tools（函数调用）](/tutorials/tools)
+- Dynamic Tools（执行动态生成的 LLM 代码）
+- [RAG（检索增强生成）](/tutorials/rag)：
+  - Ingestion：
+    - 从多种来源导入多种类型的文档（TXT、PDF、DOC、PPT、XLS 等），例如文件系统、URL、GitHub、Azure Blob Storage、Amazon S3 等
+    - 使用多种切分算法将文档拆分为更小的片段
+    - 对文档和片段进行后处理
+    - 使用 embedding 模型为片段生成向量
+    - 将向量存入 embedding（向量）存储
+  - Retrieval（简单与高级）：
+    - 查询变换（扩展、压缩）
+    - 查询路由
+    - 从向量存储和/或任意自定义来源进行检索
+    - 重排序
     - Reciprocal Rank Fusion
-    - Customization of each step in the RAG flow
-- Text classification
-- Tools for tokenization and estimation of token counts
-- [Kotlin Extensions](/tutorials/kotlin): Asynchronous non-blocking handling of chat interactions using Kotlin's coroutine capabilities.
+    - 定制 RAG 流程中的每一个环节
+- 文本分类
+- Token 切分与数量估算工具
+- [Kotlin 扩展](/tutorials/kotlin)：借助 Kotlin 协程能力异步、非阻塞地处理聊天交互。
 
-## 2 levels of abstraction
-LangChain4j operates on two levels of abstraction:
-- Low level. At this level, you have the most freedom and access to all the low-level components such as
-[ChatModel](/tutorials/chat-and-language-models), `UserMessage`, `AiMessage`, `EmbeddingStore`, `Embedding`, etc.
-These are the "primitives" of your LLM-powered application.
-You have complete control over how to combine them, but you will need to write more glue code.
-- High level. At this level, you interact with LLMs using high-level APIs like [AI Services](/tutorials/ai-services),
-which hides all the complexity and boilerplate from you.
-You still have the flexibility to adjust and fine-tune the behavior, but it is done in a declarative manner.
+## 两个抽象层级
+LangChain4j 提供两个抽象层级：
+- 低层。这个层级提供最大自由度，并允许你访问所有底层组件，例如
+[ChatModel](/tutorials/chat-and-language-models)、`UserMessage`、`AiMessage`、`EmbeddingStore`、`Embedding` 等。
+这些都是构建 LLM 应用的“原语”。
+你可以完全控制它们的组合方式，但也需要自己编写更多胶水代码。
+- 高层。这个层级通过 [AI Services](/tutorials/ai-services) 这样的高级 API 与 LLM 交互，
+从而隐藏底层复杂性和样板代码。
+你依然可以灵活调整和细化行为，只是方式变成了声明式。
 
 [![](/img/langchain4j-components.png)](/intro)
 
 
-## LangChain4j Library Structure
-LangChain4j features a modular design, comprising:
-- The `langchain4j-core` module, which defines core abstractions (such as `ChatModel` and `EmbeddingStore`) and their APIs.
-- The main `langchain4j` module, containing useful tools like document loaders, [chat memory](/tutorials/chat-memory) implementations as well as a high-level features like [AI Services](/tutorials/ai-services).
-- A wide array of `langchain4j-{integration}` modules, each providing integration with various LLM providers and embedding stores into LangChain4j.
-  You can use the `langchain4j-{integration}` modules independently. For additional features, simply import the main `langchain4j` dependency.
+## LangChain4j 库结构
+LangChain4j 采用模块化设计，主要包括：
+- `langchain4j-core` 模块：定义核心抽象（例如 `ChatModel` 和 `EmbeddingStore`）及其 API。
+- 主模块 `langchain4j`：包含文档加载器、[聊天记忆](/tutorials/chat-memory) 实现，以及 [AI Services](/tutorials/ai-services) 等高级功能。
+- 大量 `langchain4j-{integration}` 模块：为各类 LLM 提供商和 embedding 存储提供 LangChain4j 集成。
+  你可以单独使用 `langchain4j-{integration}` 模块；如果需要更多功能，再额外引入主 `langchain4j` 依赖即可。
 
 
-## LangChain4j Repositories
-- [Main repository](https://github.com/langchain4j/langchain4j)
+## LangChain4j 相关仓库
+- [主仓库](https://github.com/langchain4j/langchain4j)
 - [Micronaut integration](https://github.com/micronaut-projects/micronaut-langchain4j)
 - [Quarkus extension](https://github.com/quarkiverse/quarkus-langchain4j)
 - [Spring Boot integration](https://github.com/langchain4j/langchain4j-spring)
@@ -131,35 +137,35 @@ LangChain4j features a modular design, comprising:
 - [Community resources](https://github.com/langchain4j/langchain4j-community-resources)
 
 
-## Use Cases
-You might ask why would I need all of this?
-Here are some examples:
+## 使用场景
+你可能会问，为什么我会需要这些？
+下面是一些例子：
 
-- You want to implement a custom AI-powered chatbot that has access to your data and behaves the way you want it:
-  - Customer support chatbot that can:
-    - politely answer customer questions
-    - take /change/cancel orders
-  - Educational assistant that can:
-    - Teach various subjects
-    - Explain unclear parts
-    - Assess user's understanding/knowledge
-- You want to process a lot of unstructured data (files, web pages, etc) and extract structured information from them.
-  For example:
-  - extract insights from customer reviews and support chat history
-  - extract interesting information from the websites of your competitors
-  - extract insights from CVs of job applicants
-- You want to generate information, for example:
-  - Emails tailored for each of your customers
-  - Content for your app/website:
-    - Blog posts
-    - Stories
-- You want to transform information, for example:
-  - Summarize
-  - Proofread and rewrite
-  - Translate
+- 你想实现一个可访问自身数据、并按你期望方式运行的定制化 AI 聊天机器人：
+  - 客服机器人，可以：
+    - 礼貌地回答客户问题
+    - 接收 / 修改 / 取消订单
+  - 教学助手，可以：
+    - 教授各种学科内容
+    - 解释不清楚的部分
+    - 评估用户的理解程度 / 知识掌握情况
+- 你想处理大量非结构化数据（文件、网页等），并从中提取结构化信息。
+  例如：
+  - 从客户评价和客服聊天记录中提炼洞察
+  - 从竞争对手网站中提取有价值的信息
+  - 从求职者简历中提取关键信息
+- 你想生成信息，例如：
+  - 为不同客户量身定制邮件
+  - 为应用或网站生成内容：
+    - 博客文章
+    - 故事
+- 你想变换信息，例如：
+  - 总结
+  - 校对与改写
+  - 翻译
 
-## Community Integrations
-LangChain4j maintains some integrations in [community repo](https://github.com/langchain4j/langchain4j-community). 
-They support the same functionality as integrations in the main repository. 
-The only difference between them is that community has different artifact and package name from the main repo (i.e. the `community` prefix in artifact and package name).
-The community was created to separate the maintenance of some integrations, thus making it easier to maintain the main repository.
+## 社区集成
+LangChain4j 在 [community repo](https://github.com/langchain4j/langchain4j-community) 中维护了一部分集成。
+它们支持与主仓库集成相同的功能。
+两者的区别仅在于，community 仓库中的 artifact 和 package 名称与主仓库不同（即 artifact 和 package 名称里带有 `community` 前缀）。
+建立 community 仓库的目的，是将部分集成的维护工作拆分出去，从而让主仓库更易维护。

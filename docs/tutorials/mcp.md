@@ -1,47 +1,60 @@
-# Model Context Protocol (MCP)
+---
+title: Java MCP 模型上下文协议集成 | LangChain4j 中文文档
+description: LangChain4j 内置 MCP 客户端，支持 stdio 与 SSE 两种传输。通过 Java 即可调用任意 MCP Server 暴露的工具，让远程工具以 @Tool 形式参与到 AI Services 中。
+keywords:
+  - LangChain4j MCP
+  - Java MCP
+  - Model Context Protocol Java
+  - MCP Client
+  - MCP stdio
+  - MCP SSE
+image: /img/docusaurus-social-card.jpg
+---
 
-LangChain4j supports the Model Context Protocol (MCP) to communicate with
-MCP compliant servers that can provide and execute tools. General
-information about the protocol can be found at the [MCP
-website](https://modelcontextprotocol.io/).
+# 模型上下文协议（MCP）
+
+LangChain4j 支持 Model Context Protocol（MCP），
+可用于与符合 MCP 协议的 server 通信，这些 server 可以提供并执行 tools。
+关于该协议的通用说明可参考 [MCP 官网](https://modelcontextprotocol.io/)。
 
 :::note
-Looking to build an MCP **stdio server** in Java?
-The server implementation lives in LangChain4j Community. See [Building a Java MCP stdio server](./mcp-stdio-server).
+想要在 Java 中构建一个 MCP **stdio server**？
+服务端实现位于 LangChain4j Community。请参阅 [Building a Java MCP stdio server](./mcp-stdio-server)。
 :::
 
-The protocol specifies two types of transport, both of these are supported:
+该协议定义了两种 transport，这两种都已被支持：
 
-- [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http):
-  The client sends HTTP requests and the server responds either with a regular response or opens
-  an SSE stream if it needs to send multiple responses over time.
-- [stdio](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#stdio): The client 
-  can run an MCP server as a local subprocess and
-  communicate with it directly via standard input/output.
+- [Streamable HTTP](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#streamable-http)：
+  client 发送 HTTP 请求，server 则返回常规响应，
+  或者在需要持续发送多个响应时打开一个 SSE stream。
+- [stdio](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports#stdio)：
+  client 可以将 MCP server 作为本地子进程运行，
+  并通过标准输入 / 输出直接与其通信。
 
-On top of the spec, LangChain4j implements the `WebSocket` transport. This transport is not
-standardized and currently, the client side is developed in a way that it is compatible
-with the WebSocket transport as implemented by the 
-[Quarkus MCP Server extension](https://docs.quarkiverse.io/quarkus-mcp-server/dev). For MCP servers exposing WebSockets but
-built using other frameworks, compatibility is not guaranteed.
+在规范之外，LangChain4j 还实现了 `WebSocket` transport。
+这一 transport 目前尚未标准化，当前 client 侧的实现方式，
+是以兼容 [Quarkus MCP Server extension](https://docs.quarkiverse.io/quarkus-mcp-server/dev)
+所实现的 WebSocket transport 为目标。
+对于其他框架构建、但暴露 WebSocket 的 MCP servers，
+并不能保证完全兼容。
 
-Additionally, LangChain4J supports a Docker stdio transport that can use a stdio MCP server distributed as a 
-container image.
+另外，LangChain4J 还支持一种 Docker stdio transport，
+它可以使用以容器镜像形式分发的 stdio MCP server。
 
-LangChain4j also supports the legacy 
-[HTTP/SSE transport](https://modelcontextprotocol.io/specification/2024-11-05/basic/transports#http-with-sse),
-but this is deprecated and will be removed in the future.
+LangChain4j 也支持旧版的
+[HTTP/SSE transport](https://modelcontextprotocol.io/specification/2024-11-05/basic/transports#http-with-sse)，
+但它已经被弃用，未来会被移除。
 
-To let your chat model or AI service run tools provided by an MCP server,
-you need to create an instance of an MCP tool provider.
+如果你希望让 chat model 或 AI service 能够运行由 MCP server 提供的 tools，
+你需要先创建一个 MCP tool provider 实例。
 
-## Creating an MCP tool provider
+## 创建 MCP 工具提供者 {#creating-an-mcp-tool-provider}
 
-### MCP Transport
+### MCP 传输层 {#mcp-transport}
 
-First, you need an instance of an MCP Transport.
+首先，你需要一个 MCP Transport 实例。
 
-For stdio - this example shows how to start a server from a NPM package as a subprocess:
+对于 stdio，下面这个示例展示了如何通过 NPM 包启动一个 server 子进程：
 
 ```java
 McpTransport transport = StdioMcpTransport.builder()
@@ -50,7 +63,8 @@ McpTransport transport = StdioMcpTransport.builder()
     .build();
 ```
 
-For the Streamable HTTP transport, you need to provide a URL to the server's `POST` endpoint:
+对于 Streamable HTTP transport，
+你需要提供 server `POST` endpoint 的 URL：
 
 ```java
 McpTransport transport = StreamableHttpMcpTransport.builder()
@@ -60,13 +74,17 @@ McpTransport transport = StreamableHttpMcpTransport.builder()
         .build();
 ```
 
-**_NOTE:_** The Streamable HTTP transport can optionally open a subsidiary
-[GET-based SSE stream](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#listening-for-messages-from-the-server)
-for receiving server-initiated notifications and requests. Enable it with `.subsidiaryChannel(true)` on the builder.
-It is disabled by default. If the server does not support it, the transport logs a warning and continues without it.
-If the stream breaks after being established, the transport reconnects automatically (respecting the server's `retry` value, defaulting to 5 seconds).
+**_NOTE:_** Streamable HTTP transport 还可以选择性打开一个附属的
+[基于 GET 的 SSE stream](https://modelcontextprotocol.io/specification/2025-11-25/basic/transports#listening-for-messages-from-the-server)，
+用于接收由 server 主动发起的 notifications 和 requests。
+你可以在 builder 上通过 `.subsidiaryChannel(true)` 启用它。
+该能力默认关闭。
+如果 server 不支持它，transport 会记录一条 warning，
+然后继续在无该通道的模式下运行。
+如果这个 stream 在建立后中断，transport 会自动重连
+（会遵循 server 提供的 `retry` 值，默认是 5 秒）。
 
-For the WebSocket transport:
+对于 WebSocket transport：
 ```java
 McpTransport transport = WebSocketMcpTransport.builder()
         .url("ws://localhost:3001/mcp/ws")
@@ -75,8 +93,9 @@ McpTransport transport = WebSocketMcpTransport.builder()
         .build();
 ```
 
-For the legacy HTTP transport, there are two URLs, one for starting the SSE channel and one for submitting commands via `POST`.
-The latter is provided by the server dynamically, the former needs to be specified using the `sseUrl` method:
+对于旧版 HTTP transport，需要两个 URL：
+一个用于启动 SSE channel，另一个用于通过 `POST` 提交命令。
+后者由 server 动态提供，前者则需要通过 `sseUrl` 方法显式指定：
 
 ```java
 McpTransport transport = HttpMcpTransport.builder()
@@ -86,7 +105,8 @@ McpTransport transport = HttpMcpTransport.builder()
     .build();
 ```
 
-For the Docker stdio transport, you first need to add a module to your pom.xml:
+对于 Docker stdio transport，
+你首先需要在 `pom.xml` 中加入一个模块：
 
 ```xml
 <dependency>
@@ -95,7 +115,7 @@ For the Docker stdio transport, you first need to add a module to your pom.xml:
 </dependency>
 ```
 
-Then you need to create a Docker transport:
+然后创建 Docker transport：
 
 ```java
 McpTransport transport = DockerMcpTransport.builder()
@@ -105,9 +125,9 @@ McpTransport transport = DockerMcpTransport.builder()
     .build();
 ```
 
-### MCP Client
+### MCP 客户端 {#mcp-client}
 
-To create an MCP client from the transport:
+要基于 transport 创建一个 MCP client：
 
 ```java
 McpClient mcpClient = DefaultMcpClient.builder()
@@ -116,12 +136,13 @@ McpClient mcpClient = DefaultMcpClient.builder()
     .build();
 ```
 
-Note that the client key is optional, but it is recommended to set it, especially
-if there are multiple MCP clients, and it is necessary to disambiguate among them.
+需要注意的是，client key 不是强制的，
+但仍然建议设置，尤其是在存在多个 MCP clients 的情况下，
+它有助于区分不同 client。
 
-### MCP Tool Provider
+### MCP 工具提供者 {#mcp-tool-provider}
 
-Finally, you create an MCP tool provider from the client:
+最后，你可以基于 client 创建 MCP tool provider：
 
 ```java
 McpToolProvider toolProvider = McpToolProvider.builder()
@@ -129,18 +150,20 @@ McpToolProvider toolProvider = McpToolProvider.builder()
     .build();
 ```
 
-Note that one MCP tool provider can use multiple clients at the same time.
-If you make use of this, you can also specify the behavior of the tool provider
-in cases when retrieving tools from a particular server fails - this is done
-by the `builder.failIfOneServerFails(boolean)` method. The default is `false`, 
-which means that the tool provider will ignore the error from one server and 
-continue with the other servers. If you set it to `true`, a failure from any 
-server will cause the tool provider to throw an exception.
+需要注意的是，一个 MCP tool provider 可以同时使用多个 client。
+如果你这么做，还可以指定当从某个特定 server 获取 tools 失败时，
+tool provider 应该如何表现。
+这通过 `builder.failIfOneServerFails(boolean)` 方法设置。
+默认值为 `false`，
+也就是当某个 server 出错时，tool provider 会忽略该错误，
+并继续使用其他 server。
+如果设置为 `true`，任意一个 server 失败都会导致 tool provider 抛出异常。
 
-Moreover, a MCP servers may often provide tens of tools, while a given AI service
-may only need a few of them, both to prevent the usage of an unwanted tool and to 
-reduce the possibility of hallucinations. The `McpToolProvider` allows to filter 
-these tools by name as it follows:
+此外，MCP server 往往会提供几十个 tools，
+而某个具体 AI service 可能只需要其中极少数几个。
+这样做既可以避免使用不期望的工具，
+也能降低 hallucination 的可能性。
+`McpToolProvider` 允许你按名称过滤这些工具，如下所示：
 
 ```java
 McpToolProvider toolProvider = McpToolProvider.builder()
@@ -149,14 +172,15 @@ McpToolProvider toolProvider = McpToolProvider.builder()
     .build();
 ```
 
-In this way the AI service configured with this `ToolProvider` could only use
-those mentioned 3 tools, allowing it to read existing issues, but preventing it
-from creating new ones. More in general, a `ToolProvider` allows to filter tools
-through a `BiPredicate<McpClient, ToolSpecification>`. This could be also useful
-when multiple MCP clients expose tools with the same and then conflicting names. 
-For example, the following `ToolProvider` takes tools from two MCP clients
-but since they both have a tool named `echoInteger`, it takes only the one from 
-the MCP client with key `numeric-mcp`:
+这样一来，使用该 `ToolProvider` 配置的 AI service 就只能使用这 3 个工具，
+从而允许它读取已有 issue，
+但阻止它创建新的 issue。
+更一般地说，`ToolProvider` 还允许通过 `BiPredicate<McpClient, ToolSpecification>` 来过滤工具。
+当多个 MCP clients 暴露了同名、从而相互冲突的 tools 时，
+这会非常有用。
+例如，下面这个 `ToolProvider` 从两个 MCP clients 中取工具，
+但由于它们都提供了一个名为 `echoInteger` 的工具，
+因此它只保留 key 为 `numeric-mcp` 的那个 client 所暴露的版本：
 
 ```java
 McpToolProvider toolProvider = McpToolProvider.builder()
@@ -167,15 +191,14 @@ McpToolProvider toolProvider = McpToolProvider.builder()
     .build();
 ```
 
-Note that calling the `filter` method multiple time on the same `McpToolProvider`
-builder will result in a conjunction (AND) of all those filters.
+请注意，在同一个 `McpToolProvider` builder 上多次调用 `filter` 方法时，
+这些过滤条件会以 conjunction（AND）的形式组合在一起。
 
-In order to allow applications to connect or disconnect from MCP servers at 
-runtime, it is also possible to dynamically add and remove clients and filters 
-to an existing `McpToolProvider` instance.
+为了支持应用在运行时动态连接或断开 MCP servers，
+你也可以对已有的 `McpToolProvider` 实例动态增删 clients 和 filters。
 
-To bind a tool provider to an AI service, simply use the `toolProvider` method
-of an AI service builder:
+如果要把 tool provider 绑定到 AI service，
+只需使用 AI service builder 上的 `toolProvider` 方法：
 
 ```java
 Bot bot = AiServices.builder(Bot.class)
@@ -184,7 +207,7 @@ Bot bot = AiServices.builder(Bot.class)
     .build();
 ```
 
-Alternatively, you can provide tools using a `Map<ToolSpecification, ToolExecutor>`.
+另外，你也可以通过 `Map<ToolSpecification, ToolExecutor>` 提供 tools。
 
 ```java
 Map<ToolSpecification, ToolExecutor> tools = mcpClient.listTools().stream().collect(Collectors.toMap(
@@ -193,7 +216,8 @@ Map<ToolSpecification, ToolExecutor> tools = mcpClient.listTools().stream().coll
 ));
 ```
 
-To bind tools to an AI service, simply use the `tools` method of an AI service builder:
+要将 tools 绑定到 AI service，
+只需使用 AI service builder 上的 `tools` 方法：
 
 ```java
 Bot bot = AiServices.builder(Bot.class)
@@ -202,15 +226,17 @@ Bot bot = AiServices.builder(Bot.class)
     .build();
 ```
 
-More information on tool support in LangChain4j can be found [here](/tutorials/tools).
+更多关于 LangChain4j tool 支持的信息可在[这里](/tutorials/tools)查看。
 
-### MCP Tool Name Mapping
+### MCP 工具名称映射 {#mcp-tool-name-mapping}
 
-If you use multiple MCP servers, and they expose tools with clashing names (or you simply want to
-adjust an inappropriately chosen name), it may be useful to apply a tool name mapping function.
-This can be done by specifying a `BiFunction<McpClient, ToolSpecification, String>` when creating the `McpToolProvider`.
+如果你使用多个 MCP servers，
+而它们暴露了名称冲突的 tools
+（或者你只是想调整某个不太合适的命名），
+那么应用 tool name mapping function 会很有帮助。
+这可以通过在创建 `McpToolProvider` 时指定一个 `BiFunction<McpClient, ToolSpecification, String>` 来实现。
 
-For example:
+例如：
 ```java
 McpToolProvider toolProvider = McpToolProvider.builder()
         .mcpClients(mcpClient1, mcpClient2)
@@ -221,12 +247,14 @@ McpToolProvider toolProvider = McpToolProvider.builder()
         .build();
 ```
 
-After this, the `ToolSpecification` objects returned by the tool provider will contain the mapped (logical) names,
-but the generated `ToolExecutor` objects will be fixed to pass the original (physical) names to the server when invoking the tools.
+这样之后，tool provider 返回的 `ToolSpecification` 对象中将会包含映射后的（逻辑）名称，
+而生成出的 `ToolExecutor` 则仍会在真正调用服务端工具时，
+使用原始（物理）名称。
 
-### MCP Tool Specification Mapping
+### MCP 工具规范映射 {#mcp-tool-specification-mapping}
 
-Similarly to MCP tool mapping (above), one can map complete `ToolSpecification`:
+与上面的 MCP tool name mapping 类似，
+你也可以映射完整的 `ToolSpecification`：
 ```java
 McpToolProvider toolProvider = McpToolProvider.builder()
         .mcpClients(mcpClient)
@@ -240,31 +268,33 @@ McpToolProvider toolProvider = McpToolProvider.builder()
         .build();
 ```
 
-### MCP tool metadata
+### MCP 工具元数据 {#mcp-tool-metadata}
 
-The MCP protocol allows servers to provide additional metadata for each tool either in the form of annotations,
-or in the `_meta` field of a tool definition.
-LangChain4j exposes all of this metadata through the map stored inside `ToolSpecification.metadata()` method.
-Annotations are stored in the map using keys that can be found as 
-constants in the `dev.langchain4j.mcp.client.McpToolMetadataKeys` class.
-Contents of the `_meta` field are stored using their original keys, the JSON values are serialized
-as nested maps.
+MCP 协议允许 server 通过 annotations，
+或者通过 tool definition 中的 `_meta` 字段，
+为每个工具提供额外 metadata。
+LangChain4j 会通过 `ToolSpecification.metadata()` 中保存的 map 暴露这些 metadata。
+Annotations 会以 `dev.langchain4j.mcp.client.McpToolMetadataKeys` 类中的常量作为 key 存储到 map 中。
+而 `_meta` 字段中的内容则保留其原始 key，
+其中的 JSON value 会被序列化为嵌套 map。
 
-The `title` field that exists directly in the MCP tool definition is exposed under 
-`McpToolMetadataKeys.TITLE` key in the metadata map to distinguish it from the title
-that is retrieved from annotations - that one is exposed under the `McpToolMetadataKeys.ANNOTATION_TITLE` key.
+直接存在于 MCP tool definition 中的 `title` 字段，
+会以 `McpToolMetadataKeys.TITLE` 作为 key 暴露到 metadata map 中，
+从而与 annotation 中获取的 title 区分开。
+后者会以 `McpToolMetadataKeys.ANNOTATION_TITLE` 作为 key 暴露。
 
-## Providing `_meta` fields
+## 提供 `_meta` 字段
 
-The MCP protocol allows clients to attach a `_meta` object to the `params` of every
-request and notification sent to the server. This can be used for passing
-OpenTelemetry trace context, custom application metadata, or any other
-out-of-band information that the server may need.
+MCP 协议允许 client 在发送给 server 的每个 request 和 notification 的 `params` 中附加一个 `_meta` 对象。
+这可以用于传递 OpenTelemetry trace context、自定义应用 metadata，
+或者 server 所需的其他带外信息。
 
-To supply `_meta` fields, register an `McpMetaSupplier` on the client builder.
-The supplier is called before every request or notification, and the returned
-map is placed into `params._meta`. Unlike HTTP headers, this works across
-all transports (stdio, HTTP, WebSocket).
+如果你想提供 `_meta` 字段，
+可以在 client builder 上注册一个 `McpMetaSupplier`。
+这个 supplier 会在每次 request 或 notification 发送前被调用，
+返回的 map 会被放入 `params._meta`。
+与 HTTP headers 不同，这种方式适用于所有 transport
+（stdio、HTTP、WebSocket）。
 
 ```java
 McpClient mcpClient = DefaultMcpClient.builder()
@@ -275,20 +305,19 @@ McpClient mcpClient = DefaultMcpClient.builder()
     .build();
 ```
 
-The supplier receives an `McpCallContext` (nullable) that contains the
-message being sent and, when applicable, the `InvocationContext` of the
-AI service call that triggered it. This allows the supplier to vary
-the metadata based on which operation is being performed.
+这个 supplier 会收到一个 `McpCallContext`（可为 null），
+其中包含即将发送的消息，以及在适用时，触发这次调用的 AI service 的 `InvocationContext`。
+这使得 supplier 可以根据当前正在执行的操作动态调整 metadata。
 
-## Logging
+## 日志
 
-The MCP protocol also defines a way for the server to send log messages to
-the client. By default, the behavior of the client is to transform these log
-messages and log them using the SLF4J logger. If you want to change this
-behavior, there is an interface named
-`dev.langchain4j.mcp.client.logging.McpLogMessageHandler` that serves as a
-callback for received log messages. If you create your own implementation of
-`McpLogMessageHandler`, pass it to the MCP client builder:
+MCP 协议还定义了 server 向 client 发送日志消息的方式。
+默认情况下，client 会把这些日志消息转换后交给 SLF4J logger 记录。
+如果你想改变这种行为，
+可以使用接口 `dev.langchain4j.mcp.client.logging.McpLogMessageHandler`，
+它是接收日志消息的回调接口。
+如果你实现了自己的 `McpLogMessageHandler`，
+只需在 MCP client builder 中传入它：
 
 ```java
 McpClient mcpClient = new DefaultMcpClient.Builder()
@@ -297,20 +326,19 @@ McpClient mcpClient = new DefaultMcpClient.Builder()
     .build();
 ```
 
-## MCP listeners
+## MCP 监听器 {#mcp-listeners}
 
-The MCP client supports listeners that can listen to events happening
-during the lifetime of the client. The interface
-`dev.langchain4j.mcp.client.McpClientListener` serves as the base
-for listener implementations. Multiple listeners can be registered
-on a single client; they will all be invoked before and after every
-tool call, prompt rendering and resource access. The respective
-`McpCallContext` is injected when calling the listeners. This object
-contains the actual MCP message being sent to the server and an
-instance of `InvocationContext` when applicable (only when this
-call happens as part of an AI service invocation).
+MCP client 支持 listeners，
+用于监听 client 生命周期中的各种事件。
+接口 `dev.langchain4j.mcp.client.McpClientListener` 是 listener 实现的基础接口。
+单个 client 上可以注册多个 listeners；
+它们会在每次 tool call、prompt 渲染和 resource 访问的前后都被调用。
+调用 listener 时会注入对应的 `McpCallContext`。
+该对象包含实际发送给 server 的 MCP message，
+以及在适用时的 `InvocationContext`
+（只有当该调用是某次 AI service 调用的一部分时才会存在）。
 
-Listeners can be added one by one or in bulk:
+你可以逐个或批量添加 listeners：
 
 ```java
 McpClient mcpClient = DefaultMcpClient.builder()
@@ -321,41 +349,47 @@ McpClient mcpClient = DefaultMcpClient.builder()
     .build();
 ```
 
-## Resources
+## 资源 {#resources}
 
-There are two ways how to work with resources. Either the application can call the MCP client's
-resource-related methods to access resources programmatically, or there is an option to expose
-resources automatically to LLM calls via synthetic tools (one tool to obtain a list of resources
-and one to obtain the contents of a resource) so that Chat Models can consult resources by themselves.
+目前有两种处理 resources 的方式。
+一种是应用直接调用 MCP client 的 resource 相关方法，以编程方式访问 resources；
+另一种是通过 synthetic tools 将 resources 自动暴露给 LLM，
+从而让 Chat Models 能自己查询 resources
+（一个工具用于获取 resource 列表，另一个用于读取某个具体 resource 的内容）。
 
-### Accessing resources programmatically
+### 以编程方式访问资源 {#programmatically-accessing-resources}
 
-To obtain a list of [MCP resources](https://modelcontextprotocol.io/docs/concepts/resources) 
-on the server, use `client.listResources()`, or `client.listResourceTemplates()` in case of resource templates.
-This will return a list of `McpResource` objects (or `McpResourceTemplate` respectively). These
-contain the metadata of the resource, most importantly the URI.
+如果要获取 server 上的 [MCP resources](https://modelcontextprotocol.io/docs/concepts/resources) 列表，
+可以使用 `client.listResources()`；
+若是 resource template，则使用 `client.listResourceTemplates()`。
+这两个方法会分别返回 `McpResource` 或 `McpResourceTemplate` 的列表。
+这些对象包含 resource 的元信息，最重要的就是 URI。
 
-To obtain the actual contents of the resource, use `client.readResource(uri)`, supplying the URI of the resource.
-This returns a `McpReadResourceResult`, which contains a  list of `McpResourceContents` objects (there may be more resource contents on a single URI, for 
-example if the URI represents a directory). Each `McpResourceContents` object represents either a 
-binary blob (`McpBlobResourceContents`) or text (`McpTextResourceContents`).
+要获取 resource 的实际内容，
+可以使用 `client.readResource(uri)`，并传入该 resource 的 URI。
+这个方法会返回一个 `McpReadResourceResult`，其中包含一个 `McpResourceContents` 列表
+（同一个 URI 可能对应多个 resource contents，
+例如该 URI 表示一个目录时）。
+每个 `McpResourceContents` 对象要么表示一个二进制 blob（`McpBlobResourceContents`），
+要么表示一个文本内容（`McpTextResourceContents`）。
 
-### Exposing resources automatically via synthetic tools
+### 通过合成工具自动暴露资源 {#auto-expose-resources-via-synthetic-tools}
 
-If you set a `McpResourcesAsToolsPresenter` instance using the builder when building an `McpToolProvider`,
-the MCP tool provider will automatically add two synthetic tools to the result of its `provideTools` method,
-along the 'regular' tools that are supported by the backing MCP servers. One tool should serve for obtaining
-a list of resources and the other for obtaining a particular resource. LangChain4j provides
-a default implementation named `DefaultMcpResourcesAsToolsPresenter` that adds these two tools:
+如果你在构建 `McpToolProvider` 时设置了一个 `McpResourcesAsToolsPresenter` 实例，
+那么 MCP tool provider 就会在 `provideTools` 的结果中自动额外加入两个 synthetic tools，
+与 backing MCP servers 原本提供的“常规” tools 一起暴露出来。
+其中一个工具用于获取 resource 列表，另一个用于获取某个具体 resource 的内容。
+LangChain4j 提供了一个默认实现 `DefaultMcpResourcesAsToolsPresenter`，
+它会添加以下两个工具：
 
-**_NOTE:_** The rest of this section describes `DefaultMcpResourcesAsToolsPresenter`. You may plug in your own implementation
-that behaves differently.
+**_NOTE:_** 本节后续内容描述的是 `DefaultMcpResourcesAsToolsPresenter`。
+你也可以接入自己的实现，使其表现出不同行为。
 
-- `list_resources`: Lists all resources exposed by the backing MCP servers. This tool takes no arguments.
-- `get_resource`: Reads the contents of a resource. This tool takes two arguments that together identify a resource:
-MCP server name and the URI.
+- `list_resources`：列出 backing MCP servers 暴露的所有 resources。该工具无参数。
+- `get_resource`：读取某个 resource 的内容。该工具接收两个参数，用于共同定位一个 resource：
+  MCP server 名称和 resource URI。
 
-The output of `list_resources` is a JSON array like:
+`list_resources` 的输出是如下形式的 JSON 数组：
 
 ```json
 [ {
@@ -375,22 +409,26 @@ The output of `list_resources` is a JSON array like:
 } ]
 ```
 
-Each document in this array represents one resource. Each resource is identified by a combination of `uri` and `mcpServer`, 
-where `mcpServer` is the value of `key` that was assigned to the MCP client during creation (see `DefaultMcpClient.Builder#key`).
-When the Chat model invokes the `list_resources` tool, 
-it receives this list of resources and can then decide to invoke `read_resource`. The default descriptions of `list_resources`
-and `get_resource` tools should suffice under most circumstances to explain to an LLM how to use them. However, if you need
-to customize the descriptions of these tools and their arguments, you override them using the methods of
-`DefaultMcpResourcesAsToolsPresenter.Builder`.
+该数组中的每个对象都表示一个 resource。
+每个 resource 由 `uri` 和 `mcpServer` 的组合唯一标识，
+其中 `mcpServer` 是创建 MCP client 时分配的 `key` 值
+（见 `DefaultMcpClient.Builder#key`）。
+当 Chat model 调用 `list_resources` 工具后，
+它会收到这份 resource 列表，并据此决定是否进一步调用 `read_resource`。
+在大多数场景下，`list_resources` 与 `get_resource` 的默认描述已经足够向 LLM 解释其使用方法。
+但如果你需要自定义这些工具及其参数的描述，
+可以通过 `DefaultMcpResourcesAsToolsPresenter.Builder` 上的方法进行覆盖。
 
-### Resource subscriptions
+### 资源订阅 {#resource-subscriptions}
 
-The MCP protocol supports [resource subscriptions](https://modelcontextprotocol.io/specification/2025-11-25/server/resources#subscriptions),
-allowing the client to be notified when a resource changes on the server.
+MCP 协议支持 [resource subscriptions](https://modelcontextprotocol.io/specification/2025-11-25/server/resources#subscriptions)，
+使得 client 能在 server 上某个 resource 发生变化时收到通知。
 
-To subscribe to updates for a specific resource, use `client.subscribeToResource(uri)`.
-When the server updates the resource, it sends a `notifications/resources/updated` notification.
-To handle these notifications, register a callback via the `onResourceUpdated` builder method:
+如果你希望订阅某个特定 resource 的更新，
+可以使用 `client.subscribeToResource(uri)`。
+当 server 更新该 resource 时，
+它会发送一个 `notifications/resources/updated` notification。
+要处理这些通知，你可以通过 builder 上的 `onResourceUpdated` 方法注册回调：
 
 ```java
 McpClient mcpClient = DefaultMcpClient.builder()
@@ -409,45 +447,61 @@ mcpClient.subscribeToResource("file:///status");
 mcpClient.unsubscribeFromResource("file:///status");
 ```
 
-## Prompts
+## 提示词 {#prompts}
 
-To obtain a list of [MCP prompts](https://modelcontextprotocol.io/docs/concepts/prompts)
-from the server, use `client.listPrompts()`. This method returns a List of `McpPrompt`s. A `McpPrompt`
-contains information about the name and arguments of the prompt.
+如果要从 server 获取 [MCP prompts](https://modelcontextprotocol.io/docs/concepts/prompts) 列表，
+可以使用 `client.listPrompts()`。
+该方法会返回一个 `McpPrompt` 列表。
+`McpPrompt` 中包含 prompt 的名称及参数信息。
 
-To render the actual contents of a prompt, use `client.getPrompt(name, arguments)`. A rendered prompt can contain one to many
-messages and these are represented as `McpPromptMessage` objects. Each `McpPromptMessage` contains the role of the message (`user`, `assistant`,...)
-and the actual content of the message. The supported message content types at the moment
-are: `McpTextContent`, `McpImageContent`, and `McpEmbeddedResource`. 
+要渲染 prompt 的实际内容，
+可以使用 `client.getPrompt(name, arguments)`。
+一个已渲染的 prompt 可以包含一条或多条消息，
+它们以 `McpPromptMessage` 对象表示。
+每个 `McpPromptMessage` 都包含消息角色（`user`、`assistant` 等）
+以及消息的实际内容。
+当前支持的消息内容类型包括：`McpTextContent`、`McpImageContent` 和 `McpEmbeddedResource`。
 
-You can use `McpPromptMessage.toChatMessage()` to convert it into a generic `dev.langchain4j.data.message.ChatMessage`
-from the LangChain4j core API. This is not possible in all cases though. For example, it will throw an
-exception if the prompt message's `role` is `assistant` and it contains content other than text. Converting
-messages with binary blob content to a `ChatMessage` is unsupported regardless of the role.
+你可以通过 `McpPromptMessage.toChatMessage()`，
+将其转换为 LangChain4j core API 中通用的 `dev.langchain4j.data.message.ChatMessage`。
+但这并不是在所有情况下都可行。
+例如，当 prompt message 的 `role` 为 `assistant`，
+且其内容不只是文本时，这个方法就会抛出异常。
+无论角色是什么，包含二进制 blob 内容的消息目前都不支持转换为 `ChatMessage`。
 
-## Using the GitHub MCP server through Docker
+## 通过 Docker 使用 GitHub MCP 服务器
 
-Let's now see how to use the Model Context Protocol (MCP) to bridge AI models with external tools in a standardized way.
-The following example will interact with GitHub, through the LangChain4j MCP client, to fetch and summarize the latest commits from a public GitHub repository.
-For that, no need to reinvent the wheel, we can use the existing [GitHub MCP server implementation](https://github.com/github/github-mcp-server) available in the [MCP GitHub repo](https://github.com/modelcontextprotocol).
+下面来看一个具体示例：
+如何使用 Model Context Protocol（MCP）以标准化方式连接 AI 模型与外部工具。
+在这个例子中，我们会通过 LangChain4j MCP client 与 GitHub 交互，
+获取并总结某个公开 GitHub 仓库的最近几次提交。
+为此我们无需重复造轮子，
+可以直接使用现成的 [GitHub MCP server implementation](https://github.com/github/github-mcp-server)，
+它可在 [MCP GitHub repo](https://github.com/modelcontextprotocol) 中找到。
 
-The idea is to build a Java application that connects to a GitHub MCP server running locally in Docker, to fetch and summarize the latest commits.
-The example uses the stdio transport mechanism of MCP to communicate between our Java application and the GitHub MCP server.
+我们的目标是构建一个 Java 应用，
+通过 LangChain4j MCP client 连接一个本地运行在 Docker 中的 GitHub MCP server，
+并获取、总结 LangChain4j GitHub 仓库最近的提交记录。
+这个例子使用的是 MCP 的 stdio transport，
+用于在 Java 应用与 GitHub MCP server 之间通信。
 
-## Packaging and Executing the GitHub MCP Server in Docker
+## 在 Docker 中打包并执行 GitHub MCP 服务器
 
-To interact with GitHub, we first need to set up the GitHub MCP server in Docker.
-The GitHub MCP server provides a standardized interface to interact with GitHub through the Model Context Protocol.
-It enables file operations, repository management, and search functionality. 
+要与 GitHub 交互，首先需要在 Docker 中搭建 GitHub MCP server。
+GitHub MCP server 提供了一个标准化接口，
+可用于通过 Model Context Protocol 与 GitHub 交互。
+它支持文件操作、仓库管理以及搜索功能。
 
-To build the Docker image for our GitHub MCP server, you need to get the code from the [MCP servers GitHub repo](https://github.com/modelcontextprotocol/servers/tree/main/src/github) either by cloning the repo or downloading the code.
-Then, navigate to the root directory and execute the following Docker command:
+要为 GitHub MCP server 构建 Docker 镜像，
+你需要先从 [MCP servers GitHub repo](https://github.com/modelcontextprotocol/servers/tree/main/src/github)
+获取代码，可以通过 clone 仓库或下载源码实现。
+然后进入根目录，执行以下 Docker 命令：
 
 ```bash
 docker build -t mcp/github -f src/github/Dockerfile .
 ```
-The `Dockerfile` sets up the necessary environment and installs the GitHub MCP server implementation. 
-Once built, the image will be available locally as `mcp/github`.
+`Dockerfile` 会完成环境准备，并安装 GitHub MCP server 实现。
+构建完成后，该镜像会在本地以 `mcp/github` 的名字存在。
 
 ```bash
 docker image ls
@@ -456,17 +510,20 @@ REPOSITORY   TAG         IMAGE ID        SIZE
 mcp/github   latest      b141704170b1    173MB
 ```
 
-## Developing the Tool Provider
+## 开发工具提供者 {#develop-tool-provider}
 
-Let's create a Java class called `McpGithubToolsExample` that uses LangChain4j to connect to our GitHub MCP server. This class will:
+现在，让我们创建一个名为 `McpGithubToolsExample` 的 Java 类，
+用 LangChain4j 连接我们的 GitHub MCP server。
+这个类将会：
 
-* Start the GitHub MCP server in a Docker container (the `docker` command is available in `/usr/local/bin/docker`)
-* Establish a connection using the stdio transport
-* Use an LLM to summarize the last 3 commits of the LangChain4j GitHub repository
+* 在 Docker 容器中启动 GitHub MCP server（其中 `docker` 命令位于 `/usr/local/bin/docker`）
+* 通过 stdio transport 建立连接
+* 使用 LLM 总结 LangChain4j GitHub 仓库最近 3 次提交
 
-> **Note**: In the code below we pass the GitHub token in the environment variable `GITHUB_PERSONAL_ACCESS_TOKEN`. But this is optional for some actions on public repositories that don't need authentication.
+> **Note**: 在下面的代码中，我们通过环境变量 `GITHUB_PERSONAL_ACCESS_TOKEN` 传入 GitHub token。
+> 但对于某些无需认证的公开仓库操作，这并不是必需的。
 
-Here's the implementation:
+实现如下：
 
 ```java
 public static void main(String[] args) throws Exception {
@@ -506,20 +563,24 @@ public static void main(String[] args) throws Exception {
 ```
 
 :::note
-Not all LLMs support tools equally well.
-The ability to understand, select, and correctly use tools depends heavily on the specific model and its capabilities.
-Some models may not support tools at all, while others might require careful prompt engineering
-or additional system instructions.
+并不是所有 LLM 对 tools 的支持都同样成熟。
+模型是否能够理解、选择并正确使用工具，很大程度上取决于具体模型及其能力。
+有些模型可能完全不支持 tools，而另一些模型则可能需要更仔细的 prompt engineering
+或额外的 system instructions。
 :::
 
-> **Note**: This example uses Docker and therefore executes a Docker command available in `/usr/local/bin/docker` (change the path according to your operating system). If you want to use Podman instead of Docker, change the command accordingly.
+> **Note**: 该示例使用 Docker，因此会执行位于 `/usr/local/bin/docker` 的 Docker 命令
+> （请根据你的操作系统调整路径）。
+> 如果你希望用 Podman 代替 Docker，请相应修改命令。
 
-## Executing the Code
+## 执行代码
 
-To run the example, make sure that Docker is up and running on your system.
-Also, set your OpenAI API key in the environment variable `OPENAI_API_KEY`.
+运行这个示例前，请确保系统中的 Docker 已经正常启动。
+同时，确保环境变量 `OPENAI_API_KEY` 中已设置你的 OpenAI API key。
 
-Then run the Java application. You should get a response summarizing the last 3 commits of the LangChain4j GitHub repository, such as:
+然后运行 Java 应用。
+你应该会得到一段响应，内容是对 LangChain4j GitHub 仓库最近 3 次提交的总结，
+类似如下：
 
 ```
 Here are the summaries of the last three commits in the LangChain4j GitHub repository:
@@ -542,10 +603,12 @@ Here are the summaries of the last three commits in the LangChain4j GitHub repos
 All commits were made by the same author, Dmytro Liubarskyi, on the same day, focusing on updating various GitHub Actions to newer versions.
 ```
 
-## Using MCP without AI Services
+## 不使用 AI Services 也能使用 MCP
 
-The previous examples showed how to use MCP with the high-level AI Services API. However, it is also possible to use MCP through the low-level API.
-You can manually use the `DefaultMcpClient` instance that you built to execute commands against the server. Some examples:
+前面的示例展示的是如何通过高层 AI Services API 使用 MCP。
+不过，你也可以通过低层 API 使用 MCP。
+你可以手动使用自己构建的 `DefaultMcpClient` 实例来对 server 执行命令。
+例如：
 
 ```java
 // obtain a list of tools from the server
@@ -569,8 +632,8 @@ if(aiMessage.hasToolExecutionRequests()) {
 }
 ```
 
-If you want to directly programmatically execute a tool using the MCP client (outside of a chat),
-you need to build a `ToolExecutionRequest` instance manually:
+如果你希望在聊天上下文之外，直接通过 MCP client 以编程方式执行某个工具，
+就需要手动构造一个 `ToolExecutionRequest`：
 
 ```java
 // to execute a tool named "tool1" with argument "a=b"
@@ -581,13 +644,14 @@ ToolExecutionRequest request = ToolExecutionRequest.builder()
 String toolResult = mcpClient.executeTool(request);
 ```
 
-## Notes about Tool Caching
+## 关于工具缓存的说明 {#note-on-tool-caching}
 
-`DefaultMcpClient` maintains an internal cache of MCP tools. Once retrieved, the
-tool list won't be requested again from the MCP server unless the server sends a
-notification that the list has been updated. You can manually clear this cache
-by calling `DefaultMcpClient.evictToolListCache()`. If you prefer to disable
-caching entirely, configure the client as follows:
+`DefaultMcpClient` 会维护一份内部 MCP tool cache。
+一旦工具列表被获取，它就不会再次向 MCP server 请求，
+除非 server 发送通知表明该列表已更新。
+你也可以通过调用 `DefaultMcpClient.evictToolListCache()` 手动清除此缓存。
+如果你希望完全禁用缓存，
+可以按如下方式配置 client：
 
 ```java
 McpClient mcpClient = new DefaultMcpClient.Builder()
@@ -597,19 +661,19 @@ McpClient mcpClient = new DefaultMcpClient.Builder()
     .build();
 ```
 
-## MCP Registry client
+## MCP Registry 客户端 {#mcp-registry-client}
 
-LangChain4j also offers a separate client implementation that can talk to 
-[MCP registries](https://registry.modelcontextprotocol.io/docs#/). Right now, only
-read-only operations are implemented (you can search for MCP servers, but managing and adding servers
-is not supported - please use the 
-[official tools](https://github.com/modelcontextprotocol/registry/blob/main/docs/guides/publishing/publish-server.md) for that).
+LangChain4j 还提供了一个独立的 client 实现，
+可以与 [MCP registries](https://registry.modelcontextprotocol.io/docs#/) 通信。
+目前只支持只读操作
+（你可以搜索 MCP servers，但不支持管理和新增 server；
+这些操作请使用[官方工具](https://github.com/modelcontextprotocol/registry/blob/main/docs/guides/publishing/publish-server.md)）。
 
-**_WARNING:_** Discovering MCP servers and using them (especially running locally) may present serious security risks. Before
-running any MCP server that you locate in a public registry, make sure you can trust it.
+**_WARNING:_** 发现 MCP servers 并使用它们（尤其是本地运行时）可能会带来严重的安全风险。
+在运行任何来自公共 registry 的 MCP server 之前，请务必确认你信任它。
 
-The registry client
-lives in the `dev.langchain4j.mcp.registryclient` package and can be initialized like this:
+registry client 位于 `dev.langchain4j.mcp.registryclient` 包中，
+可以这样初始化：
 
 ```java
 McpRegistryClient client = DefaultMcpRegistryClient.builder()
@@ -617,8 +681,9 @@ McpRegistryClient client = DefaultMcpRegistryClient.builder()
         .build();
 ```
 
-If no base URL is provided, the official registry will be used as the default (https://registry.modelcontextprotocol.io).
-Then, to search for MCP servers, use the `registry.listServers(McpServerListRequest)` method. A `McpServerListRequest`
-object can be built using the `McpServerListRequest.Builder` class. The Java API in LangChain4j
-closely mirrors the REST API of MCP registries as described in the official
-[MCP Registry Reference](https://registry.modelcontextprotocol.io/docs).
+如果没有提供 base URL，则会默认使用官方 registry（https://registry.modelcontextprotocol.io）。
+之后，你可以通过 `registry.listServers(McpServerListRequest)` 方法搜索 MCP servers。
+`McpServerListRequest` 对象可以使用 `McpServerListRequest.Builder` 构建。
+LangChain4j 中的 Java API 与 MCP registries 官方 REST API 高度对应，
+具体可参考官方的
+[MCP Registry Reference](https://registry.modelcontextprotocol.io/docs)。

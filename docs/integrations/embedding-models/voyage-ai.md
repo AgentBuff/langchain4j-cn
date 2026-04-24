@@ -4,7 +4,7 @@ sidebar_position: 19
 
 # Voyage AI
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,12 +14,12 @@ sidebar_position: 19
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `VoyageAiEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [VoyageAiEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-voyage-ai/src/test/java/dev/langchain4j/model/voyageai/VoyageAiEmbeddingModelIT.java)
 - [VoyageAiEmbeddingModelExample](https://github.com/langchain4j/langchain4j-examples/blob/main/voyage-ai-examples/src/main/java/VoyageAiEmbeddingModelExample.java)

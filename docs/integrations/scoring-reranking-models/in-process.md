@@ -2,21 +2,20 @@
 sidebar_position: 1
 ---
 
-# In-process (ONNX)
+# 进程内（ONNX）
 
-LangChain4j provides local scoring (reranking) models,
-powered by [ONNX runtime](https://onnxruntime.ai/docs/get-started/with-java.html), running in the same Java process.
+LangChain4j 提供本地评分（重排序）模型，由 [ONNX runtime](https://onnxruntime.ai/docs/get-started/with-java.html) 提供支持，运行在同一 Java 进程中。
 
-Many models (e.g., from [Hugging Face](https://huggingface.co/)) can be used,
-as long as they are in the ONNX format.
+只要模型是 ONNX 格式，就可以使用许多模型（例如来自 [Hugging Face](https://huggingface.co/) 的模型）。
 
-Information on how to convert models into ONNX format can be found [here](https://huggingface.co/docs/optimum/exporters/onnx/usage_guides/export_a_model).
+有关如何将模型转换为 ONNX 格式的信息，请参阅[这里](https://huggingface.co/docs/optimum/exporters/onnx/usage_guides/export_a_model)。
 
-Many models already converted to ONNX format are available [here](https://huggingface.co/Xenova).
+许多已转换为 ONNX 格式的模型可在[这里](https://huggingface.co/Xenova)找到。
 
-### Usage
+### 用法
 
-By default, scoring (reranking) model uses the CPU. 
+默认情况下，评分（重排序）模型使用 CPU。
+
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -24,6 +23,7 @@ By default, scoring (reranking) model uses the CPU.
     <version>1.13.0-beta23</version>
 </dependency>
 ```
+
 ```java
 String pathToModel = "/home/langchain4j/model.onnx";
 String pathToTokenizer = "/home/langchain4j/tokenizer.json";
@@ -33,8 +33,8 @@ Response<Double> response = scoringModel.score("query", "passage");
 Double score = response.content();
 ```
 
-If you want to use the GPU, `onnxruntime_gpu` version can be found
-[here](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html).
+如果您想使用 GPU，可以在[这里](https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html)找到 `onnxruntime_gpu` 版本。
+
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -48,7 +48,7 @@ If you want to use the GPU, `onnxruntime_gpu` version can be found
     </exclusions>
 </dependency>
 
-<!-- 1.18.0 support CUDA 12.x -->
+<!-- 1.18.0 支持 CUDA 12.x -->
 <dependency>
     <groupId>com.microsoft.onnxruntime</groupId>
     <artifactId>onnxruntime_gpu</artifactId>

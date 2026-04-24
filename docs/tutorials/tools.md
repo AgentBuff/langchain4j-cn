@@ -1,60 +1,69 @@
 ---
 sidebar_position: 7
+title: Java 工具调用 Function Calling 教程 | LangChain4j
+description: 用 @Tool 注解把 Java 方法暴露给 LLM，LangChain4j 自动生成 JSON Schema、调度工具调用并完成参数绑定，兼容 OpenAI、Gemini、Claude、通义千问、Ollama 等。
+keywords:
+  - LangChain4j Tools
+  - Java Function Calling
+  - Java 工具调用
+  - "@Tool 注解"
+  - LLM Tool Use
+image: /img/docusaurus-social-card.jpg
 ---
 
-# Tools (Function Calling)
+# 工具调用
 
-Some LLMs, in addition to generating text, can also trigger actions.
+有些 LLM 除了生成文本之外，还可以触发动作。
 
 :::note
-All LLMs supporting tools can be found [here](/integrations/language-models) (see the "Tools" column).
+所有支持 tools 的 LLM 可在[这里](/integrations/language-models)查看（参见 “Tools” 列）。
 :::
 
 :::note
-Not all LLMs support tools equally well.
-The ability to understand, select, and correctly use tools depends heavily on the specific model and its capabilities.
-Some models may not support tools at all, while others might require careful prompt engineering
-or additional system instructions.
+并不是所有 LLM 对 tools 的支持都同样成熟。
+模型是否能够理解、选择并正确使用工具，很大程度上取决于具体模型及其能力。
+有些模型可能完全不支持 tools，而另一些模型则可能需要更精细的 prompt engineering
+或额外的 system instructions。
 :::
 
-There is a concept known as "tools," or "function calling".
-It allows the LLM to call, when necessary, one or more available tools, usually defined by the developer.
-A tool can be anything: a web search, a call to an external API, or the execution of a specific piece of code, etc.
-LLMs cannot actually call the tool themselves; instead, they express the intent
-to call a specific tool in their response (instead of responding in plain text).
-We, as developers, should then execute this tool with the provided arguments and report back
-the results of the tool execution.
+这里有一个概念叫做 “tools”，也叫 “function calling”。
+它允许 LLM 在必要时调用一个或多个可用工具，而这些工具通常由开发者定义。
+工具可以是任何东西：网页搜索、外部 API 调用，或者执行某段特定代码等。
+LLM 本身并不能真正执行工具；相反，它会在响应中表达“想要调用某个工具”的意图
+（而不是直接返回普通文本）。
+随后，开发者需要根据它提供的参数真正执行这个工具，
+并把工具执行结果再反馈给模型。
 
-For example, we know that LLMs themselves are not very good at math.
-If your use case involves occasional math calculations, you might want to provide the LLM with a "math tool."
-By declaring one or multiple tools in the request to the LLM,
-it can then decide to call one of them if it deems it appropriate.
-Given a math question along with a set of math tools, the LLM might decide that to properly answer the question,
-it should first call one of the provided math tools.
+例如，我们知道 LLM 自身并不擅长数学。
+如果你的场景里偶尔需要做数学计算，你可能会想给 LLM 提供一个“数学工具”。
+当你在发给 LLM 的请求中声明一个或多个工具后，
+模型就可以在它认为合适的时候决定调用其中之一。
+给定一道数学题，再加上一组数学工具，LLM 可能会判断：
+为了正确回答这个问题，它应该先调用其中某个数学工具。
 
-Let's see how this works in practice (with and without tools):
+下面看看实际效果（有工具和没有工具时的区别）。
 
-An example of a message exchange without tools:
+没有工具时的消息交换示例：
 ```
 Request:
 - messages:
     - UserMessage:
-        - text: What is the square root of 475695037565?
+        - text: 475695037565 的平方根是多少？
 
 Response:
 - AiMessage:
-    - text: The square root of 475695037565 is approximately 689710.
+    - text: 475695037565 的平方根大约是 689710。
 ```
-Close, but not correct.
+接近，但不正确。
 
-An example of a message exchange with the following tools:
+如果提供如下工具：
 ```java
-@Tool("Sums 2 given numbers")
+@Tool("对两个给定数字求和")
 double sum(double a, double b) {
     return a + b;
 }
 
-@Tool("Returns a square root of a given number")
+@Tool("返回给定数字的平方根")
 double squareRoot(double x) {
     return Math.sqrt(x);
 }
@@ -64,10 +73,10 @@ double squareRoot(double x) {
 Request 1:
 - messages:
     - UserMessage:
-        - text: What is the square root of 475695037565?
+        - text: 475695037565 的平方根是多少？
 - tools:
-    - sum(double a, double b): Sums 2 given numbers
-    - squareRoot(double x): Returns a square root of a given number
+    - sum(double a, double b): 对两个给定数字求和
+    - squareRoot(double x): 返回给定数字的平方根
 
 Response 1:
 - AiMessage:
@@ -75,13 +84,13 @@ Response 1:
         - squareRoot(475695037565)
 
 
-... here we are executing the squareRoot method with the "475695037565" argument and getting "689706.486532" as a result ...
+... 此处我们执行了 squareRoot 方法，参数是 "475695037565"，得到结果 "689706.486532" ...
 
 
 Request 2:
 - messages:
     - UserMessage:
-        - text: What is the square root of 475695037565?
+        - text: 475695037565 的平方根是多少？
     - AiMessage:
         - toolExecutionRequests:
             - squareRoot(475695037565)
@@ -90,89 +99,90 @@ Request 2:
 
 Response 2:
 - AiMessage:
-    - text: The square root of 475695037565 is 689706.486532.
+    - text: 475695037565 的平方根是 689706.486532。
 ```
 
-As you can see, when an LLM has access to tools, it can decide to call one of them when appropriate.
+如你所见，当 LLM 可以访问工具时，它就能在合适的时候决定调用其中某个工具。
 
-This is a very powerful feature.
-In this simple example, we gave the LLM primitive math tools,
-but imagine if we gave it, for example, `googleSearch` and `sendEmail` tools
-and a query like "My friend wants to know recent news in the AI field. Send the short summary to friend@email.com,"
-then it could find recent news using the `googleSearch` tool,
-then summarize it and send the summary via email using the `sendEmail` tool.
-
-:::note
-To increase the chances of the LLM calling the right tool with the right arguments,
-we should provide a clear and unambiguous:
-- name of the tool
-- description of what the tool does and when it should be used
-- description of every tool parameter
-
-A good rule of thumb: if a human can understand the purpose of a tool and how to use it,
-chances are that the LLM can too.
-:::
-
-LLMs are specifically fine-tuned to detect when to call tools and how to call them.
-Some models can even call multiple tools at once, for example,
-[OpenAI](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling).
+这是一个非常强大的能力。
+在这个简单示例中，我们提供的是基础数学工具；
+但想象一下，如果我们给它 `googleSearch` 和 `sendEmail` 两个工具，
+再给出这样的请求：
+“我朋友想知道 AI 领域最近的新闻。把简短总结发到 friend@email.com。”
+那么它就可以先调用 `googleSearch` 获取最新资讯，
+然后进行总结，再通过 `sendEmail` 把总结发出去。
 
 :::note
-Please note that not all models support tools.
-To see which models support tools, refer to the "Tools" column on [this](https://docs.langchain4j.dev/integrations/language-models/) page.
+为了提高 LLM 用正确参数调用正确工具的概率，
+我们应尽可能清晰、无歧义地提供以下信息：
+- 工具名称
+- 工具做什么，以及何时应该使用它
+- 每个工具参数的说明
+
+一个经验法则是：如果一个人类能理解这个工具的用途和用法，
+那么 LLM 大概率也能理解。
+:::
+
+LLM 在训练时通常会专门针对“什么时候该调用工具、该如何调用工具”做额外微调。
+有些模型甚至可以一次调用多个工具，例如
+[OpenAI](https://platform.openai.com/docs/guides/function-calling/parallel-function-calling)。
+
+:::note
+请注意，并不是所有模型都支持 tools。
+具体哪些模型支持 tools，请查看[这个页面](https://docs.langchain4j.dev/integrations/language-models/)中的 “Tools” 列。
 :::
 
 :::note
-Please note that tools/function calling is not the same as [JSON mode](/tutorials/ai-services#json-mode).
+还请注意，tools / function calling 和 [JSON mode](/tutorials/ai-services#json-mode) 并不是同一回事。
 :::
 
-# 2 levels of abstraction
+# 两个抽象层级
 
-LangChain4j provides two levels of abstraction for using tools:
-- Low-level, using the `ChatModel` and `ToolSpecification` APIs
-- High-level, using [AI Services](/tutorials/ai-services) and `@Tool`-annotated Java methods
+LangChain4j 为 tools 提供了两个抽象层级：
+- 低层：使用 `ChatModel` 与 `ToolSpecification` API
+- 高层：使用 [AI Services](/tutorials/ai-services) 和带 `@Tool` 注解的 Java 方法
 
-## Low Level Tool API
+## 低层 Tool API {#low-level-tool-api}
 
-At the low level, you can use the `chat(ChatRequest)` method
-of the `ChatModel`. A similar method is also present in the `StreamingChatModel`.
+在低层，你可以使用 `ChatModel` 的 `chat(ChatRequest)` 方法。
+`StreamingChatModel` 中也提供了类似的方法。
 
-You can specify one or more `ToolSpecification`s when creating the `ChatRequest`.
+在创建 `ChatRequest` 时，你可以指定一个或多个 `ToolSpecification`。
 
-`ToolSpecification` is an object that contains all the information about the tool:
-- The `name` of the tool
-- The `description` of the tool
-- The `parameters` of the tool and their descriptions
-- The `metadata` of the tool.
-By default, it is not sent to the LLM provider, you must explicitly specify which metadata keys should be sent
-when creating a `ChatModel`.
-Currently, tool metadata is supported only by the `langchain4j-anthropic` module.
-When tools are provided by the [McpToolProvider](/tutorials/mcp#mcp-tool-provider),
-`metadata` can contain MCP-specific entries.
+`ToolSpecification` 是一个对象，包含工具的全部信息：
+- 工具的 `name`
+- 工具的 `description`
+- 工具的 `parameters` 及其说明
+- 工具的 `metadata`
+  默认情况下，这些 metadata 不会发给 LLM 提供商；
+  你必须在创建 `ChatModel` 时显式指定哪些 metadata key 应该被发送。
+  目前 tool metadata 仅由 `langchain4j-anthropic` 模块支持。
+  当工具由 [McpToolProvider](/tutorials/mcp#mcp-tool-provider) 提供时，
+  `metadata` 还可能包含 MCP 特有条目。
 
-It is recommended to provide as much information about the tool as possible:
-a clear name, a comprehensive description, and a description for each parameter, etc.
+建议尽可能为工具提供充分的信息：
+例如清晰的名称、完整的描述，以及每个参数的说明等。
 
-### Creating Tool Specification
+### 创建 Tool Specification
 
-There are two ways to create a `ToolSpecification`:
+创建 `ToolSpecification` 有两种方式：
 
-1. Manually
+1. 手工创建
 ```java
 ToolSpecification toolSpecification = ToolSpecification.builder()
     .name("getWeather")
-    .description("Returns the weather forecast for a given city")
+    .description("返回指定城市的天气预报")
     .parameters(JsonObjectSchema.builder()
-        .addStringProperty("city", "The city for which the weather forecast should be returned")
+        .addStringProperty("city", "需要返回天气预报的城市")
         .addEnumProperty("temperatureUnit", List.of("CELSIUS", "FAHRENHEIT"))
-        .required("city") // the required properties should be specified explicitly
+        .required("city") // 必填属性需要显式指定
         .build())
     .build();
 ```
 
-You can find more information on `JsonObjectSchema` [here](/tutorials/structured-outputs#jsonobjectschema).
+关于 `JsonObjectSchema` 的更多信息，请参阅[这里](/tutorials/structured-outputs#jsonobjectschema)。
 
-2. Using helper methods:
+2. 使用辅助方法：
 - `ToolSpecifications.toolSpecificationsFrom(Class)`
 - `ToolSpecifications.toolSpecificationsFrom(Object)`
 - `ToolSpecifications.toolSpecificationFrom(Method)`
@@ -180,9 +190,9 @@ You can find more information on `JsonObjectSchema` [here](/tutorials/structured
 ```java
 class WeatherTools { 
   
-    @Tool("Returns the weather forecast for a given city")
+    @Tool("返回指定城市的天气预报")
     String getWeather(
-            @P("The city for which the weather forecast should be returned") String city,
+            @P("需要返回天气预报的城市") String city,
             TemperatureUnit temperatureUnit
     ) {
         ...
@@ -192,10 +202,10 @@ class WeatherTools {
 List<ToolSpecification> toolSpecifications = ToolSpecifications.toolSpecificationsFrom(WeatherTools.class);
 ```
 
-### JSON Serialization
+### JSON 序列化
 
-`ToolSpecification` can be serialized to JSON and deserialized back using `toJson()` and `fromJson()` methods.
-This can be useful, for example, when you want to store tool specifications in a database or transfer them over the network.
+`ToolSpecification` 可以通过 `toJson()` 和 `fromJson()` 方法序列化为 JSON，并从 JSON 反序列化回来。
+这在某些场景中会很有用，例如你想把 tool specification 存入数据库，或通过网络进行传输。
 
 ```java
 String json = toolSpecification.toJson();
@@ -203,42 +213,41 @@ String json = toolSpecification.toJson();
 ToolSpecification deserialized = ToolSpecification.fromJson(json);
 ```
 
-By default, a dedicated Jackson `ObjectMapper` is used for the JSON conversion.
-You can provide your own implementation of `ToolSpecificationJsonCodec` via SPI
-by implementing `ToolSpecificationJsonCodecFactory` and registering it
-in `META-INF/services/dev.langchain4j.spi.agent.tool.ToolSpecificationJsonCodecFactory`.
+默认情况下，JSON 转换使用的是专门的 Jackson `ObjectMapper`。
+你也可以通过 SPI 提供自己的 `ToolSpecificationJsonCodec` 实现：
+实现 `ToolSpecificationJsonCodecFactory` 并将其注册到
+`META-INF/services/dev.langchain4j.spi.agent.tool.ToolSpecificationJsonCodecFactory`。
 
-### Using `ChatModel`
+### 使用 `ChatModel`
 
-Once you have a `List<ToolSpecification>`, you can call the model:
+当你拿到 `List<ToolSpecification>` 之后，就可以调用模型了：
 ```java
 ChatRequest request = ChatRequest.builder()
-    .messages(UserMessage.from("What will the weather be like in London tomorrow?"))
+    .messages(UserMessage.from("明天伦敦天气怎么样？"))
     .toolSpecifications(toolSpecifications)
     .build();
 ChatResponse response = model.chat(request);
 AiMessage aiMessage = response.aiMessage();
 ```
 
-If the LLM decides to call the tool, the returned `AiMessage` will contain data
-in the `toolExecutionRequests` field.
-In this case, `AiMessage.hasToolExecutionRequests()` will return `true`.
-Depending on the LLM, it can contain one or multiple `ToolExecutionRequest` objects
-(some LLMs support calling multiple tools in parallel).
+如果 LLM 决定调用工具，返回的 `AiMessage` 就会在 `toolExecutionRequests` 字段里包含相关数据。
+此时，`AiMessage.hasToolExecutionRequests()` 会返回 `true`。
+根据不同的 LLM，它可能包含一个或多个 `ToolExecutionRequest` 对象
+（有些 LLM 支持并行调用多个工具）。
 
-Each `ToolExecutionRequest` should contain:
-- The `id` of the tool call. Please note that some LLM providers (e.g., Google, Ollama) may omit this ID.
-- The `name` of the tool to be called, for example: `getWeather`
-- The `arguments`, for example: `{ "city": "London", "temperatureUnit": "CELSIUS" }`
+每个 `ToolExecutionRequest` 通常应包含：
+- 工具调用的 `id`。请注意，一些 LLM 提供商（例如 Google、Ollama）可能会省略这个 ID。
+- 要调用的工具 `name`，例如：`getWeather`
+- 工具参数 `arguments`，例如：`{ "city": "London", "temperatureUnit": "CELSIUS" }`
 
-You'll need to manually execute the tool(s) using information from the `ToolExecutionRequest`(s).
+你需要根据 `ToolExecutionRequest` 中的信息，手动执行对应工具。
 
-If you want to send the result of the tool execution back to the LLM,
-you need to create a `ToolExecutionResultMessage` (one for each `ToolExecutionRequest`)
-and send it along with all previous messages:
+如果你想把工具执行结果再发送回 LLM，
+需要创建一个 `ToolExecutionResultMessage`（每个 `ToolExecutionRequest` 对应一个），
+并连同之前所有消息一起发送：
 ```java
 
-String result = "It is expected to rain in London tomorrow.";
+String result = "明天伦敦预计有雨。";
 ToolExecutionResultMessage toolExecutionResultMessage = ToolExecutionResultMessage.from(toolExecutionRequest, result);
 ChatRequest request2 = ChatRequest.builder()
         .messages(List.of(userMessage, aiMessage, toolExecutionResultMessage))
@@ -247,16 +256,16 @@ ChatRequest request2 = ChatRequest.builder()
 ChatResponse response2 = model.chat(request2);
 ```
 
-#### Multimodal Tool Results
-`ToolExecutionResultMessage` can also carry non-text content such as images.
-Instead of using `text()`, you can use the builder with `contents()`:
+#### 多模态工具结果 {#returning-images-and-multimodal-content}
+`ToolExecutionResultMessage` 也可以承载非文本内容，例如图片。
+这时不使用 `text()`，而是使用带 `contents()` 的 builder：
 
 ```java
 ToolExecutionResultMessage toolExecutionResultMessage = ToolExecutionResultMessage.builder()
         .id(toolExecutionRequest.id())
         .toolName(toolExecutionRequest.name())
         .contents(
-                TextContent.from("Here is the photo"),
+                TextContent.from("这是一张照片"),
                 ImageContent.from(Image.builder()
                         .base64Data(base64Data)
                         .mimeType("image/png")
@@ -266,16 +275,17 @@ ToolExecutionResultMessage toolExecutionResultMessage = ToolExecutionResultMessa
 ```
 
 :::note
-Not all LLM providers support multimodal tool results.
-See [Returning Images and Multimodal Content](/tutorials/tools#returning-images-and-multimodal-content) for details on provider support.
+并不是所有 LLM 提供商都支持多模态工具结果。
+当前支持在工具结果中返回图片的提供商包括 Anthropic、Amazon Bedrock 和 Google AI Gemini。
+其他提供商如果工具返回了非文本内容，会抛出 `UnsupportedFeatureException`。
 :::
 
-### Using `StreamingChatModel`
+### 使用 `StreamingChatModel` {#using-streamingchatmodel}
 
-Once you have a `List<ToolSpecification>`, you can call the model:
+拿到 `List<ToolSpecification>` 后，也可以调用流式模型：
 ```java
 ChatRequest request = ChatRequest.builder()
-    .messages(UserMessage.from("What will the weather be like in London tomorrow?"))
+    .messages(UserMessage.from("明天伦敦天气怎么样？"))
     .toolSpecifications(toolSpecifications)
     .build();
 
@@ -308,127 +318,126 @@ model.chat(request, new StreamingChatResponseHandler() {
 });
 ```
 
-If the LLM decides to call the tool, the `onPartialToolCall(PartialToolCall)` callback
-will typically be called multiple times before an `onCompleteToolCall(CompleteToolCall)` callback
-is eventually called, indicating that streaming for that tool call is finished.
+如果 LLM 决定调用工具，`onPartialToolCall(PartialToolCall)` 回调通常会被多次触发，
+随后才会触发一次 `onCompleteToolCall(CompleteToolCall)`，表示该工具调用的流式输出已经结束。
 
 :::note
-Please note that not all LLM providers stream partial tool calls.
-Some providers (e.g., Bedrock, Google, Mistral, Ollama) return only complete tool calls.
-In those cases, `onPartialToolCall` callback won't be invoked - only `onCompleteToolCall` will be called.
+并不是所有 LLM 提供商都会流式返回“部分工具调用”。
+一些提供商（例如 Bedrock、Google、Mistral、Ollama）只会返回完整的工具调用。
+在这种情况下，不会触发 `onPartialToolCall`，只会触发 `onCompleteToolCall`。
 :::
 
-Here's an example of what streaming of a single tool call might look like:
+下面是一个单个工具调用的流式输出示例：
 ```
 onPartialToolCall(index = 0, id = "call_abc", name = "get_weather", partialArguments = "{\"")
 onPartialToolCall(index = 0, id = "call_abc", name = "get_weather", partialArguments = "city")
-onPartialToolCall(index = 0, id = "call_abc", name = "get_weather", partialArguments = ""\":\"")
+onPartialToolCall(index = 0, id = "call_abc", name = "get_weather", partialArguments = "\":\"")
 onPartialToolCall(index = 0, id = "call_abc", name = "get_weather", partialArguments = "London")
 onPartialToolCall(index = 0, id = "call_abc", name = "get_weather", partialArguments = "\"}")
 onCompleteToolCall(index = 0, id = "call_abc", name = "get_weather", arguments = "{\"city\":\"London\"}")
 ```
 
-If the LLM initiates multiple tool calls, the `index` will increment, allowing you to correlate
-the different `PartialToolCall`s with each other and with the final `CompleteToolCall`.
+如果 LLM 发起了多个工具调用，`index` 会递增，
+从而便于你将不同的 `PartialToolCall` 与对应的最终 `CompleteToolCall` 关联起来。
 
-When complete response streaming is over and `onCompleteResponse(ChatResponse)` is invoked,
-the `AiMessage` inside the `ChatResponse` will contain all the tool calls that occurred during streaming.
+当完整响应流结束并触发 `onCompleteResponse(ChatResponse)` 时，
+`ChatResponse` 中的 `AiMessage` 会包含在整个流式过程中发生的全部工具调用。
 
-## High Level Tool API
-At a high level of abstraction, you can annotate any Java method with the `@Tool` annotation
-and specify them when creating [AI Service](/tutorials/ai-services#tools-function-calling).
+## 高层 Tool API {#high-level-tool-api}
+在高层抽象中，你可以给任意 Java 方法加上 `@Tool` 注解，
+并在创建 [AI Service](/tutorials/ai-services#tools-function-calling) 时把它们传进去。
 
-AI Service will automatically convert such methods into `ToolSpecification`s
-and include them in the request for each interaction with the LLM.
-When the LLM decides to call the tool, the AI Service will automatically execute the appropriate method,
-and the return value of the method (if any) will be sent back to the LLM.
-You can find implementation details in `DefaultToolExecutor`.
+AI Service 会自动把这些方法转换为 `ToolSpecification`，
+并在每次与 LLM 交互时把它们包含进请求中。
+当 LLM 决定调用某个工具时，AI Service 会自动执行对应的方法，
+并把方法的返回值（如果有）再发送给 LLM。
+具体实现细节可以查看 `DefaultToolExecutor`。
 
-A few tool examples:
+下面是几个 tool 示例：
 ```java
-@Tool("Searches Google for relevant URLs, given the query")
-public List<String> searchGoogle(@P("search query") String query) {
+@Tool("根据查询搜索 Google，返回相关 URL")
+public List<String> searchGoogle(@P("搜索查询") String query) {
     return googleSearchService.search(query);
 }
 
-@Tool("Returns the content of a web page, given the URL")
-public String getWebPageContent(@P("URL of the page") String url) {
+@Tool("根据 URL 返回网页内容")
+public String getWebPageContent(@P("页面 URL") String url) {
     Document jsoupDocument = Jsoup.connect(url).get();
     return jsoupDocument.body().text();
 }
 ```
 
-### Tool Method Limitations
-Methods annotated with `@Tool`:
-- can be either static or non-static
-- can have any visibility (public, private, etc.).
+### Tool 方法限制
+带 `@Tool` 注解的方法：
+- 可以是 static，也可以是非 static
+- 可以有任意可见性（public、private 等）
 
-### Tool Method Parameters
-Methods annotated with `@Tool` can accept any number of parameters of various types:
-- Primitive types: `int`, `double`, etc
-- Object types: `String`, `Integer`, `Double`, etc
-- Custom POJOs (can contain nested POJOs)
-- `enum`s
-- `List<T>`/`Set<T>` where `T` is one of the above-mentioned types
-- `Map<K,V>` (you need to manually specify the types of `K` and `V` in the parameter description with `@P`)
+### Tool 方法参数
+带 `@Tool` 注解的方法可以接受任意数量、各种类型的参数：
+- 基本类型：`int`、`double` 等
+- 对象类型：`String`、`Integer`、`Double` 等
+- 自定义 POJO（可包含嵌套 POJO）
+- `enum`
+- `List<T>` / `Set<T>`，其中 `T` 为上述任一类型
+- `Map<K,V>`（你需要通过 `@P` 在参数描述中手动说明 `K` 和 `V` 的类型）
 
-Methods without parameters are supported as well.
+无参数的方法同样受支持。
 
-#### Parameter Name
+#### 参数名称
 
-By default, if the `name` attribute of `@P` is not specified, the parameter name is obtained via reflection.
-However, without the `-parameters` javac option, reflection returns generic names like `arg0`, `arg1`, etc.
-The semantic meaning of the parameter is lost, which may confuse the LLM.
+默认情况下，如果 `@P` 的 `name` 属性没有指定，参数名会通过反射获取。
+但如果 Java 编译时没有启用 `-parameters` 选项，反射只能拿到 `arg0`、`arg1` 这类通用名称。
+参数的语义信息就丢失了，这可能会让 LLM 感到困惑。
 
-Setting `name` in `@P` is useful in two cases:
+在以下两种情况下，给 `@P` 指定 `name` 会很有帮助：
 
-1. **Missing `-parameters` javac option** — to avoid generic `arg0`/`arg1` names that the LLM would otherwise see.
-   Note that frameworks like Quarkus and Spring enable `-parameters` by default,
-   so the actual method parameter names are preserved and you typically do not need to set `name` when using those frameworks.
-2. **Custom name for the LLM** — when you want the LLM to see a different parameter name than the one in the source code
-   (for example, to match a specific API contract or to provide a more descriptive name).
+1. **缺少 `-parameters` javac 选项** —— 避免 LLM 看到 `arg0` / `arg1` 这样的无意义参数名。
+   需要注意的是，Quarkus 和 Spring 这类框架默认都会启用 `-parameters`，
+   因此在这些框架下通常不需要手动设置 `name`。
+2. **为 LLM 提供自定义名称** —— 当你希望 LLM 看到的参数名与源代码中的变量名不同，
+   例如为了匹配某个特定 API 契约，或为了提供一个更清晰的描述性名字。
 
-**Example:**
+**示例：**
 
 ```java
 @Tool
 void getTemperature(
-        @P("Temperature value") double value,
-        @P("Unit of temperature") Optional<String> unit) {
+        @P("温度数值") double value,
+        @P("温度单位") Optional<String> unit) {
     ...
 }
 ```
 
-#### Required and Optional
+#### 必填与可选
 
-By default, all tool method parameters are considered **_required_**.
-This means that the LLM will have to produce a value for such a parameter.
-A parameter can be made optional by annotating it with `@P(required = false)`:
+默认情况下，所有 tool 方法参数都被视为**必填**。
+这意味着 LLM 必须为这些参数生成一个值。
+如果想把参数改为可选，可以用 `@P(required = false)`：
 ```java
 @Tool
-void getTemperature(String location, @P("Unit of temperature", required = false) Unit unit) {
+void getTemperature(String location, @P("温度单位", required = false) Unit unit) {
     ...
 }
 ```
 
-#### Alternative: Using `Optional<T>` for Optional Parameters
+#### 另一种方式：使用 `Optional<T>` 表示可选参数
 
-Instead of annotating parameters with `@P(required = false)`, you simply declare the parameter as `Optional<T>`.
-Any parameter of type `Optional<T>` will be treated as optional automatically, even without specify `required = false` in the `@P` annotation.
+除了 `@P(required = false)`，你也可以直接把参数声明为 `Optional<T>`。
+任何 `Optional<T>` 类型的参数都会自动被视为可选，即使 `@P` 中没有显式写 `required = false`。
 
-**Example:**
+**示例：**
 ```java
 @Tool
 void getTemperature(
-    @P("Temperature value") double value,
-    @P("Unit of temperature") Optional<String> unit
+    @P("温度数值") double value,
+    @P("温度单位") Optional<String> unit
 ) {
     ...
 }
 ```
 
-Fields and sub-fields of complex parameters are also considered **_required_** by default.
-You can make a field optional by annotating it with `@JsonProperty(required = false)`:
+复杂参数的字段和子字段默认也同样被视为**必填**。
+如果要让某个字段可选，可以用 `@JsonProperty(required = false)`：
 ```java
 record User(String name, @JsonProperty(required = false) String email) {}
 
@@ -439,35 +448,36 @@ void add(User user) {
 ```
 
 :::note
-Please note that when used with [structured outputs](/tutorials/structured-outputs),
-all fields and sub-fields are considered **_optional_** by default.
+请注意，在与[结构化输出](/tutorials/structured-outputs)一起使用时，
+所有字段和子字段默认都被视为**可选**。
 :::
 
-Recursive parameters (e.g., a `Person` class having a `Set<Person> children` field)
-are currently supported only by OpenAI.
+递归参数（例如 `Person` 类有一个 `Set<Person> children` 字段）
+目前仅被 OpenAI 支持。
 
-### Tool Method Return Types
-Methods annotated with `@Tool` can return any type, including `void`.
-If the method has a `void` return type, "Success" string is sent to the LLM if the method returns successfully.
+### Tool 方法返回类型
+带 `@Tool` 注解的方法可以返回任意类型，包括 `void`。
+如果方法返回类型是 `void`，只要方法成功执行，就会向 LLM 发送字符串 `"Success"`。
 
-If the method has a `String` return type, the returned value is sent to the LLM as is, without any conversions.
+如果方法返回类型是 `String`，则会将返回值原样发送给 LLM，不做任何转换。
 
-For other return types, the returned value is converted into a JSON string before being sent to the LLM.
+对于其他返回类型，返回值会先被转换成 JSON 字符串，再发送给 LLM。
 
-#### Returning Images and Multimodal Content
+#### 返回图片与多模态内容 {#returning-images-and-multimodal-content}
 
-Tools can also return images and other non-text content. When a tool returns one of the following types,
-the result is sent to the LLM as multimodal content (e.g., image) instead of being serialized to JSON text:
+Tools 也可以返回图片和其他非文本内容。
+当工具返回以下类型之一时，结果会以多模态内容（例如图片）的形式发送给 LLM，
+而不是序列化为 JSON 文本：
 
-- `Image` — sent as a single image
-- `ImageContent` — sent as a single image content
-- `Content` — sent as a single content element (e.g., `TextContent`, `ImageContent`)
-- `List<Content>` — sent as multiple content elements
-- `Content[]` — sent as multiple content elements
+- `Image` —— 作为单张图片发送
+- `ImageContent` —— 作为单个图片内容发送
+- `Content` —— 作为单个内容元素发送（例如 `TextContent`、`ImageContent`）
+- `List<Content>` —— 作为多个内容元素发送
+- `Content[]` —— 作为多个内容元素发送
 
-For example, a tool that takes a photo and returns an image:
+例如，一个拍照并返回图片的工具：
 ```java
-@Tool("Takes a photo and returns it")
+@Tool("拍一张照片并返回")
 Image takePhoto() {
     byte[] imageBytes = camera.capture();
     return Image.builder()
@@ -477,37 +487,40 @@ Image takePhoto() {
 }
 ```
 
-Or a tool that returns both text and an image:
+又或者，一个同时返回文本和图片的工具：
 ```java
-@Tool("Takes a photo and returns it with a description")
+@Tool("拍一张照片并连同描述一起返回")
 List<Content> takePhoto() {
     Image image = camera.capture();
     return List.of(
-            TextContent.from("Photo taken at " + LocalDateTime.now()),
+            TextContent.from("拍摄时间：" + LocalDateTime.now()),
             ImageContent.from(image)
     );
 }
 ```
 
 :::note
-Not all LLM providers support multimodal tool results.
-Providers that currently support images in tool results include Anthropic, Amazon Bedrock, and Google AI Gemini.
-Other providers will throw an `UnsupportedFeatureException` if a tool returns non-text content.
+并不是所有 LLM 提供商都支持多模态工具结果。
+当前支持在工具结果中返回图片的提供商包括 Anthropic、Amazon Bedrock 和 Google AI Gemini。
+其他提供商如果工具返回非文本内容，会抛出 `UnsupportedFeatureException`。
 :::
 
-### AI services as tools for other AI services
+### 把 AI services 当作其他 AI services 的工具
 
-AI services can also be used as tools for other AI services. This can be useful in many agentic use cases, where one AI service can ask the help of another, more specialized, AI service to perform a specific task. For instance, having defined the following AI services:
+AI services 也可以被其他 AI services 当作工具使用。
+这在许多 agentic 场景里都很有用：一个 AI service 可以向另一个更专业的 AI service 求助，
+让它执行特定任务。
+例如，假设你定义了下面这些 AI services：
 
 ```java
     interface RouterAgent {
 
         @dev.langchain4j.service.UserMessage("""
-            Analyze the following user request and categorize it as 'legal', 'medical' or 'technical',
-            then forward the request as it is to the corresponding expert provided as a tool.
-            Finally return the answer that you received from the expert without any modification.
+            分析下面的用户请求，并将其归类为 'legal'、'medical' 或 'technical'，
+            然后把原始请求原封不动地转发给对应的专家工具。
+            最后，把专家返回的答案不做任何修改地原样返回。
 
-            The user request is: '{{it}}'.
+            用户请求是：'{{it}}'。
             """)
         String askToExpert(String request);
     }
@@ -515,38 +528,39 @@ AI services can also be used as tools for other AI services. This can be useful 
     interface MedicalExpert {
 
         @dev.langchain4j.service.UserMessage("""
-            You are a medical expert.
-            Analyze the following user request under a medical point of view and provide the best possible answer.
-            The user request is {{it}}.
+            你是一位医学专家。
+            请从医学视角分析下面的用户请求，并给出尽可能好的回答。
+            用户请求是 {{it}}。
             """)
-        @Tool("A medical expert")
+        @Tool("一位医学专家")
         String medicalRequest(String request);
     }
 
     interface LegalExpert {
 
         @dev.langchain4j.service.UserMessage("""
-            You are a legal expert.
-            Analyze the following user request under a legal point of view and provide the best possible answer.
-            The user request is {{it}}.
+            你是一位法律专家。
+            请从法律视角分析下面的用户请求，并给出尽可能好的回答。
+            用户请求是 {{it}}。
             """)
-        @Tool("A legal expert")
+        @Tool("一位法律专家")
         String legalRequest(String request);
     }
 
     interface TechnicalExpert {
 
         @dev.langchain4j.service.UserMessage("""
-            You are a technical expert.
-            Analyze the following user request under a technical point of view and provide the best possible answer.
-            The user request is {{it}}.
+            你是一位技术专家。
+            请从技术视角分析下面的用户请求，并给出尽可能好的回答。
+            用户请求是 {{it}}。
             """)
-        @Tool("A technical expert")
+        @Tool("一位技术专家")
         String technicalRequest(String request);
     }
 ```
 
-The `RouterAgent` can be configured to use as tools the 3 other AI services, experts in specific fields, routing the user request to one of them.
+`RouterAgent` 可以被配置为把另外三个特定领域的 AI service 当作工具使用，
+并根据用户请求把请求路由给它们中的一个。
 
 ```java
 MedicalExpert medicalExpert = AiServices.builder(MedicalExpert.class)
@@ -564,20 +578,21 @@ RouterAgent routerAgent = AiServices.builder(RouterAgent.class)
         .tools(medicalExpert, legalExpert, technicalExpert)
         .build();
 
-routerAgent.askToExpert("I broke my leg what should I do");
+routerAgent.askToExpert("我摔断腿了，应该怎么办？");
 ```
 
 :::note
-Using AI services as tools for other AI services is a powerful feature that enables to build complex agentic systems. However, this approach also comes with a few relevant drawbacks that are important to be aware of:
-- This implementation requires the LLM to copy-paste the user request without modifications as a tool call and this could be an error-prone operation.
-- The LLM calling the other LLM as a tool has to reprocess its response, as it happens for any other tool invocation, and this could be a wasteful computation in terms of both time and consumed tokens.
-- The agent-tool, being a totally separated AI service, has no access to the chat memory of the agent calling it, so it cannot use the chat memory to provide a more informed answer.
+把 AI services 当作其他 AI services 的工具，是一个非常强大的能力，可以帮助你构建复杂的 agentic 系统。
+但这种方式也有一些重要的缺点需要注意：
+- 这种实现要求 LLM 在工具调用中把用户请求原样复制过去，这本身就是一个容易出错的操作。
+- 作为工具调用其他 LLM 的那个 LLM，还需要再次处理对方返回的结果；和其他工具调用一样，这可能会浪费时间和 token。
+- 作为 agent-tool 的 AI service 是完全独立的，它无法访问调用方 agent 的 chat memory，因此也就无法利用这些上下文来给出更充分的回答。
 :::
 
 
 ### `@Tool`
-Any Java method annotated with `@Tool`
-and _explicitly_ specified during the build of an AI Service can be executed by the LLM:
+任何带有 `@Tool` 注解，
+并且在构建 AI Service 时被_显式_传入的 Java 方法，都可以被 LLM 执行：
 ```java
 interface MathGenius {
     
@@ -602,81 +617,81 @@ MathGenius mathGenius = AiServices.builder(MathGenius.class)
     .tools(new Calculator())
     .build();
 
-String answer = mathGenius.ask("What is the square root of 475695037565?");
+String answer = mathGenius.ask("475695037565 的平方根是多少？");
 
-System.out.println(answer); // The square root of 475695037565 is 689706.486532.
+System.out.println(answer); // 475695037565 的平方根是 689706.486532。
 ```
 
-When the `ask` method is called, 2 interactions with the LLM occur, as described in the earlier section.
-In between those interactions, the `squareRoot` method is called automatically.
+当调用 `ask` 方法时，会发生两次与 LLM 的交互，就像前面介绍的那样。
+在这两次交互之间，`squareRoot` 方法会被自动调用。
 
-The `@Tool` annotation has these fields:
-- `name`: the tool's name. If this is not provided, the method's name will serve as the tool's name.
-- `value`: the tool's description.
-- `returnBehavior`: see [this](/tutorials/tools#returning-immediately-the-result-of-a-tool-execution-request) for more details
-- `metadata`: a valid JSON string that contains LLM-provider-specific tool metadata entries.
-By default, it is not sent to the LLM provider, you must explicitly specify which metadata keys should be sent
-when creating a `ChatModel`.
-Currently, tool metadata is supported only by the `langchain4j-anthropic` module.
+`@Tool` 注解包含以下字段：
+- `name`：工具名称。如果不提供，则默认使用方法名作为工具名称。
+- `value`：工具描述。
+- `returnBehavior`：更多信息请参阅[这里](/tutorials/tools#returning-immediately-the-result-of-a-tool-execution-request)
+- `metadata`：一个合法 JSON 字符串，用于包含 LLM 提供商专用的工具 metadata。
+  默认情况下，这些 metadata 不会发送给 LLM 提供商；
+  你必须在创建 `ChatModel` 时显式指定哪些 metadata key 应该被发送。
+  目前 tool metadata 仅由 `langchain4j-anthropic` 模块支持。
 
-Depending on the tool, the LLM might understand it well even without any description
-(for example, `add(a, b)` is obvious),
-but it is usually better to provide clear and meaningful names and descriptions.
-This way, the LLM has more information to decide whether or not to call the given tool, and how to do so.
+根据工具的具体类型，即使没有描述，LLM 也可能理解得很好
+（例如 `add(a, b)` 一看就知道做什么），
+但通常还是更推荐提供清晰、有意义的名称和描述。
+这样 LLM 就有更多信息来决定是否应该调用这个工具，以及如何调用。
 
 ### `@P`
-Method parameters can optionally be annotated with `@P`.
+方法参数可以选择性地用 `@P` 注解标注。
 
-The `@P` annotation has the following optional fields:
+`@P` 注解包含以下可选字段：
 
-- `name`: name of the parameter as seen by the LLM. If not specified, the actual method parameter name is used.
-- `description`: description of the parameter (alias of `value`). Empty by default.
-- `value`: description of the parameter (alias of `description`). Empty by default.
-- `required`: whether the parameter is required, default is `true`.
+- `name`：LLM 看到的参数名。如果未指定，则使用方法的真实参数名。
+- `description`：参数描述（`value` 的别名），默认空。
+- `value`：参数描述（`description` 的别名），默认空。
+- `required`：参数是否必填，默认是 `true`。
 
-#### Parameter Name
+#### 参数名称
 
-The `name` attribute overrides the parameter name that the LLM will see.
-Setting `name` is useful in two cases:
+`name` 属性会覆盖 LLM 最终看到的参数名。
+在以下两种情况下，设置 `name` 很有价值：
 
-1. **Missing `-parameters` javac option.**
-   Without the `-parameters` javac option, Java reflection returns generic names such as `arg0`, `arg1`, etc.
-   The semantic meaning of the parameter is lost, which may confuse the LLM.
-   Setting `name` restores a meaningful name.
-   Note that frameworks like Quarkus and Spring enable `-parameters` by default,
-   so the actual method parameter names are preserved and you typically do not need to set `name` when using those frameworks.
+1. **缺少 `-parameters` javac 选项。**
+   如果没有启用 `-parameters`，Java 反射只会返回 `arg0`、`arg1` 这样的泛化名称。
+   参数的语义信息就丢失了，这可能会让 LLM 迷惑。
+   设置 `name` 可以恢复一个有意义的名称。
+   需要注意的是，Quarkus 和 Spring 这类框架默认会启用 `-parameters`，
+   所以在这些框架中通常不需要手动设置 `name`。
 
-2. **Custom name for the LLM.**
-   When you want the LLM to see a different parameter name than the one the developer uses in the source code
-   (for example, to match a specific API contract or to provide a more descriptive name).
+2. **为 LLM 提供自定义名称。**
+   当你希望 LLM 看到的参数名和源码中的命名不同，
+   例如为了匹配某个特定 API 契约，或者提供一个更具描述性的名字。
 
 
-#### Parameter Description
+#### 参数描述
 
-`description` and `value` are interchangeable — they both set the parameter's description that the LLM will see.
-When only a description is needed, use the shorthand `value` form:
+`description` 和 `value` 是等价的，它们都会设置 LLM 看到的参数描述。
+当只需要描述时，可以使用简写的 `value` 形式：
 ```java
 @Tool
-void getWeather(@P("The city name") String city) { ... }
+void getWeather(@P("城市名称") String city) { ... }
 ```
 
-When both a name and a description are needed, use named attributes:
+当既需要名称又需要描述时，可以使用命名属性：
 ```java
 @Tool
-void getWeather(@P(name = "city", description = "The city name") String city) { ... }
+void getWeather(@P(name = "city", description = "城市名称") String city) { ... }
 ```
 
 ### `@Description`
-The description of classes and fields can be specified using the `@Description` annotation:
+类和字段的描述可以使用 `@Description` 注解指定：
 
 ```java
-@Description("Query to execute")
+@Description("待执行的查询")
 class Query {
 
-  @Description("Fields to select")
+  @Description("需要选择的字段")
   private List<String> select;
 
-  @Description("Conditions to filter on")
+  @Description("筛选条件")
   private List<Condition> where;
 }
 
@@ -687,26 +702,25 @@ Result executeQuery(Query query) {
 ```
 
 :::note
-Please note that `@Description` placed on an `enum` value has **_no effect_** and **_is not_** included
-in the generated JSON schema:
+请注意，放在 `enum` 枚举值上的 `@Description` **不会生效**，并且**不会**被包含到生成的 JSON schema 中：
 ```java
 enum Priority {
 
-    @Description("Critical issues such as payment gateway failures or security breaches.") // this is ignored
+    @Description("致命问题，例如支付网关故障或安全事件。") // 这一项会被忽略
     CRITICAL,
     
-    @Description("High-priority issues like major feature malfunctions or widespread outages.") // this is ignored
+    @Description("高优先级问题，例如主要功能异常或大面积故障。") // 这一项会被忽略
     HIGH,
     
-    @Description("Low-priority issues such as minor bugs or cosmetic problems.") // this is ignored
+    @Description("低优先级问题，例如轻微 bug 或界面问题。") // 这一项会被忽略
     LOW
 }
 ```
 :::
 
-### `InvocationParameters`
-If you wish to pass extra data into the tool when invoking AI Service, you can do it with
-`InvocationParameters`:
+### `InvocationParameters` {#invocationparameters}
+如果你希望在调用 AI Service 时，把额外数据传给工具，
+可以使用 `InvocationParameters`：
 ```java
 
 interface Assistant {
@@ -723,30 +737,29 @@ class Tools {
 }
 
 InvocationParameters parameters = InvocationParameters.from(Map.of("userId", "12345"));
-String response = assistant.chat("What is the weather in London?", parameters);
+String response = assistant.chat("伦敦现在天气怎么样？", parameters);
 ```
 
-In this case, the LLM is not aware of these parameters;
-they are only visible to LangChain4j and user code.
+在这个场景里，LLM 并不知道这些参数的存在；
+它们只对 LangChain4j 和你的应用代码可见。
 
-`InvocationParameters` can also be accessed within other AI Service components, such as:
-- [`ToolProvider`](/tutorials/tools#specifying-tools-dynamically): inside the `ToolProviderRequest`
+`InvocationParameters` 也可以在其他 AI Service 组件中访问到，例如：
+- [`ToolProvider`](/tutorials/tools#specifying-tools-dynamically)：通过 `ToolProviderRequest`
 - [`ToolArgumentsErrorHandler`](/tutorials/tools#handling-tool-arguments-errors)
-and [`ToolExecutionErrorHandler`](https://docs.langchain4j.dev/tutorials/tools#handling-tool-execution-errors):
-inside the `ToolErrorContext`
-- [RAG components](/tutorials/rag/): inside the `Query` -> `Metadata`
+  和 [`ToolExecutionErrorHandler`](https://docs.langchain4j.dev/tutorials/tools#handling-tool-execution-errors)：
+  通过 `ToolErrorContext`
+- [RAG 组件](/tutorials/rag/)：通过 `Query` -> `Metadata`
 
-Parameters are stored in a mutable, thread safe `Map`.
+这些参数会存储在一个可变的、线程安全的 `Map` 中。
 
-Data can be passed between AI Service components inside the `InvocationParameters`
-(for example, from one tool to another or from a RAG component to a tool)
-during a single invocation of the AI Service.
+在一次 AI Service 调用过程中，
+你还可以通过 `InvocationParameters` 在不同 AI Service 组件之间传递数据
+（例如从一个 tool 传给另一个 tool，或从 RAG 组件传给 tool）。
 
 ### `InvocationContext`
 
-Similarly to `InvocationParameters`, `@Tool`-annotated methods
-can accept `InvocationContext` parameter to get access to the information
-about AI Service invocation.
+与 `InvocationParameters` 类似，带 `@Tool` 注解的方法
+也可以接收 `InvocationContext` 参数，用来获取本次 AI Service 调用的相关信息。
 
 ```java
 class Tools {
@@ -759,12 +772,12 @@ class Tools {
 }
 ```
 
-In this case, the LLM is not aware of these parameters;
-they are only visible to LangChain4j and user code.
+同样地，LLM 并不知道这些参数；
+它们只对 LangChain4j 和你的应用代码可见。
 
 ### `@ToolMemoryId`
-If your AI Service method has a parameter annotated with `@MemoryId`,
-you can also annotate a parameter of a `@Tool` method with `@ToolMemoryId`:
+如果你的 AI Service 方法带有 `@MemoryId` 标注的参数，
+那么 `@Tool` 方法中的某个参数也可以用 `@ToolMemoryId` 标注：
 
 ```java
 interface Assistant{
@@ -778,65 +791,64 @@ class Tools {
     }
 }
 
-String answer = assistant.chat("Tomorrow I will have a meeting with Klaus at 14:00", "12345");
+String answer = assistant.chat("我明天下午 14:00 要和 Klaus 开会", "12345");
 ```
 
-The value provided to the AI Service method will be automatically passed to the `@Tool` method.
-This feature is useful if you have multiple users and/or multiple chats/memories per user
-and wish to distinguish between them inside the `@Tool` method.
+传给 AI Service 方法的值，会被自动传递给 `@Tool` 方法。
+如果你有多个用户，或者每个用户有多个 chat / memory，
+并且希望在 `@Tool` 方法内部区分它们，这个能力就非常有用。
 
-### Executing Tools Concurrently
+### 并发执行工具
 
-By default, when the LLM calls **_multiple_** tools at once (also known as parallel tool calling),
-the AI Service executes them sequentially. If you want the tools to be executed concurrently,
-you can call `executeToolsConcurrently()` or `executeToolsConcurrently(Executor)` when building the AI Service.
-If you enable one of these options, the tools will be executed concurrently (with one exception - see below),
-using either the default or the specified `Executor`.
+默认情况下，当 LLM **同时**调用多个工具时（也就是 parallel tool calling），
+AI Service 会按顺序依次执行它们。
+如果你希望并发执行工具，
+可以在构建 AI Service 时调用 `executeToolsConcurrently()` 或 `executeToolsConcurrently(Executor)`。
+启用之后，工具会并发执行（有一个例外，见下文），
+使用默认或你指定的 `Executor`。
 
-#### When using `ChatModel`:
-- When the LLM calls multiple tools, they are executed concurrently in separate threads
-using the `Executor`.
-- When the LLM calls a single tool, it is executed in the same (caller) thread,
-the `Executor` is **_not_** used to avoid wasting resources.
+#### 使用 `ChatModel` 时：
+- 当 LLM 调用多个工具时，它们会借助 `Executor` 在不同线程中并发执行。
+- 当 LLM 只调用一个工具时，它会在同一个（调用方）线程里执行，
+  **不会**使用 `Executor`，以避免浪费资源。
 
-#### When using `StreamingChatModel`:
-- When the LLM calls multiple tools, they are executed concurrently in separate threads
-using the `Executor`.
-Each tool is executed as soon as `StreamingChatResponseHandler.onCompleteToolCall(CompleteToolCall)`
-is called, without waiting for other tools or for the response streaming to complete.
-- When the LLM calls a single tool, it is executed in a separate thread using the `Executor`.
-We cannot execute it in the same thread because, at that point,
-we do not yet know how many tools the LLM will call.
+#### 使用 `StreamingChatModel` 时：
+- 当 LLM 调用多个工具时，它们会借助 `Executor` 在不同线程中并发执行。
+  每个工具都会在 `StreamingChatResponseHandler.onCompleteToolCall(CompleteToolCall)` 被触发后立刻执行，
+  无需等待其他工具，也无需等到整个响应流结束。
+- 当 LLM 只调用一个工具时，它会借助 `Executor` 在单独线程中执行。
+  这是因为在那个时刻，我们还不知道模型最终会调用多少个工具，
+  因而不能安全地在同一线程里直接执行。
 
-### Accessing Executed Tools
-If you wish to access tools executed during the invocation of an AI Service,
-you can easily do so by wrapping the return type in the `Result` class:
+### 访问已执行的工具
+如果你想访问 AI Service 调用过程中执行过的工具，
+可以很方便地把返回类型包装成 `Result`：
 ```java
 interface Assistant {
 
     Result<String> chat(String userMessage);
 }
 
-Result<String> result = assistant.chat("Cancel my booking 123-456");
+Result<String> result = assistant.chat("取消我的预订 123-456");
 
 String answer = result.content();
 List<ToolExecution> toolExecutions = result.toolExecutions();
 
 ToolExecution toolExecution = toolExecutions.get(0);
 ToolExecutionRequest request = toolExecution.request();
-String result = toolExecution.result(); // tool execution result as text
-List<Content> resultContents = toolExecution.resultContents(); // tool execution result as content list (may include images)
-Object resultObject = toolExecution.resultObject(); // actual value returned by the tool
+String result = toolExecution.result(); // 工具执行结果的文本形式
+List<Content> resultContents = toolExecution.resultContents(); // 工具执行结果的内容列表（可能包含图片）
+Object resultObject = toolExecution.resultObject(); // 工具实际返回的值
 ```
 
-In streaming mode, you can do so by specifying `onToolExecuted` callback:
+在流式模式下，也可以通过 `onToolExecuted` 回调来访问：
 ```java
 interface Assistant {
 
     TokenStream chat(String message);
 }
 
-TokenStream tokenStream = assistant.chat("Cancel my booking");
+TokenStream tokenStream = assistant.chat("取消我的预订");
 
 tokenStream
     .onToolExecuted((ToolExecution toolExecution) -> System.out.println(toolExecution))
@@ -846,30 +858,29 @@ tokenStream
     .start();
 ```
 
-### Specifying Tools Programmatically
+### 以编程方式指定 Tools
 
-When using AI Services, tools can also be specified programmatically.
-This approach offers a lot of flexibility, as tools can be loaded
-from external sources such as databases and configuration files.
+在使用 AI Services 时，也可以通过编程方式指定 tools。
+这种方式提供了极大的灵活性，因为工具可以从数据库、配置文件等外部来源动态加载。
 
-Tool names, descriptions, parameter names, and descriptions
-can all be configured using `ToolSpecification`:
+工具名称、描述、参数名称和参数描述
+都可以通过 `ToolSpecification` 配置：
 ```java
 ToolSpecification toolSpecification = ToolSpecification.builder()
         .name("get_booking_details")
-        .description("Returns booking details")
+        .description("返回预订详情")
         .parameters(JsonObjectSchema.builder()
                 .properties(Map.of(
                         "bookingNumber", JsonStringSchema.builder()
-                                .description("Booking number in B-12345 format")
+                                .description("格式为 B-12345 的预订编号")
                                 .build()
                 ))
                 .build())
         .build();
 ```
 
-For each `ToolSpecification`, one needs to provide a `ToolExecutor` implementation
-that will be handling tool execution requests generated by the LLM:
+对于每个 `ToolSpecification`，你都需要提供一个 `ToolExecutor` 实现，
+用于处理 LLM 生成的工具执行请求：
 ```java
 ToolExecutor toolExecutor = (toolExecutionRequest, memoryId) -> {
     Map<String, Object> arguments = fromJson(toolExecutionRequest.arguments());
@@ -879,8 +890,8 @@ ToolExecutor toolExecutor = (toolExecutionRequest, memoryId) -> {
 };
 ```
 
-LangChain4j also provides the `DefaultToolExecutor`, which can automatically invoke methods on Java objects and handle
-parameter mapping:
+LangChain4j 还提供了 `DefaultToolExecutor`，
+它可以自动调用 Java 对象上的方法并完成参数映射：
 ```java
 class BookingTools {
     String getBookingDetails(String bookingNumber) {
@@ -894,8 +905,8 @@ Method method = BookingTools.class.getMethod("getBookingDetails", String.class);
 ToolExecutor toolExecutor = new DefaultToolExecutor(tools, method);
 ```
 
-Once we have one or multiple (`ToolSpecification`, `ToolExecutor`) pairs,
-we can specify them when creating an AI Service:
+当我们拥有一个或多个 `（ToolSpecification, ToolExecutor）` 对之后，
+就可以在创建 AI Service 时把它们传进去：
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
     .chatModel(chatModel)
@@ -903,7 +914,8 @@ Assistant assistant = AiServices.builder(Assistant.class)
     .build();
 ```
 
-Additionally, we can pass a list of tool names that should [immediately/directly return](/tutorials/tools#returning-immediately-the-result-of-a-tool-execution-request) their results and not send them to the LLM for reprocessing.
+另外，你还可以传入一组 tool name，指定这些工具应当[立即 / 直接返回](/tutorials/tools#returning-immediately-the-result-of-a-tool-execution-request)结果，
+而不是再交给 LLM 做二次处理。
 
 ```java
 Set<String> immediateReturnToolNames = Set.of("get_booking_details");
@@ -914,22 +926,25 @@ Assistant assistant = AiServices.builder(Assistant.class)
     .build();
 ```
 
-### Specifying Tools Dynamically
+### 动态指定 Tools {#specifying-tools-dynamically}
 
-When using AI services, tools can also be specified dynamically for each invocation.
-One can configure a `ToolProvider` that will be called each time the AI service is invoked
-and will provide the tools that should be included in the current request to the LLM.
-The `ToolProvider` accepts a `ToolProviderRequest`
-(that contains the `UserMessage`, chat memory ID and [`InvocationParameters`](/tutorials/tools#invocationparameters))
-and returns a `ToolProviderResult` that contains tools in a form of a `Map` from `ToolSpecification` to `ToolExecutor`.
+使用 AI services 时，也可以为每次调用动态指定工具。
+你可以配置一个 `ToolProvider`，
+它会在每次 AI service 被调用时执行，
+并提供当前请求里应该包含给 LLM 的工具。
+`ToolProvider` 接收一个 `ToolProviderRequest`
+（其中包含 `UserMessage`、chat memory ID 和 [`InvocationParameters`](/tutorials/tools#invocationparameters)），
+并返回一个 `ToolProviderResult`。
+后者以 `Map<ToolSpecification, ToolExecutor>` 的形式包含要使用的工具。
 
-Here is an example of how to add the `get_booking_details` tool only when the user's message contains the word "booking":
+下面是一个示例：只有当用户消息中包含单词 `booking` 时，
+才添加 `get_booking_details` 工具：
 ```java
 ToolProvider toolProvider = (toolProviderRequest) -> {
     if (toolProviderRequest.userMessage().singleText().contains("booking")) {
         ToolSpecification toolSpecification = ToolSpecification.builder()
             .name("get_booking_details")
-            .description("Returns booking details")
+            .description("返回预订详情")
             .parameters(JsonObjectSchema.builder()
                 .addStringProperty("bookingNumber")
                 .build())
@@ -948,9 +963,10 @@ Assistant assistant = AiServices.builder(Assistant.class)
     .build();
 ```
 
-#### Configuring Immediate Return in Dynamic Tools
+#### 在动态工具中配置立即返回
 
-When building `ToolProviderResult`, you can mark tools for [immediate return](/tutorials/tools#returning-immediately-the-result-of-a-tool-execution-request) using the ToolProviderResult.builder():
+在构建 `ToolProviderResult` 时，你也可以通过 `ToolProviderResult.builder()`
+把某些工具标记为[立即返回](/tutorials/tools#returning-immediately-the-result-of-a-tool-execution-request)：
 
 ```java
 ToolProvider toolProvider = (toolProviderRequest) -> {
@@ -961,7 +977,7 @@ ToolProvider toolProvider = (toolProviderRequest) -> {
 };
 ```
 
-You can also mark multiple tools by name:
+也可以按名字一次标记多个工具：
 
 ```java
 ToolProvider toolProvider = (toolProviderRequest) -> {
@@ -972,49 +988,50 @@ ToolProvider toolProvider = (toolProviderRequest) -> {
 };
 ```
 
-It is possible for an AI service to use both programmatically and dynamically specified tools in the same invocation.
+一个 AI service 在同一次调用中，
+可以同时使用以编程方式指定的工具和动态指定的工具。
 
-### Tool Search
+### 工具搜索 {#tool-search}
 
-When working with a large number of tools,
-sending all tools on every request can significantly increase token usage and reduce model performance.
-To address this, LangChain4j provides a tool search mechanism
-that allows tools to be discovered dynamically by the LLM itself,
-instead of being exposed upfront.
+当工具数量很多时，
+每次请求都把所有工具全部发给模型，会显著增加 token 消耗，并降低模型性能。
+为了解决这个问题，LangChain4j 提供了 tool search 机制，
+使得工具可以由 LLM 自己按需发现，
+而不是一开始就全部暴露给它。
 
-The core idea is simple:
-- Initially, the LLM is exposed to one or more special tool-search tools
-- The LLM can call these tools to search for relevant tools
-- Once relevant tools are found, they are included in subsequent requests to the LLM
+核心思路很简单：
+- 初始时，LLM 只会看到一个或多个特殊的“工具搜索工具”
+- LLM 可以调用这些工具搜索工具，去查找相关工具
+- 一旦找到相关工具，它们就会被加入后续发给 LLM 的请求中
 
-This enables scalable, token-efficient, and model-driven tool discovery.
+这样就实现了可扩展、节省 token、并且由模型驱动的工具发现机制。
 
-#### How Tool Search Works
+#### Tool Search 的工作方式
 
-A tool search flow typically looks like this:
-1. Initial request:
-   - The LLM sees only tool-search tools (not the full tool set)
-2. Tool search
-   - The LLM calls a tool-search tool, describing what kind of tool it needs
-   - The tool-search strategy matches the request against available tools
-4. Tool exposure
-   - Matching tools are added to the next request to the LLM
-5. Tool execution
-   - The LLM can now call the found tools normally
+一次典型的 tool search 流程如下：
+1. 初始请求：
+   - LLM 只会看到 tool-search tools，而不是完整工具集
+2. 工具搜索：
+   - LLM 调用某个 tool-search tool，并描述自己需要什么类型的工具
+   - tool-search strategy 会将这个请求与可用工具进行匹配
+4. 工具暴露：
+   - 匹配到的工具会被加入发往 LLM 的下一次请求中
+5. 工具执行：
+   - 此时 LLM 就可以像正常工具一样调用这些已发现的工具
 
-Previously found tools are accumulated across multiple tool-search calls.
-Each time the LLM invokes the tool-search tool,
-the newly matched tools are added to the existing set of tools visible to the LLM (they are merged, not replaced).
-This means the list of tools visible to the LLM can grow over time.
-Found tools remain visible to the LLM until their corresponding `ToolExecutionResultMessage`
-is evicted from the `ChatMemory`, and at least until the end of the AI Service invocation.
+之前找到的工具会在多次 tool-search 调用之间逐步累积。
+每次 LLM 调用 tool-search tool 时，
+新匹配到的工具都会加入到模型当前可见的工具集合中（是合并，不是替换）。
+这意味着 LLM 可见的工具列表会随着时间增长。
+这些已发现工具会持续对 LLM 可见，直到对应的 `ToolExecutionResultMessage`
+从 `ChatMemory` 中被移除，并且至少会保持到当前 AI Service 调用结束。
 
-If `ChatMemory` is not configured, the found tools remain visible to the LLM
-only until the end of the AI service invocation.
+如果没有配置 `ChatMemory`，
+那么这些已发现工具只会在当前 AI service 调用期间对 LLM 可见。
 
-#### ToolSearchStrategy
+#### ToolSearchStrategy（工具搜索策略） {#toolsearchstrategy}
 
-Tool search is implemented via the `ToolSearchStrategy` interface:
+Tool search 通过 `ToolSearchStrategy` 接口实现：
 
 ```java
 @Experimental
@@ -1026,74 +1043,75 @@ public interface ToolSearchStrategy {
 }
 ```
 
-A `ToolSearchStrategy` is responsible for:
-- Exposing tool-search tools to the LLM
-- Executing tool search requests generated by the LLM
-- Returning matching tool names, which will then be resolved and exposed
+一个 `ToolSearchStrategy` 负责：
+- 向 LLM 暴露 tool-search tools
+- 执行由 LLM 发起的工具搜索请求
+- 返回匹配到的工具名，随后这些工具会被解析并暴露给 LLM
 
-LangChain4j currently provides 2 out-of-the-box implementations:
-- `SimpleToolSearchStrategy` – keyword-based matching
-- `VectorToolSearchStrategy` – semantic search using embeddings
+LangChain4j 当前内置了两个实现：
+- `SimpleToolSearchStrategy`：基于关键词匹配
+- `VectorToolSearchStrategy`：基于 embedding 的语义搜索
 
-See Javadoc of these classes for more details.
+更多细节请参考这些类的 Javadoc。
 
-You can also implement custom strategies.
+你也可以实现自定义策略。
 
-#### Configuring Tool Search in AI Services
+#### 在 AI Services 中配置 Tool Search
 
-Tool search is configured at the AI Service level:
+Tool search 是在 AI Service 层面配置的：
 
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
     .chatModel(chatModel)
     .chatMemory(chatMemory)
-    .tools(tools) // tool search works for static tools
-    .toolProvider(mcpToolProvider) // tool search works for tools provided dynamically (e.g., MCP)
+    .tools(tools) // tool search 可用于静态工具
+    .toolProvider(mcpToolProvider) // tool search 也可用于动态提供的工具（例如 MCP）
     .toolSearchStrategy(new SimpleToolSearchStrategy())
     .build();
 ```
 
-Once configured:
-- The LLM no longer sees all tools upfront
-- Tool discovery becomes an explicit, model-driven step
-- Token usage is reduced, especially with large tool sets
+配置完成后：
+- LLM 不再一开始就看到所有工具
+- 工具发现会成为一个显式的、由模型驱动的步骤
+- 在工具很多时，token 用量会显著降低
 
-#### When to Use Tool Search
+#### 什么时候适合使用 Tool Search
 
-Tool search is especially useful when:
-- You have many tools (dozens or hundreds)
-- Tools are domain-specific or rarely used
-- Tool availability depends on context, user, or permissions
-- You want the LLM to reason about which tools it needs, instead of guessing from a long list
+在以下场景中，tool search 尤其有用：
+- 你拥有很多工具（几十个甚至上百个）
+- 工具具有明确领域属性，或者很少使用
+- 工具是否可用取决于上下文、用户或权限
+- 你希望 LLM 先判断自己需要什么工具，而不是在一长串工具列表里盲猜
 
-If you have only a small number of tools, or all tools are always relevant,
-using regular approach may be simpler.
+如果你只有很少的工具，或者所有工具始终都相关，
+那么直接使用普通方式反而更简单。
 
-#### Always Visible Tools
+#### 永远可见的工具
 
-When tool search is enabled, tools are normally hidden from the LLM until they are discovered via a tool-search call.
-However, in some cases you may want certain tools to always be visible to the LLM.
+当启用了 tool search 后，工具默认会对 LLM 隐藏，
+直到它们通过一次 tool-search 调用被发现。
+但在某些情况下，你可能希望某些工具始终对 LLM 可见。
 
-Typical use cases:
-- Core tools that should always be accessible
-- Frequently used tools where search overhead is unnecessary
-- Utility tools
+典型场景包括：
+- 核心工具，应该始终可用
+- 高频使用工具，不值得为其付出搜索开销
+- 通用辅助工具
 
-LangChain4j supports this via the `ALWAYS_VISIBLE` tool search behavior.
+LangChain4j 通过 `ALWAYS_VISIBLE` 这一 tool search behavior 来支持这种需求。
 
-##### How It Works
+##### 它是如何工作的
 
-When a tool is marked as `ALWAYS_VISIBLE`:
-- It is exposed to the LLM in the very first request
-- It does not require discovery via tool search
-- It remains visible throughout the AI Service invocation
-- It is not included in searchable tool candidates
+当某个工具被标记为 `ALWAYS_VISIBLE` 时：
+- 它会在第一次请求中就对 LLM 可见
+- 它不需要通过 tool search 才能被发现
+- 它会在整个 AI Service 调用期间持续可见
+- 它不会被纳入“可搜索工具候选集”中
 
-All other tools continue to follow the normal tool-search flow.
+其他工具则仍然遵循正常的 tool-search 流程。
 
-##### Using `@Tool` Annotation
+##### 使用 `@Tool` 注解
 
-You can mark a tool as always visible via the @Tool annotation:
+你可以通过 `@Tool` 注解把某个工具标记为 always visible：
 ```java
 @Tool(searchBehavior = ALWAYS_VISIBLE)
 String getWeather(String city) {
@@ -1101,9 +1119,10 @@ String getWeather(String city) {
 }
 ```
 
-##### Using `McpToolProvider`
+##### 使用 `McpToolProvider`
 
-When using MCP tools (via `McpToolProvider`), always-visible tools can be configured via `alwaysVisibleToolNames`:
+当使用 MCP tools（通过 `McpToolProvider`）时，
+可以通过 `alwaysVisibleToolNames` 配置始终可见工具：
 
 ```java
 McpToolProvider.builder()
@@ -1112,9 +1131,10 @@ McpToolProvider.builder()
     .build();
 ```
 
-##### Using `ToolSpecification`
+##### 使用 `ToolSpecification`
 
-If you configure tools programmatically, you can mark them as always visible using `metadata`:
+如果你以编程方式配置工具，
+也可以通过 `metadata` 将其标记为 always visible：
 ```java
 ToolSpecification toolSpecification = ToolSpecification.builder()
     .name("getWeather")
@@ -1126,20 +1146,24 @@ ToolSpecification toolSpecification = ToolSpecification.builder()
     .build();
 ```
 
-#### Notes and Limitations
+#### 注意事项与限制
 
 :::note
-Tool search relies on the LLM’s ability to understand when and how to search for tools.
-The effectiveness of this feature depends heavily on the chosen model.
+Tool search 的效果很大程度上依赖于 LLM 是否能正确理解“何时以及如何搜索工具”。
+因此这个能力的实际效果非常依赖你所选用的模型。
 :::
 
 :::note
-Tool search is currently marked as experimental and may evolve in future releases.
+Tool search 当前仍被标记为 experimental，未来版本中可能会继续演进。
 :::
 
-### Returning immediately the result of a tool execution request
+### 立即返回工具执行结果 {#returning-immediately-the-result-of-a-tool-execution-request}
 
-By default, the result of a tool execution request is sent back to the LLM that uses this result and further reprocesses it. However, in some circumstances, the result produced by that tool execution request already represents the expected result of the AI service invocation. In this case it is possible to configure the tool to immediately/directly return its result, skipping a wasteful and resource consuming reprocessing by the LLM. This can be done by configuring the `returnBehavior` field of the `@Tool` annotation as in the following example:
+默认情况下，工具执行结果会被发回给 LLM，再由 LLM 基于这个结果继续处理。
+但在某些场景里，某个工具执行出来的结果本身就已经是 AI Service 调用所期望的最终结果。
+这时你可以把这个工具配置为“立即 / 直接返回”结果，
+从而跳过一次既耗资源又浪费时间的 LLM 二次处理。
+具体做法是为 `@Tool` 注解配置 `returnBehavior` 字段，例如：
 
 ```java
 class CalculatorWithImmediateReturn {
@@ -1152,10 +1176,12 @@ class CalculatorWithImmediateReturn {
 ```
 
 :::note
-This feature is supported only on AI Services having a `Result<T>` return type. Attempting to use it on AI Service with a different return type will produce an `IllegalConfigurationException`. See [Return Types](/tutorials/ai-services#return-types) for more information about `Result<T>`.
+这个特性仅支持返回类型为 `Result<T>` 的 AI Services。
+如果把它用于其他返回类型的 AI Service，会抛出 `IllegalConfigurationException`。
+关于 `Result<T>` 的更多信息，请参阅[返回类型](/tutorials/ai-services#return-types)。
 :::
 
-In this way, an `Assistant` service like the following
+比如，像下面这样的 `Assistant`：
 
 ```java
 interface Assistant {
@@ -1163,7 +1189,7 @@ interface Assistant {
 }
 ```
 
-configured to use the above `CalculatorWithImmediateReturn` tool
+如果它被配置为使用前面定义的 `CalculatorWithImmediateReturn` 工具：
 
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
@@ -1172,50 +1198,58 @@ Assistant assistant = AiServices.builder(Assistant.class)
         .build();
 ```
 
-will return a response directly from the tool invocation. For instance, prompting the assistant with
+那么它将直接返回来自工具调用的结果。例如，向 assistant 发出下面的请求：
 
 ```java
-Result<String> result = assistant.chat("How much is 37 plus 87?");
+Result<String> result = assistant.chat("37 加 87 等于多少？");
 ```
 
-will produce a `Result` with a null content, while the actual response of `124` will have to be retrieved from the `result.toolExecutions()`. Without the immediate return, the LLM would have to reprocess the result of the `add` tool execution request, thus returning a response like: `The result of adding 37 and 87 is 124.`
+最终会得到一个 `Result`，其中 `content` 为 `null`，
+而真实的响应 `124` 需要从 `result.toolExecutions()` 中获取。
+如果不启用 immediate return，LLM 就会再对 `add` 的执行结果进行二次处理，
+于是最终返回的文本可能会是：`37 和 87 相加的结果是 124。`
 
-Also note that if the LLM calls multiple tools and at least one of them is not immediate, then reprocessing will happen.
+还要注意，如果 LLM 调用了多个工具，而其中至少有一个工具不是 immediate，
+那么依然会发生二次处理。
 
 :::note
-When using programmatic tools, you can mark tools for immediate return by passing a set of tool names
-to the `.tools()` method. When using dynamic tools via `ToolProvider`, you can use the overloaded method, 
-`.add(ToolSpecification, ToolExecutor, ReturnBehavior)`, on `ToolProviderResult.builder()`. 
-See the respective sections above for examples.
+当使用编程式工具时，可以通过向 `.tools()` 方法传入一组 tool name，
+把某些工具标记为 immediate return。
+当通过 `ToolProvider` 使用动态工具时，
+可以使用 `ToolProviderResult.builder()` 上的重载方法 `.add(ToolSpecification, ToolExecutor, ReturnBehavior)`。
+对应示例请参见上文相关章节。
 :::
 
-### Error Handling
+### 错误处理
 
-#### Handling Tool Name Errors
+#### 处理 Tool Name 错误
 
-It may happen that an LLM hallucinates on tools invocation,
-or in other words that it asks to use a tool with a name that doesn't exist.
-In this case by default LangChain4j will throw an exception reporting the problem,
-but it is possible to configure a different behavior providing the AI service
-with a strategy to be used in this situation.
+有时 LLM 会在调用工具时产生幻觉，
+换句话说，它会请求调用一个根本不存在的工具。
+默认情况下，LangChain4j 会抛出异常来报告这个问题，
+但你也可以为 AI Service 配置另一种处理策略。
 
-This strategy is an implementation of a `Function<ToolExecutionRequest, ToolExecutionResultMessage>` defining which `ToolExecutionResultMessage` should be produced as the result for a `ToolExecutionRequest` containing the request to invoke a tool that is not available. For instance, it could be possible to configure the AI service with a strategy that returns to the LLM a response that hopefully will push it to retry a different tool invocation, knowing that the formerly required tool doesn't exist, as in the following example:
+这个策略是一个 `Function<ToolExecutionRequest, ToolExecutionResultMessage>` 实现，
+用于定义：当 `ToolExecutionRequest` 请求了一个不存在的工具时，
+应该生成怎样的 `ToolExecutionResultMessage`。
+例如，你可以配置一个策略，向 LLM 返回一段错误说明，
+希望它能意识到之前请求的工具不存在，并尝试换一个工具重试：
 
 ```java
 AssistantHallucinatedTool assistant = AiServices.builder(AssistantHallucinatedTool.class)
         .chatModel(chatModel)
         .tools(new HelloWorld())
         .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage.from(
-                toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()))
+                toolExecutionRequest, "错误：不存在名为 " + toolExecutionRequest.name() + " 的工具"))
         .build();
 ```
 
-#### Handling Tool Arguments Errors
+#### 处理 Tool Arguments 错误 {#handling-tool-arguments-errors}
 
-By default, when something is wrong with tool arguments (e.g., the LLM generates an invalid JSON),
-the AI Service will not be able to execute the tool, so it will fail with an exception.
+默认情况下，如果工具参数有问题（例如 LLM 生成了非法 JSON），
+AI Service 就无法执行该工具，因此会抛出异常并失败。
 
-You can customize this behaviour by configuring a `ToolArgumentsErrorHandler` on the AI Service:
+你可以通过为 AI Service 配置 `ToolArgumentsErrorHandler` 来自定义这种行为：
 
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
@@ -1225,13 +1259,13 @@ Assistant assistant = AiServices.builder(Assistant.class)
         .build();
 ```
 
-Currently, there are two ways to handle errors inside the `ToolArgumentsErrorHandler`:
+目前，在 `ToolArgumentsErrorHandler` 中处理错误有两种方式：
 
-- Throw an exception: this will stop the AI service flow.
-- Return a text message (e.g., an error description) that will be sent back to the LLM,
-  allowing it to respond appropriately (for example, by correcting the error and retrying).
+- 抛出异常：会中止整个 AI service 流程。
+- 返回一段文本消息（例如错误描述），该文本会被发回给 LLM，
+  使它能够据此做出响应（例如修正错误并重试）。
 
-Here is an example of the first approach:
+下面是第一种方式的示例：
 
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
@@ -1243,51 +1277,50 @@ Assistant assistant = AiServices.builder(Assistant.class)
 try {
     assistant.chat(...);
 } catch (MyCustomException e) {
-    // handle e
+    // 处理 e
 }
 ```
 
-Here is an example of the second approach:
+下面是第二种方式的示例：
 
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
         .chatModel(chatModel)
         .tools(tools)
-        .toolArgumentsErrorHandler((error, errorContext) -> ToolErrorHandlerResult.text("Something is wrong with tool arguments: " + error.getMessage()))
+        .toolArgumentsErrorHandler((error, errorContext) -> ToolErrorHandlerResult.text("工具参数有问题：" + error.getMessage()))
         .build();
 ```
 
-#### Handling Tool Execution Errors
+#### 处理 Tool Execution 错误 {#handling-tool-execution-errors}
 
-By default, when a method annotated with `@Tool` throws an `Exception`,
-the message of the `Exception` (`e.getMessage()`) will be sent to the LLM as the result of tool's execution.
-This allows the LLM to correct its mistake and retry, if it considers it necessary.
+默认情况下，如果带 `@Tool` 注解的方法抛出 `Exception`，
+异常消息（`e.getMessage()`）会作为工具执行结果发回给 LLM。
+这样做的目的是让 LLM 有机会理解错误、修正自己的行为，并在需要时重试。
 
-You can customize this behaviour by configuring a `ToolExecutionErrorHandler` on the AI Service:
+你可以通过为 AI Service 配置 `ToolExecutionErrorHandler` 来自定义这个行为：
 
 ```java
 Assistant assistant = AiServices.builder(Assistant.class)
         .chatModel(chatModel)
         .tools(tools)
-        .toolExecutionErrorHandler((error, errorContext) -> ToolErrorHandlerResult.text("Something is wrong with tool execution: " + error.getMessage()))
+        .toolExecutionErrorHandler((error, errorContext) -> ToolErrorHandlerResult.text("工具执行出错：" + error.getMessage()))
         .build();
 ```
 
-As with the `ToolArgumentsErrorHandler`, there are two ways to handle errors in `ToolExecutionErrorHandler`:
-throw an exception or return a text message.
+和 `ToolArgumentsErrorHandler` 一样，`ToolExecutionErrorHandler` 中也有两种处理方式：
+抛出异常，或者返回文本消息。
 
-## Model Context Protocol (MCP)
+## 模型上下文协议（MCP）
 
-You can also import [tools from MCP server](https://modelcontextprotocol.io/docs/concepts/tools).
-More information on this can be found [here](/tutorials/mcp/#creating-an-mcp-tool-provider).
+你也可以从 [MCP server 导入 tools](https://modelcontextprotocol.io/docs/concepts/tools)。
+更多信息请参阅[这里](/tutorials/mcp/#creating-an-mcp-tool-provider)。
 
-## Related Tutorials
+## 相关教程
 
-- [Great guide on Tools](https://www.youtube.com/watch?v=cjI_6Siry-s)
-  by [Tales from the jar side (Ken Kousen)](https://www.youtube.com/@talesfromthejarside)
+- [关于 Tools 的优秀指南](https://www.youtube.com/watch?v=cjI_6Siry-s)
+  作者 [Tales from the jar side (Ken Kousen)](https://www.youtube.com/@talesfromthejarside)
 
-## Examples
+## 示例
 
-- [Example with Tools](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/ServiceWithToolsExample.java)
-- [Example with dynamic Tools](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/ServiceWithDynamicToolsExample.java)
-@
+- [Tools 示例](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/ServiceWithToolsExample.java)
+- [动态 Tools 示例](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/ServiceWithDynamicToolsExample.java)

@@ -4,15 +4,12 @@ sidebar_position: 8
 
 # ClickHouse
 
-[ClickHouse](https://clickhouse.com/) is the fastest and most resource efficient open-source
-database for real-time apps and analytics with full SQL support and a wide range of functions to
-assist users in writing analytical queries. Lately added data structures and distance search
-functions (like cosineDistance) as well
-as [approximate nearest neighbor search indexes](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/annindexes)
-enable ClickHouse to be used as a high performance and scalable vector database to store and search
-vectors with SQL.
+[ClickHouse](https://clickhouse.com/) 是开源的最快、最节省资源的实时应用与分析数据库，
+支持完整的 SQL 以及丰富的分析查询函数。其最新添加的数据结构、距离搜索函数（如 cosineDistance）
+以及[近似最近邻搜索索引](https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/annindexes)，
+使 ClickHouse 能够作为高性能、可扩展的向量数据库，通过 SQL 存储和搜索向量。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 
@@ -23,12 +20,12 @@ vectors with SQL.
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
-LangChain4j uses `client-v2` as ClickHouse client. To create `ClickHouseEmbeddingStore` instance, you need to provide a `ClickHouseSettings`:
+LangChain4j 使用 `client-v2` 作为 ClickHouse 客户端。创建 `ClickHouseEmbeddingStore` 实例需要提供一个 `ClickHouseSettings`：
 
 ```java
-// Mapping metadata key to ClickHouse data type.
+// 将元数据键映射到 ClickHouse 数据类型
 Map<String, ClickHouseDataType> metadataTypeMap = new HashMap<>();
 
 ClickHouseSettings settings = ClickHouseSettings.builder()
@@ -41,7 +38,7 @@ ClickHouseSettings settings = ClickHouseSettings.builder()
     .build();
 ```
 
-Then you can create the embedding store:
+然后创建嵌入存储：
 
 ```java
 ClickHouseEmbeddingStore embeddingStore = ClickHouseEmbeddingStore.builder()
@@ -49,6 +46,6 @@ ClickHouseEmbeddingStore embeddingStore = ClickHouseEmbeddingStore.builder()
     .build();
 ```
 
-## Examples
+## 示例
 
 - [ClickHouseEmbeddingStoreIT](https://github.com/langchain4j/langchain4j-community/blob/main/langchain4j-community-clickhouse/src/test/java/dev/langchain4j/community/store/embedding/clickhouse/ClickHouseEmbeddingStoreIT.java)

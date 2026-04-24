@@ -2,51 +2,51 @@
 sidebar_position: 3
 ---
 
-# Google AI Gemini Image Generation
+# Google AI Gemini 图像生成
 
-Gemini can generate and edit images conversationally using specialized image models known as **Nano Banana** (Gemini 2.5 Flash Image) and **Nano Banana Pro** (Gemini 3 Pro Image Preview).
+Gemini 可以使用专用图像模型（称为 **Nano Banana**（Gemini 2.5 Flash Image）和 **Nano Banana Pro**（Gemini 3 Pro Image Preview））以对话方式生成和编辑图像。
 
-## Table of Contents
+## 目录
 
-- [Overview](#overview)
-- [Models Available](#models-available)
+- [概述](#overview)
+- [可用模型](#models-available)
 - [GoogleAiGeminiImageModel](#googleaigeminiimagemodel)
-    - [Basic Usage](#basic-usage)
-    - [Configuration](#configuration)
-- [Image Generation](#image-generation)
-    - [Text-to-Image](#text-to-image)
-    - [Aspect Ratios](#aspect-ratios)
-    - [Image Sizes](#image-sizes)
-- [Image Editing](#image-editing)
-    - [Adding and Removing Elements](#adding-and-removing-elements)
-    - [Style Transfer](#style-transfer)
-    - [Inpainting](#inpainting)
-- [Batch Image Generation](#batch-image-generation)
-- [Limitations](#limitations)
-- [Resources](#resources)
+    - [基本用法](#basic-usage)
+    - [配置](#configuration)
+- [图像生成](#image-generation)
+    - [文本生成图像](#text-to-image)
+    - [宽高比](#aspect-ratios)
+    - [图像尺寸](#image-sizes)
+- [图像编辑](#image-editing)
+    - [添加和移除元素](#adding-and-removing-elements)
+    - [风格迁移](#style-transfer)
+    - [局部修改](#inpainting)
+- [批量图像生成](#batch-image-generation)
+- [限制](#limitations)
+- [相关资源](#resources)
 
-## Overview
+## 概述 {#overview}
 
-Gemini's native image generation capabilities allow you to:
+Gemini 原生图像生成功能允许你：
 
-- **Text-to-Image**: Generate high-quality images from text descriptions
-- **Image Editing**: Add, remove, or modify elements in existing images
-- **Style Transfer**: Apply artistic styles to images
-- **Iterative Refinement**: Conversationally refine images over multiple turns
-- **High-Fidelity Text Rendering**: Generate images with legible, well-placed text
+- **文本生成图像**：从文字描述生成高质量图像
+- **图像编辑**：在现有图像中添加、移除或修改元素
+- **风格迁移**：为图像应用艺术风格
+- **迭代优化**：通过多轮对话逐步完善图像
+- **高保真文字渲染**：生成包含清晰、排列合理的文字的图像
 
-All generated images include a [SynthID watermark](https://ai.google.dev/responsible/docs/safeguards/synthid).
+所有生成的图像都包含 [SynthID 水印](https://ai.google.dev/responsible/docs/safeguards/synthid)。
 
-## Models Available
+## 可用模型 {#models-available}
 
-| Model | Description | Max Resolution | Max Input Images |
+| 模型 | 描述 | 最大分辨率 | 最大输入图像数 |
 |-------|-------------|----------------|------------------|
-| `gemini-2.5-flash-image` | Fast, efficient image generation (Nano Banana) | 1024px | 3 |
-| `gemini-3-pro-image-preview` | Advanced features, thinking mode, Google Search grounding (Nano Banana Pro) | 4K | 14 |
+| `gemini-2.5-flash-image` | 快速高效的图像生成（Nano Banana） | 1024px | 3 |
+| `gemini-3-pro-image-preview` | 高级功能、思考模式、Google 搜索接地（Nano Banana Pro） | 4K | 14 |
 
-## GoogleAiGeminiImageModel
+## GoogleAiGeminiImageModel {#googleaigeminiimagemodel}
 
-### Basic Usage
+### 基本用法 {#basic-usage}
 
 ```java
 ImageModel imageModel = GoogleAiGeminiImageModel.builder()
@@ -58,32 +58,32 @@ Response<Image> response = imageModel.generate(
     "A nano banana dish in a fancy restaurant with a Gemini theme"
 );
 
-// Save the generated image
+// 保存生成的图像
 Image image = response.content();
 byte[] imageBytes = Base64.getDecoder().decode(image.base64Data());
 Files.write(Paths.get("nano-banana.png"), imageBytes);
 ```
 
-### Configuration
+### 配置 {#configuration}
 
 ```java
 ImageModel imageModel = GoogleAiGeminiImageModel.builder()
     .apiKey(System.getenv("GOOGLE_AI_GEMINI_API_KEY"))
     .modelName("gemini-3-pro-image-preview")
-    .aspectRatio("16:9")              // Output aspect ratio
-    .imageSize("2K")                   // Resolution (Gemini 3 Pro only)
+    .aspectRatio("16:9")              // 输出宽高比
+    .imageSize("2K")                   // 分辨率（仅 Gemini 3 Pro 支持）
     .timeout(Duration.ofSeconds(120))
     .maxRetries(3)
     .logRequestsAndResponses(true)
-    .safetySettings(...)               // Content safety settings
+    .safetySettings(...)               // 内容安全设置
     .build();
 ```
 
-## Image Generation
+## 图像生成 {#image-generation}
 
-### Text-to-Image
+### 文本生成图像 {#text-to-image}
 
-Generate images from descriptive text prompts:
+通过描述性文字提示生成图像：
 
 ```java
 ImageModel imageModel = GoogleAiGeminiImageModel.builder()
@@ -91,21 +91,21 @@ ImageModel imageModel = GoogleAiGeminiImageModel.builder()
     .modelName("gemini-2.5-flash-image")
     .build();
 
-// Photorealistic style
+// 写实风格
 Response<Image> photo = imageModel.generate("""
     A photorealistic close-up portrait of an elderly Japanese ceramicist
     with deep wrinkles and a warm smile, inspecting a tea bowl.
     Soft golden hour light, 85mm portrait lens, shallow depth of field.
     """);
 
-// Stylized illustration
+// 风格化插图
 Response<Image> sticker = imageModel.generate("""
     A kawaii-style sticker of a happy red panda wearing a bamboo hat,
     munching on a leaf. Bold outlines, cel-shading, vibrant colors,
     white background.
     """);
 
-// Logo design
+// Logo 设计
 Response<Image> logo = imageModel.generate("""
     A modern, minimalist logo for 'The Daily Grind' coffee shop.
     Clean, bold sans-serif font. Black and white. Circular design
@@ -113,51 +113,51 @@ Response<Image> logo = imageModel.generate("""
     """);
 ```
 
-### Aspect Ratios
+### 宽高比 {#aspect-ratios}
 
-Supported aspect ratios for both models:
+两种模型支持的宽高比：
 
-| Aspect Ratio | Use Case |
+| 宽高比 | 使用场景 |
 |--------------|----------|
-| `1:1` | Square, social media posts |
-| `2:3`, `3:2` | Portrait/landscape photos |
-| `3:4`, `4:3` | Standard photos |
-| `4:5`, `5:4` | Instagram posts |
-| `9:16`, `16:9` | Stories, YouTube thumbnails |
-| `21:9` | Cinematic, ultrawide |
+| `1:1` | 正方形、社交媒体帖子 |
+| `2:3`, `3:2` | 竖版/横版照片 |
+| `3:4`, `4:3` | 标准照片 |
+| `4:5`, `5:4` | Instagram 帖子 |
+| `9:16`, `16:9` | 故事、YouTube 缩略图 |
+| `21:9` | 电影感、超宽屏 |
 
 ```java
 ImageModel imageModel = GoogleAiGeminiImageModel.builder()
     .apiKey(System.getenv("GOOGLE_AI_GEMINI_API_KEY"))
     .modelName("gemini-2.5-flash-image")
-    .aspectRatio("16:9")  // Widescreen format
+    .aspectRatio("16:9")  // 宽屏格式
     .build();
 ```
 
-### Image Sizes
+### 图像尺寸 {#image-sizes}
 
-**Gemini 3 Pro Image Preview** supports higher resolutions:
+**Gemini 3 Pro Image Preview** 支持更高分辨率：
 
-| Size | Description |
+| 尺寸 | 描述 |
 |------|-------------|
-| `1K` | Default resolution |
-| `2K` | Higher resolution |
-| `4K` | Maximum resolution |
+| `1K` | 默认分辨率 |
+| `2K` | 更高分辨率 |
+| `4K` | 最大分辨率 |
 
 ```java
 ImageModel imageModel = GoogleAiGeminiImageModel.builder()
     .apiKey(System.getenv("GOOGLE_AI_GEMINI_API_KEY"))
     .modelName("gemini-3-pro-image-preview")
     .aspectRatio("1:1")
-    .imageSize("4K")  // High resolution output
+    .imageSize("4K")  // 高分辨率输出
     .build();
 ```
 
-## Image Editing
+## 图像编辑 {#image-editing}
 
-### Adding and Removing Elements
+### 添加和移除元素 {#adding-and-removing-elements}
 
-Edit existing images by providing them alongside text prompts:
+通过提供图像和文字提示来编辑现有图像：
 
 ```java
 ImageModel imageModel = GoogleAiGeminiImageModel.builder()
@@ -165,7 +165,7 @@ ImageModel imageModel = GoogleAiGeminiImageModel.builder()
     .modelName("gemini-2.5-flash-image")
     .build();
 
-// Load the source image
+// 加载源图像
 Image sourceImage = Image.builder()
     .base64Data(Base64.getEncoder().encodeToString(
         Files.readAllBytes(Paths.get("cat.png"))))
@@ -179,12 +179,12 @@ Response<Image> edited = imageModel.edit(
 );
 ```
 
-### Style Transfer
+### 风格迁移 {#style-transfer}
 
-Transform images into different artistic styles:
+将图像转换为不同的艺术风格：
 
 ```java
-Image cityPhoto = // ... load your image
+Image cityPhoto = // ... 加载图像
 
 Response<Image> stylized = imageModel.edit(
     cityPhoto,
@@ -194,12 +194,12 @@ Response<Image> stylized = imageModel.edit(
 );
 ```
 
-### Inpainting
+### 局部修改 {#inpainting}
 
-Modify specific elements while preserving the rest:
+修改特定元素同时保留其余内容：
 
 ```java
-Image livingRoom = // ... load your image
+Image livingRoom = // ... 加载图像
 
 Response<Image> edited = imageModel.edit(
     livingRoom,
@@ -208,9 +208,9 @@ Response<Image> edited = imageModel.edit(
 );
 ```
 
-## Batch Image Generation
+## 批量图像生成 {#batch-image-generation}
 
-For generating multiple images at scale with 50% cost reduction:
+大规模生成多张图像，可节省 50% 的费用：
 
 ```java
 GoogleAiGeminiBatchImageModel batchModel = GoogleAiGeminiBatchImageModel.builder()
@@ -225,43 +225,42 @@ List<String> prompts = List.of(
     "A minimalist logo for 'Nano Banana Co.'"
 );
 
-// Submit batch
+// 提交批量任务
 BatchResponse<?> response = batchModel.createBatchInline(prompts, "image-batch");
 BatchName batchName = getBatchName(response);
 
-// Poll for completion
+// 轮询等待完成
 do {
     Thread.sleep(10000);
     response = batchModel.retrieveBatchResults(batchName);
 } while (response instanceof BatchIncomplete);
 
-// Process results
+// 处理结果
 if (response instanceof BatchSuccess<?> success) {
     for (Image image : success.images()) {
         byte[] imageBytes = Base64.getDecoder().decode(image.base64Data());
-        // Save or process each image
+        // 保存或处理每张图像
     }
 }
 
-// Clean up
+// 清理
 batchModel.deleteBatchJob(batchName);
 ```
 
-## Limitations
+## 限制 {#limitations}
 
-- **Languages**: Best performance with EN, and supported languages including ar-EG, de-DE, es-MX, fr-FR, hi-IN, id-ID, it-IT, ja-JP, ko-KR, pt-BR, ru-RU, vi-VN, zh-CN
-- **Input**: Audio and video inputs are not supported for image generation
-- **Output Count**: The model may not always generate the exact number of images requested
-- **Input Images**:
-    - `gemini-2.5-flash-image`: Up to 3 input images
-    - `gemini-3-pro-image-preview`: Up to 14 input images (including 5 human images for consistency)
-- **URL Images**: URL-based images are not supported for editing; use base64-encoded images
-- **Watermark**: All generated images include a SynthID watermark
+- **语言**：最适合英语，也支持 ar-EG、de-DE、es-MX、fr-FR、hi-IN、id-ID、it-IT、ja-JP、ko-KR、pt-BR、ru-RU、vi-VN、zh-CN
+- **输入**：不支持音频和视频输入用于图像生成
+- **输出数量**：模型可能不会总是生成请求的确切数量的图像
+- **输入图像**：
+    - `gemini-2.5-flash-image`：最多 3 张输入图像
+    - `gemini-3-pro-image-preview`：最多 14 张输入图像（包含 5 张人物图像用于一致性）
+- **URL 图像**：不支持基于 URL 的图像进行编辑，请使用 base64 编码的图像
+- **水印**：所有生成的图像都包含 SynthID 水印
 
-## Resources
+## 相关资源 {#resources}
 
-- [Gemini Image Generation Documentation](https://ai.google.dev/gemini-api/docs/image-generation)
-- [Gemini API Models](https://ai.google.dev/gemini-api/docs/models/gemini)
-- [Batch API Documentation](https://ai.google.dev/gemini-api/docs/batch-api)
-- [Image Generation Cookbook](https://colab.research.google.com/github/google-gemini/cookbook/blob/main/quickstarts/Get_Started_Nano_Banana.ipynb)
-
+- [Gemini 图像生成文档](https://ai.google.dev/gemini-api/docs/image-generation)
+- [Gemini API 模型](https://ai.google.dev/gemini-api/docs/models/gemini)
+- [批量 API 文档](https://ai.google.dev/gemini-api/docs/batch-api)
+- [图像生成 Cookbook](https://colab.research.google.com/github/google-gemini/cookbook/blob/main/quickstarts/Get_Started_Nano_Banana.ipynb)

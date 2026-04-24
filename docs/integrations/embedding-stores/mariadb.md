@@ -7,7 +7,7 @@ sidebar_position: 18
 https://mariadb.com/kb/en/vector-overview
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,6 +18,6 @@ https://mariadb.com/kb/en/vector-overview
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `MariaDbEmbeddingStore`

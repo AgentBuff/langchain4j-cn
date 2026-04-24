@@ -6,9 +6,9 @@ sidebar_position: 32
 
 https://github.com/jbellis/jvector
 
-JVector is a pure Java embedded vector search engine that provides high-performance approximate nearest neighbor (ANN) search using graph-based indexing. It merges the DiskANN and HNSW algorithm families, offering fast similarity search with configurable accuracy/performance tradeoffs.
+JVector 是一个纯 Java 嵌入式向量搜索引擎，使用基于图的索引提供高性能近似最近邻（ANN）搜索。它融合了 DiskANN 和 HNSW 算法族，提供快速相似度搜索，并支持可配置的精度/性能权衡。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,132 +18,132 @@ JVector is a pure Java embedded vector search engine that provides high-performa
 </dependency>
 ```
 
-Note: This is a community integration module. You may need to add the langchain4j-community repository to your project configuration.
+注意：这是一个社区集成模块，可能需要在项目配置中添加 langchain4j-community 仓库。
 
-## APIs
+## API 参考 {#api}
 
 - `JVectorEmbeddingStore`
 
-## Features
+## 功能特性
 
-- **Pure Java Implementation**: No native dependencies required, runs anywhere Java runs
-- **Graph-Based Indexing**: Uses HNSW hierarchy with Vamana algorithm for high-performance ANN search
-- **In-Memory by Default**: Fast searches with optional disk persistence
-- **Configurable Performance**: Tune accuracy/speed tradeoffs with parameters like `maxDegree` and `beamWidth`
-- **Multiple Similarity Functions**: Supports DOT_PRODUCT (default), COSINE, and EUCLIDEAN distance metrics
-- **Thread-Safe**: Nonblocking concurrency control allows safe concurrent access
-- **Disk Persistence**: Optional save/load functionality for indexes
-- **Dynamic Updates**: Add and remove embeddings after index creation
+- **纯 Java 实现**：无需原生依赖，可在任何 Java 环境中运行
+- **基于图的索引**：使用带 Vamana 算法的 HNSW 层次结构实现高性能 ANN 搜索
+- **默认内存存储**：快速搜索，支持可选的磁盘持久化
+- **可配置性能**：通过 `maxDegree` 和 `beamWidth` 等参数调整精度/速度权衡
+- **多种相似度函数**：支持 DOT_PRODUCT（默认）、COSINE 和 EUCLIDEAN 距离度量
+- **线程安全**：非阻塞并发控制，支持安全并发访问
+- **磁盘持久化**：支持索引的可选保存/加载功能
+- **动态更新**：索引创建后可添加和删除嵌入
 
-## Basic Usage
+## 基本用法
 
-### In-Memory Store
+### 内存存储
 
-Create a simple in-memory embedding store:
+创建简单的内存嵌入存储：
 
 ```java
 EmbeddingStore<TextSegment> store = JVectorEmbeddingStore.builder()
-    .dimension(384)                    // Must match your embedding model's dimension
+    .dimension(384)                    // 必须与嵌入模型的维度一致
     .build();
 ```
 
-### Persistent Store
+### 持久化存储
 
-Create an embedding store with disk persistence:
+创建带磁盘持久化的嵌入存储：
 
 ```java
 EmbeddingStore<TextSegment> store = JVectorEmbeddingStore.builder()
     .dimension(384)
-    .persistencePath("/path/to/index") // Base path for index files
+    .persistencePath("/path/to/index") // 索引文件的基础路径
     .build();
 
-// Add embeddings...
+// 添加嵌入...
 store.add(embedding, textSegment);
 
-// Save to disk
+// 保存到磁盘
 ((JVectorEmbeddingStore) store).save();
 ```
 
-When you create a store with a `persistencePath`, the index will automatically load from disk if files exist at that location.
+当使用 `persistencePath` 创建存储时，如果该路径存在文件，索引将自动从磁盘加载。
 
-## Configuration Options
+## 配置选项
 
-JVector provides several builder options to tune performance:
+JVector 提供多个 builder 选项来调整性能：
 
 ```java
 EmbeddingStore<TextSegment> store = JVectorEmbeddingStore.builder()
-    .dimension(384)                    // Required: embedding dimension
-    .maxDegree(16)                     // Graph connectivity (default: 16)
-    .beamWidth(100)                    // Index construction quality (default: 100)
-    .neighborOverflow(1.2f)            // Overflow during construction (default: 1.2)
-    .alpha(1.2f)                       // Diversity parameter (default: 1.2)
-    .similarityFunction(VectorSimilarityFunction.DOT_PRODUCT) // Default
-    .persistencePath("/path/to/index") // Optional: enable persistence
+    .dimension(384)                    // 必填：嵌入维度
+    .maxDegree(16)                     // 图连接度（默认：16）
+    .beamWidth(100)                    // 索引构建质量（默认：100）
+    .neighborOverflow(1.2f)            // 构建期间的溢出因子（默认：1.2）
+    .alpha(1.2f)                       // 多样性参数（默认：1.2）
+    .similarityFunction(VectorSimilarityFunction.DOT_PRODUCT) // 默认
+    .persistencePath("/path/to/index") // 可选：启用持久化
     .build();
 ```
 
-### Parameter Guidelines
+### 参数说明
 
-- **dimension**: Must match your embedding model's output dimension (required)
-- **maxDegree**: Controls graph connections per node. Higher values improve recall but use more memory. Recommended: 16 (default)
-- **beamWidth**: Controls index construction quality. Higher values build better indexes but take longer. Recommended: 100 (default)
-- **neighborOverflow**: Recommended 1.2 for in-memory indexes (default), 1.5 for disk-based indexes
-- **alpha**: Controls edge distance vs diversity tradeoff. Recommended: 1.2 for high-dimensional vectors (default), 2.0 for low-dimensional (2D/3D) vectors
-- **similarityFunction**:
-  - `DOT_PRODUCT` - Fastest for normalized vectors (default)
-  - `COSINE` - For cosine similarity
-  - `EUCLIDEAN` - For Euclidean distance
+- **dimension**：必须与嵌入模型的输出维度一致（必填）
+- **maxDegree**：控制每个节点的图连接数。值越大召回率越高，但内存使用更多。推荐：16（默认）
+- **beamWidth**：控制索引构建质量。值越大索引越好，但构建时间越长。推荐：100（默认）
+- **neighborOverflow**：内存索引推荐 1.2（默认），磁盘索引推荐 1.5
+- **alpha**：控制边距离与多样性的权衡。高维向量推荐 1.2（默认），低维（2D/3D）向量推荐 2.0
+- **similarityFunction**：
+  - `DOT_PRODUCT` - 归一化向量最快（默认）
+  - `COSINE` - 余弦相似度
+  - `EUCLIDEAN` - 欧氏距离
 
-## Persistence
+## 持久化
 
-JVector supports saving and loading indexes from disk:
+JVector 支持从磁盘保存和加载索引：
 
 ```java
-// Create store with persistence enabled
+// 创建带持久化的存储
 JVectorEmbeddingStore store = JVectorEmbeddingStore.builder()
     .dimension(384)
     .persistencePath("/path/to/index")
     .build();
 
-// Add embeddings
+// 添加嵌入
 store.add(embeddings, textSegments);
 
-// Save to disk (creates .graph and .metadata files)
+// 保存到磁盘（创建 .graph 和 .metadata 文件）
 store.save();
 
-// Later: Load automatically when creating with same path
+// 之后：使用相同路径创建时自动加载
 JVectorEmbeddingStore loadedStore = JVectorEmbeddingStore.builder()
     .dimension(384)
     .persistencePath("/path/to/index")
     .build();
-// All previous embeddings and index structure are restored
+// 所有之前的嵌入和索引结构都已恢复
 ```
 
-Persistence creates two files:
-- `{path}.graph` - The graph index structure with vectors
-- `{path}.metadata` - Embedding IDs, text segments, and metadata
+持久化会创建两个文件：
+- `{path}.graph` - 包含向量的图索引结构
+- `{path}.metadata` - 嵌入 ID、文本段和元数据
 
-## Current Limitations
+## 当前限制
 
-- **No Metadata Filtering**: JVector does not support filtering search results by metadata during the search operation. All filtering must be done post-search.
-- **Index Rebuild on Modification**: Adding or removing embeddings invalidates the index, which is rebuilt on the next search. For best performance, batch your additions when possible.
-- **Dimension Must Match**: All embeddings must have the same dimension as specified during store creation.
+- **不支持元数据过滤**：JVector 不支持在搜索过程中按元数据过滤结果，所有过滤需在搜索后进行
+- **修改后需重建索引**：添加或删除嵌入会使索引失效，将在下次搜索时重建。建议尽量批量添加
+- **维度必须匹配**：所有嵌入的维度必须与创建存储时指定的维度一致
 
-## Performance Characteristics
+## 性能特点
 
-JVector is optimized for:
-- **Fast similarity search**: Logarithmic time complexity for searches
-- **Linear scalability**: Index construction scales linearly with CPU cores
-- **Memory efficiency**: In-memory indexes only, with optional disk persistence
-- **High recall**: Graph-based approach typically achieves >98% recall with proper tuning
+JVector 针对以下场景进行了优化：
+- **快速相似度搜索**：搜索时间复杂度为对数级
+- **线性可扩展性**：索引构建随 CPU 核心数线性扩展
+- **内存高效**：仅支持内存索引，可选磁盘持久化
+- **高召回率**：合理调优后，基于图的方法通常可达 >98% 召回率
 
-Ideal use cases:
-- Embedded applications requiring vector search without external dependencies
-- Development and testing environments
-- Production deployments where you want full control over the index
-- Applications requiring disk persistence without a separate database
+理想使用场景：
+- 无需外部依赖的嵌入式向量搜索应用
+- 开发和测试环境
+- 需要完全控制索引的生产部署
+- 需要磁盘持久化但不依赖独立数据库的应用
 
-## Examples
+## 示例
 
-- Example code can be found in the [JVector source repository](https://github.com/jbellis/jvector/tree/main/jvector-examples)
-- For LangChain4j-specific integration examples, check the test files in the [langchain4j-community-jvector module](https://github.com/langchain4j/langchain4j-community/tree/main/embedding-stores/langchain4j-community-jvector/src/test/java)
+- 示例代码见 [JVector 源码仓库](https://github.com/jbellis/jvector/tree/main/jvector-examples)
+- LangChain4j 特定集成示例见 [langchain4j-community-jvector 模块测试文件](https://github.com/langchain4j/langchain4j-community/tree/main/embedding-stores/langchain4j-community-jvector/src/test/java)

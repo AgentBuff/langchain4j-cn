@@ -2,10 +2,9 @@
 sidebar_position: 7
 ---
 
-# URL
+# URL 文档加载 {#url}
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -15,13 +14,10 @@ sidebar_position: 7
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `UrlDocumentLoader`
 
-
-## Examples
+## 示例
 
 - [UrlDocumentLoaderTest](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/test/java/dev/langchain4j/data/document/loader/UrlDocumentLoaderTest.java)
-

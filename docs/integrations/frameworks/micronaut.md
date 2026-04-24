@@ -2,16 +2,15 @@
 sidebar_position: 9
 ---
 
-# Micronaut
+# Micronaut 框架 {#micronaut}
 
-[Micronaut](https://micronaut.io/) provides a LangChain4j integration module that provides configuration management and dependency injection of LangChain4j APIs.
+[Micronaut](https://micronaut.io/) 提供了一个 LangChain4j 集成模块，用于管理 LangChain4j API 的配置和依赖注入。
 
-Micronaut's [LangChain4j integration](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/) includes the following features:
+Micronaut 的 [LangChain4j 集成](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/)包含以下功能：
 
-- [Configuration and dependency injection](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/#chatModels) of `ChatModel` and `StreamingChatModel` for different providers
-- Easy setup of [Embedding Stores](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/#embeddingStores) for common embedding store providers
-- Integration with [Micronaut Test Resources](https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/) and Testcontainers for containerized testing of LangChain4j 
-- A declarative `@AiService` simplifying the integration of Tools and Language Models
+- 不同提供商的 `ChatModel` 和 `StreamingChatModel` 的[配置和依赖注入](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/#chatModels)
+- 为常见嵌入存储提供商轻松设置[嵌入存储](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/#embeddingStores)
+- 与 [Micronaut Test Resources](https://micronaut-projects.github.io/micronaut-test-resources/latest/guide/) 和 Testcontainers 集成，支持 LangChain4j 的容器化测试
+- 声明式 `@AiService` 简化工具和语言模型的集成
 
-For more information, see the [Micronaut LangChain4j integration](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/) documentation.
-
+有关更多信息，请参阅 [Micronaut LangChain4j 集成](https://micronaut-projects.github.io/micronaut-langchain4j/latest/guide/)文档。

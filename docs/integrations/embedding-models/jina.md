@@ -7,7 +7,7 @@ sidebar_position: 9
 https://jina.ai/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ https://jina.ai/
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `JinaEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [JinaEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-jina/src/test/java/dev/langchain4j/model/jina/JinaEmbeddingModelIT.java)

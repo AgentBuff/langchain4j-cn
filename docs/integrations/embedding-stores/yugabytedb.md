@@ -4,12 +4,12 @@ sidebar_position: 25
 
 # YugabyteDB
 
-[YugabyteDB](https://www.yugabyte.com/) is a distributed SQL database that provides PostgreSQL compatibility with horizontal scalability and high availability across multiple regions. YugabyteDB's native vector search capabilities with the `pgvector` extension make it an excellent choice for storing and querying vector embeddings in distributed environments.
+[YugabyteDB](https://www.yugabyte.com/) 是一个分布式 SQL 数据库，提供 PostgreSQL 兼容性，具备跨多个区域的水平可扩展性和高可用性。YugabyteDB 通过 `pgvector` 扩展提供原生向量搜索功能，是在分布式环境中存储和查询向量嵌入的绝佳选择。
 
-## Maven Dependency
+## Maven 依赖
 
 :::note
-Since YugabyteDB support is part of `langchain4j-community`, it will be available starting from version `1.13.0-beta23` or later.
+由于 YugabyteDB 支持是 `langchain4j-community` 的一部分，将从 `1.13.0-beta23` 或更高版本开始提供。
 :::
 
 ```xml
@@ -21,40 +21,40 @@ Since YugabyteDB support is part of `langchain4j-community`, it will be availabl
 ```
 
 
-## APIs
+## API 参考 {#api}
 
-The YugabyteDB integration provides three main classes:
+YugabyteDB 集成提供三个主要类：
 
 ### `YugabyteDBEmbeddingStore`
 
-The main interface for storing and searching vector embeddings. This implements LangChain4j's `EmbeddingStore` interface and provides methods for:
-- Adding embeddings (single or batch)
-- Searching for similar embeddings
-- Removing embeddings
-- Filtering by metadata
+存储和搜索向量嵌入的主要接口。实现了 LangChain4j 的 `EmbeddingStore` 接口，提供以下方法：
+- 添加嵌入（单个或批量）
+- 搜索相似嵌入
+- 删除嵌入
+- 按元数据过滤
 
 ### `YugabyteDBEngine`
 
-Manages the database connection and connection pooling using HikariCP. This class:
-- Handles JDBC connection configuration
-- Manages connection pool settings (max pool size, timeouts, etc.)
-- Supports both PostgreSQL JDBC driver and YugabyteDB Smart Driver
-- Provides SSL/TLS configuration options
+使用 HikariCP 管理数据库连接和连接池。该类：
+- 处理 JDBC 连接配置
+- 管理连接池设置（最大池大小、超时等）
+- 支持 PostgreSQL JDBC 驱动程序和 YugabyteDB Smart Driver
+- 提供 SSL/TLS 配置选项
 
 ### `YugabyteDBSchema`
 
-Defines the database schema configuration including:
-- Table and column names
-- Vector index type (HNSW or NoIndex)
-- Distance metric (COSINE, EUCLIDEAN, DOT_PRODUCT)
-- Metadata storage configuration
-- Table creation settings
+定义数据库模式配置，包括：
+- 表和列名称
+- 向量索引类型（HNSW 或 NoIndex）
+- 距离度量（COSINE、EUCLIDEAN、DOT_PRODUCT）
+- 元数据存储配置
+- 表创建设置
 
-## Usage Examples
+## 使用示例
 
-### Basic YugabyteDBEmbeddingStore
+### 基本 YugabyteDBEmbeddingStore
 
-Here is how to create a `YugabyteDBEmbeddingStore` instance:
+创建 `YugabyteDBEmbeddingStore` 实例的方式：
 
 ```java
 YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
@@ -62,82 +62,82 @@ YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .build();
 ```
 
-Where `<builderParameters>` must include `dimension` and `engine`, along with other optional ones.
+其中 `<builderParameters>` 必须包含 `dimension` 和 `engine`，以及其他可选参数。
 
-## Parameter Summary
+## 参数说明
 
-### YugabyteDBEngine Parameters
+### YugabyteDBEngine 参数
 
-| Parameter | Description | Default Value | Required/Optional |
+| 参数 | 描述 | 默认值 | 必填/可选 |
 | --- | --- | --- | --- |
-| `host` | Hostname of the YugabyteDB server | `localhost` | Required if using engine builder |
-| `port` | Port number of the YugabyteDB server | `5433` | Required if using engine builder |
-| `database` | Name of the database to connect to | `yugabyte` | Required if using engine builder |
-| `username` | Username for database authentication | `yugabyte` | Required if using engine builder |
-| `password` | Password for database authentication | `""` (empty) | Required if using engine builder |
-| `schema` | Database schema name | `public` | Optional |
-| `usePostgreSQLDriver` | Use PostgreSQL JDBC driver instead of YugabyteDB Smart Driver | `false` | Optional |
-| `useSsl` | Enable SSL/TLS for database connection | `false` | Optional |
-| `sslMode` | SSL mode configuration | `disable` | Optional |
-| `maxPoolSize` | Maximum number of connections in the pool | `10` | Optional |
-| `minPoolSize` | Minimum number of idle connections in the pool | `5` | Optional |
-| `connectionTimeout` | Connection timeout in milliseconds | `10000` | Optional |
-| `idleTimeout` | Idle timeout in milliseconds | `300000` | Optional |
-| `maxLifetime` | Maximum lifetime of a connection in milliseconds | `900000` | Optional |
-| `applicationName` | Application name for connection identification | `langchain4j-yugabytedb` | Optional |
+| `host` | YugabyteDB 服务器主机名 | `localhost` | 使用 engine builder 时必填 |
+| `port` | YugabyteDB 服务器端口号 | `5433` | 使用 engine builder 时必填 |
+| `database` | 要连接的数据库名称 | `yugabyte` | 使用 engine builder 时必填 |
+| `username` | 数据库身份验证用户名 | `yugabyte` | 使用 engine builder 时必填 |
+| `password` | 数据库身份验证密码 | `""`（空） | 使用 engine builder 时必填 |
+| `schema` | 数据库模式名称 | `public` | 可选 |
+| `usePostgreSQLDriver` | 使用 PostgreSQL JDBC 驱动程序而非 YugabyteDB Smart Driver | `false` | 可选 |
+| `useSsl` | 为数据库连接启用 SSL/TLS | `false` | 可选 |
+| `sslMode` | SSL 模式配置 | `disable` | 可选 |
+| `maxPoolSize` | 连接池中的最大连接数 | `10` | 可选 |
+| `minPoolSize` | 连接池中的最小空闲连接数 | `5` | 可选 |
+| `connectionTimeout` | 连接超时（毫秒） | `10000` | 可选 |
+| `idleTimeout` | 空闲超时（毫秒） | `300000` | 可选 |
+| `maxLifetime` | 连接最大生命周期（毫秒） | `900000` | 可选 |
+| `applicationName` | 连接标识的应用名称 | `langchain4j-yugabytedb` | 可选 |
 
-### YugabyteDBEmbeddingStore Parameters
+### YugabyteDBEmbeddingStore 参数
 
-| Parameter | Description | Default Value | Required/Optional |
+| 参数 | 描述 | 默认值 | 必填/可选 |
 | --- | --- | --- | --- |
-| `engine` | The `YugabyteDBEngine` instance for database connections | None | **Required** |
-| `dimension` | The dimensionality of the embedding vectors. This should match the embedding model being used. Use `embeddingModel.dimension()` to dynamically set it. | None | **Required** |
-| `tableName` | The name of the database table used for storing embeddings | `langchain4j_embeddings` | Optional |
-| `schemaName` | Database schema name | `public` | Optional |
-| `idColumn` | Name of the ID column | `id` | Optional |
-| `contentColumn` | Name of the content/text column | `content` | Optional |
-| `embeddingColumn` | Name of the embedding vector column | `embedding` | Optional |
-| `metadataColumn` | Name of the metadata column | `metadata` | Optional |
-| `metricType` | Distance metric for similarity search: `COSINE`, `EUCLIDEAN`, or `DOT_PRODUCT` | `COSINE` | Optional |
-| `vectorIndex` | Vector index configuration (see Index Configuration below) | `HNSWIndex` with default settings | Optional |
-| `createTableIfNotExists` | Specifies whether to automatically create the embeddings table | `true` | Optional |
-| `metadataStorageConfig` | Configuration object for handling metadata associated with embeddings. Supports three storage modes:<br/>• `COMBINED_JSONB`: For dynamic metadata stored in JSONB format for optimized querying (recommended)<br/>• `COMBINED_JSON`: For dynamic metadata stored as JSON<br/>• `COLUMN_PER_KEY`: For static metadata when you know the metadata keys in advance | `COMBINED_JSONB` | Optional |
+| `engine` | 用于数据库连接的 `YugabyteDBEngine` 实例 | 无 | **必填** |
+| `dimension` | 嵌入向量的维度，应与所用嵌入模型匹配。可使用 `embeddingModel.dimension()` 动态设置。 | 无 | **必填** |
+| `tableName` | 用于存储嵌入的数据库表名 | `langchain4j_embeddings` | 可选 |
+| `schemaName` | 数据库模式名称 | `public` | 可选 |
+| `idColumn` | ID 列名称 | `id` | 可选 |
+| `contentColumn` | 内容/文本列名称 | `content` | 可选 |
+| `embeddingColumn` | 嵌入向量列名称 | `embedding` | 可选 |
+| `metadataColumn` | 元数据列名称 | `metadata` | 可选 |
+| `metricType` | 相似度搜索的距离度量：`COSINE`、`EUCLIDEAN` 或 `DOT_PRODUCT` | `COSINE` | 可选 |
+| `vectorIndex` | 向量索引配置（见下方索引配置） | 使用默认设置的 `HNSWIndex` | 可选 |
+| `createTableIfNotExists` | 是否自动创建嵌入表 | `true` | 可选 |
+| `metadataStorageConfig` | 元数据存储配置对象。支持三种存储模式：<br/>• `COMBINED_JSONB`：动态元数据以 JSONB 格式存储，优化查询（推荐）<br/>• `COMBINED_JSON`：动态元数据以 JSON 格式存储<br/>• `COLUMN_PER_KEY`：提前知道元数据键时使用的静态元数据 | `COMBINED_JSONB` | 可选 |
 
-### Index Configuration
+### 索引配置
 
-#### HNSW Index Parameters
+#### HNSW 索引参数
 
-| Parameter | Description | Default Value | Required/Optional |
+| 参数 | 描述 | 默认值 | 必填/可选 |
 | --- | --- | --- | --- |
-| `m` | Maximum number of connections per layer. Higher values = better recall but more memory | `16` | Optional |
-| `efConstruction` | Size of dynamic candidate list during construction. Higher values = better index quality but slower build time | `64` | Optional |
-| `metricType` | Distance metric: `COSINE`, `EUCLIDEAN`, or `DOT_PRODUCT` | `COSINE` | Optional |
-| `name` | Custom index name | Auto-generated | Optional |
+| `m` | 每层的最大连接数。值越大 = 召回率越高，但内存使用更多 | `16` | 可选 |
+| `efConstruction` | 构建期间动态候选列表大小。值越大 = 索引质量越好，但构建时间越长 | `64` | 可选 |
+| `metricType` | 距离度量：`COSINE`、`EUCLIDEAN` 或 `DOT_PRODUCT` | `COSINE` | 可选 |
+| `name` | 自定义索引名称 | 自动生成 | 可选 |
 
 #### NoIndex
 
-Use `new NoIndex()` for sequential scan without an index. Best for small datasets (< 10,000 vectors) or when exact results are required.
+使用 `new NoIndex()` 进行无索引的顺序扫描。适用于小型数据集（< 10,000 个向量）或需要精确结果时。
 
-### Basic Usage
+### 基本用法
 
 ```java
-// Create engine first
+// 首先创建 engine
 YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
     .database("yugabyte")
     .username("yugabyte")
     .password("")
-    .usePostgreSQLDriver(true) // Use PostgreSQL JDBC driver
+    .usePostgreSQLDriver(true) // 使用 PostgreSQL JDBC 驱动程序
     .build();
 
-// Minimal configuration
+// 最简配置
 YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .engine(engine)
     .dimension(384)
     .build();
 
-// Custom configuration
+// 自定义配置
 YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .engine(engine)
     .dimension(768)
@@ -146,12 +146,12 @@ YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .build();
 ```
 
-### Using YugabyteDBEngine
+### 使用 YugabyteDBEngine
 
-For more control over connection settings, use `YugabyteDBEngine`:
+如需更多连接设置控制，使用 `YugabyteDBEngine`：
 
 ```java
-// Create engine with custom settings
+// 创建带自定义设置的 engine
 YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
@@ -164,10 +164,10 @@ YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .idleTimeout("300000")
     .maxLifetime("900000")
     .useSsl(false)
-    .usePostgreSQLDriver(false) // Use YugabyteDB Smart Driver
+    .usePostgreSQLDriver(false) // 使用 YugabyteDB Smart Driver
     .build();
 
-// Use engine in embedding store
+// 在嵌入存储中使用 engine
 YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .engine(engine)
     .dimension(384)
@@ -175,14 +175,14 @@ YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .build();
 ```
 
-### Vector Index Configuration
+### 向量索引配置
 
-YugabyteDB supports different vector index types for similarity search optimization:
+YugabyteDB 支持不同类型的向量索引以优化相似度搜索：
 
-#### HNSW Index (Recommended)
+#### HNSW 索引（推荐）
 
 ```java
-// Create engine
+// 创建 engine
 YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
@@ -191,10 +191,10 @@ YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .password("")
     .build();
 
-// HNSW index with custom parameters
+// 带自定义参数的 HNSW 索引
 HNSWIndex hnswIndex = HNSWIndex.builder()
-    .m(16)                    // Maximum connections per layer
-    .efConstruction(64)       // Construction quality
+    .m(16)                    // 每层最大连接数
+    .efConstruction(64)       // 构建质量
     .metricType(MetricType.COSINE)
     .name("my_hnsw_index")
     .build();
@@ -206,10 +206,10 @@ YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .build();
 ```
 
-#### No Index (Sequential Scan)
+#### 无索引（顺序扫描）
 
 ```java
-// Create engine
+// 创建 engine
 YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
@@ -218,18 +218,18 @@ YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .password("")
     .build();
 
-// No index for exact search (slower but exact)
+// 无索引用于精确搜索（较慢但结果精确）
 YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .engine(engine)
     .dimension(384)
-    .vectorIndex(new NoIndex()) // Sequential scan
+    .vectorIndex(new NoIndex()) // 顺序扫描
     .build();
 ```
 
-### Adding and Searching Embeddings
+### 添加和搜索嵌入
 
 ```java
-// Create engine first
+// 首先创建 engine
 YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
@@ -238,13 +238,13 @@ YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .password("")
     .build();
 
-// Create embedding store
+// 创建嵌入存储
 YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .engine(engine)
     .dimension(384)
     .build();
 
-// Add embeddings
+// 添加嵌入
 TextSegment segment1 = TextSegment.from("YugabyteDB is a distributed SQL database");
 Embedding embedding1 = embeddingModel.embed(segment1).content();
 String id1 = store.add(embedding1, segment1);
@@ -253,7 +253,7 @@ TextSegment segment2 = TextSegment.from("PostgreSQL compatibility with horizonta
 Embedding embedding2 = embeddingModel.embed(segment2).content();
 String id2 = store.add(embedding2, segment2);
 
-// Search embeddings
+// 搜索嵌入
 Embedding queryEmbedding = embeddingModel.embed("What is YugabyteDB?").content();
 EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
     .queryEmbedding(queryEmbedding)
@@ -268,12 +268,12 @@ matches.forEach(match -> {
 });
 ```
 
-### Metadata Storage Configuration
+### 元数据存储配置
 
-YugabyteDB supports different metadata storage modes:
+YugabyteDB 支持不同的元数据存储模式：
 
 ```java
-// Create engine
+// 创建 engine
 YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
@@ -282,17 +282,17 @@ YugabyteDBEngine engine = YugabyteDBEngine.builder()
     .password("")
     .build();
 
-// JSONB storage (recommended for PostgreSQL compatibility)
+// JSONB 存储（推荐用于 PostgreSQL 兼容性）
 MetadataStorageConfig jsonbConfig = MetadataStorageConfig.builder()
     .storageMode(MetadataStorageMode.COMBINED_JSONB)
     .build();
 
-// JSON storage
+// JSON 存储
 MetadataStorageConfig jsonConfig = MetadataStorageConfig.builder()
     .storageMode(MetadataStorageMode.COMBINED_JSON)
     .build();
 
-// Column-per-key storage
+// 每键一列存储
 MetadataStorageConfig columnConfig = MetadataStorageConfig.builder()
     .storageMode(MetadataStorageMode.COLUMN_PER_KEY)
     .build();
@@ -304,12 +304,12 @@ YugabyteDBEmbeddingStore store = YugabyteDBEmbeddingStore.builder()
     .build();
 ```
 
-### Driver Configuration
+### 驱动程序配置
 
-YugabyteDB supports both PostgreSQL JDBC driver and YugabyteDB Smart Driver:
+YugabyteDB 同时支持 PostgreSQL JDBC 驱动程序和 YugabyteDB Smart Driver：
 
 ```java
-// PostgreSQL JDBC Driver (standard SQL compatibility)
+// PostgreSQL JDBC 驱动程序（标准 SQL 兼容性）
 YugabyteDBEngine postgresEngine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
@@ -324,14 +324,14 @@ YugabyteDBEmbeddingStore postgresStore = YugabyteDBEmbeddingStore.builder()
     .dimension(384)
     .build();
 
-// YugabyteDB Smart Driver (advanced distributed features)
+// YugabyteDB Smart Driver（高级分布式特性）
 YugabyteDBEngine smartEngine = YugabyteDBEngine.builder()
     .host("localhost")
     .port(5433)
     .database("yugabyte")
     .username("yugabyte")
     .password("")
-    .usePostgreSQLDriver(false) // Default: use Smart Driver
+    .usePostgreSQLDriver(false) // 默认：使用 Smart Driver
     .build();
 
 YugabyteDBEmbeddingStore smartStore = YugabyteDBEmbeddingStore.builder()
@@ -341,38 +341,38 @@ YugabyteDBEmbeddingStore smartStore = YugabyteDBEmbeddingStore.builder()
 ```
 
 
-## Index Types
+## 索引类型
 
-### HNSW (ybhnsw) - Recommended
+### HNSW (ybhnsw) - 推荐
 
-- **Best for**: Most use cases, especially large datasets
-- **Performance**: Fast approximate similarity search with high recall
-- **Parameters**: 
-  - `m` (default: 16): Maximum connections per layer
-  - `efConstruction` (default: 64): Construction quality
+- **适用场景**：大多数使用场景，尤其是大型数据集
+- **性能**：快速近似相似度搜索，召回率高
+- **参数**：
+  - `m`（默认：16）：每层最大连接数
+  - `efConstruction`（默认：64）：构建质量
 
-### NoIndex - Sequential Scan
+### NoIndex - 顺序扫描
 
-- **Best for**: Small datasets (< 10,000 vectors) or when exact results are required
-- **Performance**: Exact search but slower as dataset grows
+- **适用场景**：小型数据集（< 10,000 个向量）或需要精确结果时
+- **性能**：精确搜索，但随数据集增大速度变慢
 
-## Known Limitations
+## 已知限制
 
-- YugabyteDB requires the `pgvector` extension to be enabled for vector operations
-- Vector dimensions must be consistent across all embeddings in the same table
-- HNSW index parameters (`m`, `efConstruction`) affect both performance and memory usage
-- Sequential scan (NoIndex) is only recommended for small datasets (< 10,000 vectors)
+- YugabyteDB 需要启用 `pgvector` 扩展才能进行向量操作
+- 同一表中所有嵌入的向量维度必须一致
+- HNSW 索引参数（`m`、`efConstruction`）影响性能和内存使用
+- 顺序扫描（NoIndex）仅推荐用于小型数据集（< 10,000 个向量）
 
-## Performance Considerations
+## 性能注意事项
 
-- **HNSW Index**: Best for production use with large datasets, provides fast approximate search
-- **NoIndex**: Only suitable for small datasets or when exact results are required
-- **Connection Pooling**: Configure `maxPoolSize` and `minPoolSize` based on your workload
-- **Driver Choice**: PostgreSQL JDBC driver is recommended by YugabyteDB for better compatibility
+- **HNSW 索引**：最适合大型数据集的生产使用，提供快速近似搜索
+- **NoIndex**：仅适合小型数据集或需要精确结果时
+- **连接池**：根据工作负载配置 `maxPoolSize` 和 `minPoolSize`
+- **驱动程序选择**：YugabyteDB 推荐使用 PostgreSQL JDBC 驱动程序以获得更好的兼容性
 
-## Examples
+## 示例
 
-- [YugabyteDBEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBEmbeddingStoreExample.java) - Basic example with Testcontainers
-- [YugabyteDBEmbeddingStoreWithMetadataExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBEmbeddingStoreWithMetadataExample.java) - Metadata filtering with JSONB storage
-- [YugabyteDBWithPostgreSQLDriverExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBWithPostgreSQLDriverExample.java) - Using PostgreSQL JDBC driver
-- [YugabyteDBWithSmartDriverExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBWithSmartDriverExample.java) - Using YugabyteDB Smart Driver
+- [YugabyteDBEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBEmbeddingStoreExample.java) - 使用 Testcontainers 的基本示例
+- [YugabyteDBEmbeddingStoreWithMetadataExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBEmbeddingStoreWithMetadataExample.java) - 使用 JSONB 存储的元数据过滤
+- [YugabyteDBWithPostgreSQLDriverExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBWithPostgreSQLDriverExample.java) - 使用 PostgreSQL JDBC 驱动程序
+- [YugabyteDBWithSmartDriverExample](https://github.com/langchain4j/langchain4j-examples/blob/main/yugabytedb-example/src/main/java/YugabyteDBWithSmartDriverExample.java) - 使用 YugabyteDB Smart Driver

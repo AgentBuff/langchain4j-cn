@@ -1,0 +1,25 @@
+{
+  "name": "LangChain4j 中文文档",
+  "short_name": "LangChain4j",
+  "description": "面向 Java 开发者的大语言模型（LLM）应用开发框架中文文档。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2e8555",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/img/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/img/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

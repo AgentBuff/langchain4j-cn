@@ -4,26 +4,21 @@ sidebar_position: 8
 
 # ZhiPu AI
 
-[ZhiPu AI](https://www.zhipuai.cn/) is a platform to provide model service including text generation, text embedding,
-image generation and so on. You can refer to [ZhiPu AI Open Platform](https://open.bigmodel.cn/) for more details.
-LangChain4j integrates with ZhiPu AI by using [HTTP endpoint](https://bigmodel.cn/dev/api/normal-model/glm-4). We are
-consider migrating it from HTTP endpoint to official SDK and are appreciated of any help!
+[ZhiPu AI](https://www.zhipuai.cn/) 是一个提供模型服务的平台，包括文本生成、文本嵌入、图像生成等。详情请参阅 [ZhiPu AI 开放平台](https://open.bigmodel.cn/)。LangChain4j 通过 [HTTP 接口](https://bigmodel.cn/dev/api/normal-model/glm-4) 集成 ZhiPu AI，目前正在考虑从 HTTP 接口迁移到官方 SDK，欢迎贡献！
 
-## Maven Dependency
+## Maven 依赖
 
-You can use ZhiPu AI with LangChain4j in plain Java or Spring Boot applications.
+你可以在普通 Java 或 Spring Boot 应用中结合 LangChain4j 使用 ZhiPu AI。
 
-### Plain Java
+### 纯 Java {#plain-java}
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-zhipu-ai` has migrated to `langchain4j-community` and is renamed to
-`langchain4j-community-zhipu-ai`
+自 `1.0.0-alpha1` 起，`langchain4j-zhipu-ai` 已迁移至 `langchain4j-community`，并重命名为 `langchain4j-community-zhipu-ai`
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
-
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-zhipu-ai</artifactId>
@@ -31,10 +26,9 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及更高版本：
 
 ```xml
-
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-community-zhipu-ai</artifactId>
@@ -42,10 +36,9 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或者，可以使用 BOM 统一管理依赖：
 
 ```xml
-
 <dependencyManagement>
     <dependency>
         <groupId>dev.langchain4j</groupId>
@@ -57,11 +50,10 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `ZhipuAiImageModel`
 
-
-## Examples
+## 示例
 
 - [ZhipuAiImageModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-zhipu-ai/src/test/java/dev/langchain4j/community/model/zhipu/ZhipuAiImageModelIT.java)

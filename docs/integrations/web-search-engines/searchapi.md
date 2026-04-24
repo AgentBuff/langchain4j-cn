@@ -4,13 +4,14 @@ sidebar_position: 2
 
 # SearchApi
 
-[SearchApi](https://www.searchapi.io/) is a real-time SERP API. You can use it to perform searches in Google, Google News, Bing, Bing News, Baidu, Google Scholar, or any other engine that returns organic results.
+[SearchApi](https://www.searchapi.io/) 是一个实时 SERP API。你可以使用它在 Google、Google News、Bing、Bing News、百度、Google Scholar 或任何返回自然搜索结果的引擎中执行搜索。
 
-## Usage
+## 用法
 
-### Dependencies setup
+### 依赖设置
 
-Add the following dependencies to your project's `pom.xml`:
+在项目的 `pom.xml` 中添加以下依赖：
+
 ```xml
 <dependency>
   <groupId>dev.langchain4j</groupId>
@@ -19,13 +20,13 @@ Add the following dependencies to your project's `pom.xml`:
 </dependency>
 ```
 
-or project's `build.gradle`:
+或在项目的 `build.gradle` 中：
 
 ```groovy
 implementation 'dev.langchain4j:langchain4j-web-search-engine-searchapi:1.13.0-beta23'
 ```
 
-### Example code:
+### 示例代码
 
 ```java
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
@@ -96,9 +97,9 @@ public class SearchApiTool {
 }
 ```
 
-### Available engines in LangChain4j
+### LangChain4j 中可用的引擎
 
-| SearchApi Engine                                          | Available |
+| SearchApi 引擎 | 是否可用 |
 |-----------------------------------------------------------|-----------|
 | [Google Web Search](https://www.searchapi.io/docs/google) | ✅         |
 | [Google News](https://www.searchapi.io/docs/google-news)  | ✅         |
@@ -106,4 +107,4 @@ public class SearchApiTool {
 | [Bing News](https://www.searchapi.io/docs/bing-news)      | ✅         |
 | [Baidu](https://www.searchapi.io/docs/baidu)              | ✅         |
 
-Any other engine that returns the `organic_results` array and the organic result has `title`, `link`, and `snippet` is supported by this library even if not listed above.
+任何返回 `organic_results` 数组且有机结果包含 `title`、`link` 和 `snippet` 的引擎均受此库支持，即使未列出也可使用。

@@ -3,12 +3,11 @@ sidebar_position: 1
 ---
 
 # Playwright
-`BrowserExecutionEngine` represents a browser execution engine that can be used to perform actions on the browser in response to a user action.
-`PlaywrightBrowserExecutionEngine` is an implementation of a `BrowserExecutionEngine` that uses <a href="https://playwright.dev/java/">Playwright Java API</a> for performing browser actions.
-`BrowserUseTool` executes browser actions using `BrowserExecutionEngine`, that can be useful for **Browser-Use** Agents. You can control your browser using natural language, something like:
+
+`BrowserExecutionEngine` 表示一个浏览器执行引擎，可用于响应用户操作在浏览器上执行动作。`PlaywrightBrowserExecutionEngine` 是 `BrowserExecutionEngine` 的一个实现，使用 <a href="https://playwright.dev/java/">Playwright Java API</a> 执行浏览器操作。`BrowserUseTool` 使用 `BrowserExecutionEngine` 执行浏览器操作，可用于**浏览器使用（Browser-Use）** Agent。你可以使用自然语言控制浏览器，例如：
 * `open page 'https://docs.langchain4j.dev/', and summary the page text`
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -23,15 +22,13 @@ sidebar_position: 1
 </dependency>
 ```
 
-
-## APIs
+## API 列表 {#apis}
 
 - `BrowserExecutionEngine`
 - `PlaywrightBrowserExecutionEngine`
 - `BrowserUseTool`
 
-
-## Examples
+## 示例
 
 ```java
         Playwright playwright = Playwright.create();

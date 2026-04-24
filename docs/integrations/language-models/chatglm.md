@@ -6,17 +6,17 @@ sidebar_position: 4
 
 https://github.com/THUDM/ChatGLM-6B
 
-ChatGLM is an open bilingual dialogue language model which is released by Tsinghua University.
+ChatGLM 是清华大学发布的开源双语对话语言模型。
 
-For ChatGLM2, ChatGLM3 and GLM4, their API are compatible with OpenAI. you can refer to `langchain4j-zhipu-ai` or use `langchain4j-open-ai`.
+对于 ChatGLM2、ChatGLM3 和 GLM4，其 API 与 OpenAI 兼容，可参考 `langchain4j-zhipu-ai` 或使用 `langchain4j-open-ai`。
 
-## Maven Dependency
+## Maven 依赖
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-chatglm` has migrated to `langchain4j-community` and is renamed to `langchain4j-community-chatglm`.
+自 `1.0.0-alpha1` 起，`langchain4j-chatglm` 已迁移至 `langchain4j-community`，并更名为 `langchain4j-community-chatglm`。
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
 <dependency>
@@ -26,7 +26,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 <dependency>
@@ -36,7 +36,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或者，使用 BOM 统一管理依赖版本：
 
 ```xml
 <dependencyManagement>
@@ -51,9 +51,9 @@ Or, you can use BOM to manage dependencies consistently:
 ```
 
 
-## APIs
+## API 参考 {#api}
 
-You can instantiate `ChatGlmChatModel` using following code:
+可使用以下代码实例化 `ChatGlmChatModel`：
 
 ```java
 ChatModel model = ChatGlmChatModel.builder()
@@ -63,12 +63,12 @@ ChatModel model = ChatGlmChatModel.builder()
         .build();
 ```
 
-Now you can use it like a normal `ChatModel`.
+之后即可像普通 `ChatModel` 一样使用。
 
 :::note
-`ChatGlmChatModel` does not support Function Calling and Structured Output. see [index](index.md)
+`ChatGlmChatModel` 不支持函数调用和结构化输出，详见 [对比表](index.md)
 :::
 
-## Examples
+## 示例
 
 - [ChatGlmChatModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-chatglm/src/test/java/dev/langchain4j/community/model/chatglm/ChatGlmChatModelIT.java)

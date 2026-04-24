@@ -1,30 +1,39 @@
 ---
 sidebar_position: 27
+title: Spring Boot 集成 LangChain4j 教程 | 中文文档
+description: 通过 LangChain4j Spring Boot Starter 把 LLM 能力接入 Spring Boot 项目。使用 application.properties 自动装配 ChatModel、EmbeddingModel、EmbeddingStore、AI Services，直接 @Autowired 注入即可。
+keywords:
+  - LangChain4j Spring Boot
+  - Spring Boot AI
+  - Spring Boot 集成 LLM
+  - LangChain4j Starter
+  - Spring Boot OpenAI
+image: /img/docusaurus-social-card.jpg
 ---
 
-# Spring Boot Integration
+# Spring Boot 集成
 
-LangChain4j provides [Spring Boot starters](https://github.com/langchain4j/langchain4j-spring) for:
-- popular integrations
-- declarative [AI Services](/tutorials/ai-services)
+LangChain4j 为以下场景提供了 [Spring Boot starters](https://github.com/langchain4j/langchain4j-spring)：
+- 常用集成
+- 声明式 [AI Services](/tutorials/ai-services)
 
 
-## Spring Boot Starters
+## Spring Boot 启动器
 
-Spring Boot starters help with creating and configuring
-[language models](/category/language-models),
-[embedding models](/category/embedding-models),
-[embedding stores](/category/embedding-stores),
-and other core LangChain4j components through properties.
+Spring Boot starter 可以帮助你通过配置项创建并配置
+[language models](/category/language-models)、
+[embedding models](/category/embedding-models)、
+[embedding stores](/category/embedding-stores)
+以及其他 LangChain4j 核心组件。
 
-To use one of the [Spring Boot starters](https://github.com/langchain4j/langchain4j-spring),
-import the corresponding dependency.
+要使用某个 [Spring Boot starter](https://github.com/langchain4j/langchain4j-spring)，
+请引入对应依赖。
 
-The naming convention for the Spring Boot starter dependency is:
-- `langchain4j-{integration-name}-spring-boot-starter` for **Spring Boot 3**
-- `langchain4j-{integration-name}-spring-boot4-starter` for **Spring Boot 4**
+Spring Boot starter 依赖的命名约定如下：
+- **Spring Boot 3** 使用 `langchain4j-{integration-name}-spring-boot-starter`
+- **Spring Boot 4** 使用 `langchain4j-{integration-name}-spring-boot4-starter`
 
-For example, for OpenAI (`langchain4j-open-ai`):
+例如，对于 OpenAI（`langchain4j-open-ai`）：
 
 **Spring Boot 3:**
  ```xml
@@ -44,7 +53,7 @@ For example, for OpenAI (`langchain4j-open-ai`):
 </dependency>
 ```
 
-Then, you can configure model parameters in the `application.properties` file as follows:
+然后，你可以像下面这样在 `application.properties` 中配置模型参数：
 ```
 langchain4j.open-ai.chat-model.api-key=${OPENAI_API_KEY}
 langchain4j.open-ai.chat-model.model-name=gpt-4o
@@ -53,8 +62,9 @@ langchain4j.open-ai.chat-model.log-responses=true
 ...
 ```
 
-In this case, an instance of `OpenAiChatModel` (an implementation of a `ChatModel`) will be automatically created,
-and you can autowire it where needed:
+在这种情况下，会自动创建一个 `OpenAiChatModel` 实例
+（它是 `ChatModel` 的一个实现），
+你可以在需要的地方自动注入它：
 ```java
 @RestController
 public class ChatController {
@@ -72,23 +82,27 @@ public class ChatController {
 }
 ```
 
-If you need an instance of a `StreamingChatModel`,
-use the `streaming-chat-model` instead of the `chat-model` properties:
+如果你需要的是 `StreamingChatModel` 实例，
+请使用 `streaming-chat-model` 而不是 `chat-model` 这组配置项：
 ```
 langchain4j.open-ai.streaming-chat-model.api-key=${OPENAI_API_KEY}
 ...
 ```
 
+### LangChain4j Spring Boot Starter
 
-### LangChain4j Spring Boot Starter {#langchain4j-spring-boot-starter}
+这一兼容锚点对应下方的声明式 AI Services starter 小节。
 
-## Spring Boot starter for declarative AI Services
+<a id="langchain4j-spring-boot-starter"></a>
 
-LangChain4j provides a Spring Boot starter for auto-configuring
-[AI Services](/tutorials/ai-services), [RAG](/tutorials/rag), [Tools](/tutorials/tools) etc.
+## 声明式 AI Services 的 Spring Boot starter {#spring-boot-starter-for-declarative-ai-services}
 
-Assuming you have already imported one of the integrations starters (see above),
-import `langchain4j-spring-boot-starter` (Spring Boot 3) or `langchain4j-spring-boot4-starter` (Spring Boot 4):
+LangChain4j 提供了一个 Spring Boot starter，
+可用于自动配置 [AI Services](/tutorials/ai-services)、[RAG](/tutorials/rag)、[Tools](/tutorials/tools) 等能力。
+
+假设你已经导入了某个集成 starter（见上文），
+请再引入 `langchain4j-spring-boot-starter`（Spring Boot 3）
+或 `langchain4j-spring-boot4-starter`（Spring Boot 4）：
 
 **Spring Boot 3:**
 ```xml
@@ -108,7 +122,7 @@ import `langchain4j-spring-boot-starter` (Spring Boot 3) or `langchain4j-spring-
 </dependency>
 ```
 
-You can now define AI Service interface and annotate it with `@AiService`:
+现在你可以定义 AI Service 接口，并用 `@AiService` 进行标注：
 ```java
 @AiService
 interface Assistant {
@@ -118,13 +132,14 @@ interface Assistant {
 }
 ```
 
-Think of it as a standard Spring Boot `@Service`, but with AI capabilities.
+你可以把它理解为标准 Spring Boot `@Service` 的 AI 版本。
 
-When the application starts, LangChain4j starter will scan the classpath
-and find all interfaces annotated with `@AiService`.
-For each AI Service found, it will create an implementation of this interface
-using all LangChain4j components available in the application context and will register it as a bean,
-so you can auto-wire it where needed:
+当应用启动时，LangChain4j starter 会扫描 classpath，
+找到所有带有 `@AiService` 注解的接口。
+对于每个找到的 AI Service，
+它都会利用应用上下文中可用的 LangChain4j 组件为该接口创建实现，
+并将其注册为 bean，
+这样你就可以在需要的地方自动注入它：
 ```java
 @RestController
 class AssistantController {
@@ -139,8 +154,9 @@ class AssistantController {
 }
 ```
 
-### Automatic Component Wiring
-The following components will be automatically wired into the AI Service if available in the application context:
+### 自动组件装配
+如果应用上下文中存在以下组件，
+它们会被自动装配到 AI Service 中：
 - `ChatModel`
 - `StreamingChatModel`
 - `ChatMemory`
@@ -148,8 +164,9 @@ The following components will be automatically wired into the AI Service if avai
 - `ContentRetriever`
 - `RetrievalAugmentor`
 - `ToolProvider`
-- All methods of any `@Component` or `@Service` class that are annotated with `@Tool`
-An example:
+- 任意 `@Component` 或 `@Service` 类中所有带有 `@Tool` 注解的方法
+
+示例：
 ```java
 @Component
 public class BookingTools {
@@ -173,22 +190,24 @@ public class BookingTools {
 ```
 
 :::note
-If multiple components of the same type are present in the application context, the application will fail to start.
-In this case, use the explicit wiring mode (explained below).
+如果应用上下文中存在多个同类型组件，应用将启动失败。
+这时请使用显式装配模式（见下文）。
 :::
 
-### Explicit Component Wiring
+### 显式组件装配
 
-If you have multiple AI Services and want to wire different LangChain4j components into each of them,
-you can specify which components to use with explicit wiring mode (`@AiService(wiringMode = EXPLICIT)`).
+如果你有多个 AI Services，
+并且希望为它们分别装配不同的 LangChain4j 组件，
+可以使用显式装配模式指定要使用的组件
+（`@AiService(wiringMode = EXPLICIT)`）。
 
-Let's say we have two `ChatModel`s configured:
+假设我们配置了两个 `ChatModel`：
 ```properties
-# OpenAI
+# OpenAI 配置 {#openai}
 langchain4j.open-ai.chat-model.api-key=${OPENAI_API_KEY}
 langchain4j.open-ai.chat-model.model-name=gpt-4o-mini
 
-# Ollama
+# Ollama 配置 {#ollama}
 langchain4j.ollama.chat-model.base-url=http://localhost:11434
 langchain4j.ollama.chat-model.model-name=llama3.1
 ```
@@ -210,19 +229,20 @@ interface OllamaAssistant {
 ```
 
 :::note
-In this case, you must explicitly specify **all** components.
+在这种情况下，你必须显式指定**所有**组件。
 :::
 
-More details can be found [here](https://github.com/langchain4j/langchain4j-spring/blob/main/langchain4j-spring-boot-starter/src/main/java/dev/langchain4j/service/spring/AiService.java)
-(same API for the Spring Boot 4 variant).
+更多细节可见[这里](https://github.com/langchain4j/langchain4j-spring/blob/main/langchain4j-spring-boot-starter/src/main/java/dev/langchain4j/service/spring/AiService.java)
+（Spring Boot 4 变体使用同一套 API）。
 
-### Listening for AI Service Registration Events
+### 监听 AI Service 注册事件
 
-After you have completed the development of the AI Service in a declarative manner, you can listen for the
-`AiServiceRegisteredEvent` by implementing the `ApplicationListener<AiServiceRegisteredEvent>` interface.
-This event is triggered when AI Service is registered in the Spring context, 
-allowing you to obtain information about all registered AI services and their tools at runtime. 
-Here is an example:
+当你以声明式方式完成 AI Service 开发后，
+可以通过实现 `ApplicationListener<AiServiceRegisteredEvent>` 接口来监听
+`AiServiceRegisteredEvent`。
+该事件会在 AI Service 注册到 Spring 上下文时触发，
+从而让你在运行时获取所有已注册 AI Service 及其工具的信息。
+示例如下：
 ```java
 @Component
 class AiServiceRegisteredEventListener implements ApplicationListener<AiServiceRegisteredEvent> {
@@ -239,9 +259,9 @@ class AiServiceRegisteredEventListener implements ApplicationListener<AiServiceR
 }
 ```
 
-## Flux
+## Flux 反应流 {#flux}
 
-When streaming, you can use `Flux<String>` as a return type of AI Service:
+在流式场景下，你可以把 `Flux<String>` 作为 AI Service 的返回类型：
 ```java
 @AiService
 interface Assistant {
@@ -250,14 +270,14 @@ interface Assistant {
     Flux<String> chat(String userMessage);
 }
 ```
-For this, please import `langchain4j-reactor` module.
-See more details [here](/tutorials/ai-services#flux).
+为此，请引入 `langchain4j-reactor` 模块。
+更多细节见[这里](/tutorials/ai-services#flux)。
 
 
-## Observability
+## 可观测性 {#observability}
 
-To enable observability for a `ChatModel` or `StreamingChatModel`
-bean, you need to declare one or more `ChatModelListener` beans:
+要为 `ChatModel` 或 `StreamingChatModel` bean 启用 observability，
+你需要声明一个或多个 `ChatModelListener` bean：
 
 ```java
 @Configuration
@@ -288,14 +308,14 @@ class MyConfiguration {
 }
 ```
 
-Every `ChatModelListener` bean in the application context will be automatically
-injected into all `ChatModel` and `StreamingChatModel` beans
-created by one of our Spring Boot starters.
+应用上下文中的每个 `ChatModelListener` bean，
+都会被自动注入到由我们的 Spring Boot starters 创建的
+所有 `ChatModel` 和 `StreamingChatModel` bean 中。
 
-### Micrometer Metrics
-Add the `langchain4j-micrometer-metrics` dependency to your project:
+### Micrometer 指标 {#micrometer-metrics}
+将 `langchain4j-micrometer-metrics` 依赖加入你的项目：
 
-For Maven:
+对于 Maven：
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -303,28 +323,28 @@ For Maven:
     <version>1.13.0-beta23</version>
 </dependency>
 ```
-For Gradle:
+对于 Gradle：
 ```gradle
 implementation 'dev.langchain4j:langchain4j-micrometer-metrics:1.13.0-beta23'
 ```
 
-#### Micrometer (Actuator) Configuration
-You should also have the necessary Actuator dependency in your project.
-For example, if you are using Spring Boot, you can add the following dependencies to your `pom.xml`:
+#### Micrometer（Actuator）配置 {#micrometer-actuator-configuration}
+你的项目中还应包含必要的 Actuator 依赖。
+例如，如果你使用 Spring Boot，可以把以下依赖加入 `pom.xml`：
 
-For Maven:
+对于 Maven：
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-actuator</artifactId>
 </dependency>
 ```
-For Gradle:
+对于 Gradle：
 ```gradle
 implementation 'org.springframework.boot:spring-boot-starter-actuator'
 ```
 
-Enable the `/metrics` Actuator endpoint in your properties.
+请在配置中启用 `/metrics` Actuator endpoint。
 
 application.properties:
 ```properties
@@ -339,9 +359,10 @@ management:
         include: metrics
 ```
 
-#### Configure `MicrometerMetricsChatModelListener` bean
+#### 配置 `MicrometerMetricsChatModelListener` bean
 
-In a Spring Boot application, you can define the listener as a bean and inject the `MeterRegistry`:
+在 Spring Boot 应用中，你可以把 listener 定义为一个 bean，
+并注入 `MeterRegistry`：
 
 ```java
 import dev.langchain4j.micrometer.metrics.listeners.MicrometerMetricsChatModelListener;
@@ -359,52 +380,56 @@ public class MetricsConfig {
 }
 ```
 
-#### View the Metrics
+#### 查看 Metrics
 
-You can view the metrics by visiting the `/actuator/metrics` endpoint of your application.
+你可以访问应用的 `/actuator/metrics` endpoint 查看这些 metrics。
 
-For example, if you are running your application on `localhost:8080`,
-you can visit http://localhost:8080/actuator/metrics to view the metrics.
+例如，如果你的应用运行在 `localhost:8080`，
+可以访问 http://localhost:8080/actuator/metrics 来查看指标。
 
 ##### Token Usage Metric
 
-View the token usage metric at:
+可通过以下地址查看 token usage 指标：
 ```
 http://localhost:8080/actuator/metrics/gen_ai.client.token.usage
 ```
 
-##### Filtering by Token Type
+##### 按 Token Type 过滤
 
-The `gen_ai.token.type` tag indicates whether the tokens were used for input or output:
+`gen_ai.token.type` tag 表示统计的是输入 token 还是输出 token：
 
 | Token Type | Endpoint |
 |------------|----------|
 | Input tokens | `/actuator/metrics/gen_ai.client.token.usage?tag=gen_ai.token.type:input` |
 | Output tokens | `/actuator/metrics/gen_ai.client.token.usage?tag=gen_ai.token.type:output` |
 
-> **Note**: The `gen_ai.client.token.usage` metric is a histogram (DistributionSummary). The endpoint without any tags shows aggregated statistics (count, total, max) across all token types, models, and providers.
+> **Note**: `gen_ai.client.token.usage` 指标是一个 histogram（DistributionSummary）。不带任何 tag 的 endpoint 会展示跨所有 token 类型、模型和 provider 聚合后的统计信息（count、total、max）。
 
-### Micrometer Observation {#micrometer-observation}
+### Micrometer 观测 {#micrometer-observation}
 
-### Micrometer Observation API
+这一兼容锚点对应下方的 Micrometer Observation API 小节。
 
-This implements the `ChatModelListener` using the [Micrometer Observation API](https://docs.micrometer.io/micrometer/reference/observation.html) allowing transparent generation of Metrics and Traces by adding the following dependency:
+### Micrometer 观测 API {#micrometer-observation-api}
 
-For Maven:
+这里通过 [Micrometer Observation API](https://docs.micrometer.io/micrometer/reference/observation.html)
+实现了 `ChatModelListener`，
+只需添加以下依赖即可透明地产生 Metrics 和 Traces：
+
+对于 Maven：
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-observation</artifactId>
 </dependency>
 ```
-For Gradle:
+对于 Gradle：
 ```gradle
 implementation 'dev.langchain4j:langchain4j-observation'
 ```
 
-You need to instantiate the Observation listener as follows...
+你需要像下面这样实例化 Observation listener......
 
-#### Configure the ObservationChatModelListener bean
+#### 配置 `ObservationChatModelListener` bean
 
 ```java
 @Configuration
@@ -417,27 +442,29 @@ public class ObservationConfig {
 }
 ```
 
-This dependency requires the configuration of the [SpringBoot Actuator](spring-boot-integration.md#micrometer-actuator-configuration), as described above.
+这个依赖要求你像上文所述那样，完成 [SpringBoot Actuator](spring-boot-integration.md#micrometer-actuator-configuration) 的配置。
 
-For additional observability requirements on a SpringBoot application please follow:
+关于 SpringBoot 应用中其他 observability 相关要求，请参阅：
 [Building Your First Observed Application](https://spring.io/blog/2022/10/12/observability-with-spring-boot-3#building-your-first-observed-application)
 
-For more details about the `langchain4j-observation` library, please check the [Observability documentation](observability.md#micrometer-observation-api). 
+关于 `langchain4j-observation` 库的更多细节，
+请参阅 [Observability 文档](observability.md#micrometer-observation-api)。
 
 
-## Testing
+## 测试
 
-- [An example of integration testing for a Customer Support Agent](https://github.com/langchain4j/langchain4j-examples/blob/main/customer-support-agent-example/src/test/java/dev/langchain4j/example/CustomerSupportAgentIT.java)
+- [Customer Support Agent 集成测试示例](https://github.com/langchain4j/langchain4j-examples/blob/main/customer-support-agent-example/src/test/java/dev/langchain4j/example/CustomerSupportAgentIT.java)
 
-## Supported versions
+## 支持的版本
 
-LangChain4j Spring Boot integration requires Java 17 and supports both:
-- **Spring Boot 3** (3.5+) — use starters with the `-spring-boot-starter` suffix, in line with the [Spring Boot OSS support policy](https://spring.io/projects/spring-boot#support)
-- **Spring Boot 4** (4.0+) — use starters with the `-spring-boot4-starter` suffix
+LangChain4j 的 Spring Boot 集成要求 Java 17，并同时支持：
+- **Spring Boot 3**（3.5+）: 使用带 `-spring-boot-starter` 后缀的 starter，符合 [Spring Boot OSS support policy](https://spring.io/projects/spring-boot#support)
+- **Spring Boot 4**（4.0+）: 使用带 `-spring-boot4-starter` 后缀的 starter
 
-Both families are released together and share the same version number. Choose the set of starters that matches the Spring Boot version in your project.
+这两条产品线会一起发布，并共享相同的版本号。
+请选择与你项目中 Spring Boot 版本匹配的一组 starter。
 
-## Examples
-- [Low-level Spring Boot example](https://github.com/langchain4j/langchain4j-examples/blob/main/spring-boot-example/src/main/java/dev/langchain4j/example/lowlevel/ChatModelController.java) using [ChatModel API](/tutorials/chat-and-language-models)
-- [High-level Spring Boot example](https://github.com/langchain4j/langchain4j-examples/blob/main/spring-boot-example/src/main/java/dev/langchain4j/example/aiservice/AssistantController.java) using [AI Services](/tutorials/ai-services)
-- [Example of customer support agent using Spring Boot](https://github.com/langchain4j/langchain4j-examples/blob/main/customer-support-agent-example/src/main/java/dev/langchain4j/example/CustomerSupportAgentApplication.java)
+## 示例
+- 使用 [ChatModel API](/tutorials/chat-and-language-models) 的[低层 Spring Boot 示例](https://github.com/langchain4j/langchain4j-examples/blob/main/spring-boot-example/src/main/java/dev/langchain4j/example/lowlevel/ChatModelController.java)
+- 使用 [AI Services](/tutorials/ai-services) 的[高层 Spring Boot 示例](https://github.com/langchain4j/langchain4j-examples/blob/main/spring-boot-example/src/main/java/dev/langchain4j/example/aiservice/AssistantController.java)
+- [使用 Spring Boot 的 customer support agent 示例](https://github.com/langchain4j/langchain4j-examples/blob/main/customer-support-agent-example/src/main/java/dev/langchain4j/example/CustomerSupportAgentApplication.java)

@@ -2,10 +2,9 @@
 sidebar_position: 4
 ---
 
-# GitHub
+# GitHub 文档加载 {#github}
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -15,12 +14,10 @@ sidebar_position: 4
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `GitHubDocumentLoader`
 
-
-## Examples
+## 示例
 
 - [GitHubDocumentLoaderIT](https://github.com/langchain4j/langchain4j/blob/main/document-loaders/langchain4j-document-loader-github/src/test/java/dev/langchain4j/data/document/loader/github/GitHubDocumentLoaderIT.java)

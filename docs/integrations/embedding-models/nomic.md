@@ -7,7 +7,7 @@ sidebar_position: 13
 https://home.nomic.ai/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ https://home.nomic.ai/
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `NomicEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [NomicEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-nomic/src/test/java/dev/langchain4j/model/nomic/NomicEmbeddingModelIT.java)

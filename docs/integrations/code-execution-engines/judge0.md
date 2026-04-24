@@ -6,7 +6,7 @@ sidebar_position: 3
 
 https://github.com/judge0/judge0
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -16,12 +16,11 @@ https://github.com/judge0/judge0
 </dependency>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `Judge0JavaScriptEngine`
 - `Judge0JavaScriptExecutionTool`
 
-
-## Examples
+## 示例
 
 - [ServiceWithDynamicToolsExample](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/ServiceWithDynamicToolsExample.java)

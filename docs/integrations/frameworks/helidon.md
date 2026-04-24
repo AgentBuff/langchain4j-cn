@@ -2,21 +2,21 @@
 sidebar_position: 9
 ---
 
-# Helidon
+# Helidon 框架 {#helidon}
 
-[Helidon](https://helidon.io/) provides a LangChain4j integration module that simplifies building AI-driven applications while leveraging Helidon’s programming model and style.
+[Helidon](https://helidon.io/) 提供了一个 LangChain4j 集成模块，简化了在利用 Helidon 编程模型和风格构建 AI 驱动应用程序的过程。
 
-Helidon’s LangChain4j integration provides the following advantages instead of adding LangChain4j's library manually:
+与手动添加 LangChain4j 库相比，Helidon 的 LangChain4j 集成提供以下优势：
 
-- Integration with Helidon Inject
-    - Automatically creates and registers selected LangChain4j components in the Helidon service registry based on configuration.
-- Convention Over Configuration 
-    - Simplifies configuration by offering sensible defaults, reducing manual setup for common use cases.
-- Declarative AI Services
-    - Supports LangChain4j’s AI Services within the declarative programming model, allowing for clean, easy-to-manage code structures.
-- Integration with CDI
-    - Using the Helidon Inject to CDI bridge, LangChain4j components can be used in CDI environments, such as Helidon MP (MicroProfile) applications.
+- 与 Helidon Inject 集成
+    - 根据配置自动在 Helidon 服务注册表中创建和注册选定的 LangChain4j 组件。
+- 约定优于配置
+    - 通过提供合理的默认值简化配置，减少常见用例的手动设置。
+- 声明式 AI 服务
+    - 在声明式编程模型中支持 LangChain4j 的 AI 服务，允许使用简洁易管理的代码结构。
+- 与 CDI 集成
+    - 使用 Helidon Inject 到 CDI 的桥接，LangChain4j 组件可在 CDI 环境（如 Helidon MP MicroProfile 应用程序）中使用。
 
-These features significantly reduce the complexity of incorporating LangChain4j into Helidon Applications.
+这些功能显著降低了将 LangChain4j 集成到 Helidon 应用程序中的复杂性。
 
-For detailed explanation and usage of LangChain4j integration feature, see the [Helidon documentation](https://helidon.io/docs/latest/se/integrations/langchain4j/langchain4j).
+有关 LangChain4j 集成功能的详细说明和使用方法，请参阅 [Helidon 文档](https://helidon.io/docs/latest/se/integrations/langchain4j/langchain4j)。

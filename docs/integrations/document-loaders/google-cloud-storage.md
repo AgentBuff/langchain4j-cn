@@ -4,9 +4,9 @@ sidebar_position: 2
 
 # Google Cloud Storage
 
-A Google Cloud Storage (GCS) document loader that allows you to load documents from storage buckets.
+Google Cloud Storage（GCS）文档加载器，允许您从存储桶中加载文档。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -16,17 +16,17 @@ A Google Cloud Storage (GCS) document loader that allows you to load documents f
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `GoogleCloudStorageDocumentLoader`
 
-## Authentication
+## 身份验证
 
-The authentication should be handled transparently for you:
-* If your application is running on Google Cloud Platform (Cloud Run, App Engine, Compute Engine, etc)
-* When running locally on your machine, if you are already authenticated via Google's `gcloud` SDK
+在以下情况下，身份验证将为您透明处理：
+* 如果您的应用程序在 Google Cloud Platform（Cloud Run、App Engine、Compute Engine 等）上运行
+* 在本地机器上运行时，如果您已通过 Google 的 `gcloud` SDK 进行身份验证
 
-You should just create a loader specifying just your project ID:
+您只需指定项目 ID 即可创建加载器：
 
 ```java
 GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.builder()
@@ -34,7 +34,7 @@ GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.bu
     .build();
 ```
 
-Otherwise, it's possible to specify `Credentials`, if you have downloaded a service account key, and exported an environment variable pointing to it:
+否则，如果您已下载服务账户密钥并导出了指向它的环境变量，可以指定 `Credentials`：
 
 ```java
 GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.builder()
@@ -43,13 +43,13 @@ GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.bu
     .build();
 ```
 
-Learn more about [credentials](https://cloud.google.com/docs/authentication/application-default-credentials).
+了解更多关于[凭据](https://cloud.google.com/docs/authentication/application-default-credentials)的信息。
 
-When accessing a public bucket, you shouldn't need to authenticate.
+访问公共存储桶时，无需进行身份验证。
 
-## Examples
+## 示例
 
-### Load a single file from a GCS bucket
+### 从 GCS 存储桶加载单个文件
 
 ```java
 GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.builder()
@@ -59,7 +59,7 @@ GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.bu
 Document document = gcsLoader.loadDocument("BUCKET_NAME", "FILE_NAME.txt", new TextDocumentParser());
 ```
 
-### Load all files from a GCS bucket
+### 从 GCS 存储桶加载所有文件
 
 ```java
 GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.builder()
@@ -69,7 +69,7 @@ GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.bu
 List<Document> documents = gcsLoader.loadDocuments("BUCKET_NAME", new TextDocumentParser());
 ```
 
-### Load all files from a GCS bucket with a glob pattern
+### 使用 glob 模式从 GCS 存储桶加载所有文件
 
 ```java
 GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.builder()
@@ -79,5 +79,5 @@ GoogleCloudStorageDocumentLoader gcsLoader = GoogleCloudStorageDocumentLoader.bu
 List<Document> documents = gcsLoader.loadDocuments("BUCKET_NAME", "*.txt", new TextDocumentParser());
 ```
 
-For more code samples, please have a look at the integration test class:
+有关更多代码示例，请参阅集成测试类：
 - [GoogleCloudStorageDocumentLoaderIT](https://github.com/langchain4j/langchain4j/blob/main/document-loaders/langchain4j-document-loader-google-cloud-storage/src/test/java/dev/langchain4j/data/document/loader/gcs/GoogleCloudStorageDocumentLoaderIT.java)

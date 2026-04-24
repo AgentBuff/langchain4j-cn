@@ -4,8 +4,7 @@ sidebar_position: 2
 
 # Azure Blob Storage
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -15,12 +14,10 @@ sidebar_position: 2
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `AzureBlobStorageDocumentLoader`
 
-
-## Examples
+## 示例
 
 - [AzureBlobStorageDocumentLoaderIT](https://github.com/langchain4j/langchain4j/blob/main/document-loaders/langchain4j-document-loader-azure-storage-blob/src/test/java/dev/langchain4j/data/document/loader/azure/storage/blob/AzureBlobStorageDocumentLoaderIT.java)

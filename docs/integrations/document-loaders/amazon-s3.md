@@ -4,8 +4,7 @@ sidebar_position: 1
 
 # Amazon S3
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -15,12 +14,10 @@ sidebar_position: 1
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `AmazonS3DocumentLoader`
 
-
-## Examples
+## 示例
 
 - [AmazonS3DocumentLoaderIT](https://github.com/langchain4j/langchain4j/blob/main/document-loaders/langchain4j-document-loader-amazon-s3/src/test/java/dev/langchain4j/data/document/loader/amazon/s3/AmazonS3DocumentLoaderIT.java)

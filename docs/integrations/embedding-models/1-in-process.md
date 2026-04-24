@@ -2,15 +2,15 @@
 sidebar_position: 1
 ---
 
-# In-process (ONNX)
+# 进程内（ONNX）
 
-LangChain4j provides a few popular local embedding models packaged as maven dependencies.
-They are powered by [ONNX runtime](https://onnxruntime.ai/docs/get-started/with-java.html)
-and are running in the same java process.
+LangChain4j 提供了一些流行的本地嵌入模型，以 Maven 依赖的形式打包。
+它们由 [ONNX runtime](https://onnxruntime.ai/docs/get-started/with-java.html) 驱动，
+并在同一 Java 进程中运行。
 
-Each model is provided in 2 flavours: original and quantized (has a `-q` suffix in maven artifact name and `Quantized` in the class name).
+每个模型提供两种版本：原始版本和量化版本（Maven 构件名以 `-q` 结尾，类名中含 `Quantized`）。
 
-For example:
+例如：
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -24,7 +24,7 @@ Response<Embedding> response = embeddingModel.embed("test");
 Embedding embedding = response.content();
 ```
 
-Or quantized:
+或量化版本：
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -38,37 +38,35 @@ Response<Embedding> response = embeddingModel.embed("test");
 Embedding embedding = response.content();
 ```
 
-The complete list of all embedding models can be found [here](https://github.com/langchain4j/langchain4j/tree/main/embeddings).
+完整的嵌入模型列表可在[此处](https://github.com/langchain4j/langchain4j/tree/main/embeddings)找到。
 
 
-## Parallelization
+## 并行化
 
-By default, the embedding process is parallelized using all available CPU cores,
-so each `TextSegment` is embedded in a separate thread.
+默认情况下，嵌入过程使用所有可用的 CPU 核心并行化，
+每个 `TextSegment` 在独立线程中嵌入。
 
-The parallelization is done by using an `Executor`.
-By default, in-process embedding models use a cached thread pool
-with the number of threads equal to the number of available processors.
-Threads are cached for 1 second.
+并行化通过 `Executor` 实现。
+默认情况下，进程内嵌入模型使用缓存线程池，
+线程数等于可用处理器数量，线程缓存 1 秒。
 
-You can provide a custom instance of the `Executor` when creating a model:
+创建模型时可提供自定义的 `Executor` 实例：
 ```java
 Executor = ...;
 EmbeddingModel embeddingModel = new AllMiniLmL6V2QuantizedEmbeddingModel(executor);
 ```
 
-Embedding using GPU is not supported yet.
+目前不支持 GPU 嵌入。
 
-## Custom models
+## 自定义模型
 
-Many models (e.g., from [Hugging Face](https://huggingface.co/)) can be used,
-as long as they are in the ONNX format.
+只要格式为 ONNX，许多模型（例如来自 [Hugging Face](https://huggingface.co/)）均可使用。
 
-Information on how to convert models into ONNX format can be found [here](https://huggingface.co/docs/optimum/exporters/onnx/usage_guides/export_a_model).
+有关如何将模型转换为 ONNX 格式的信息，请参阅[此处](https://huggingface.co/docs/optimum/exporters/onnx/usage_guides/export_a_model)。
 
-Many models already converted to ONNX format are available [here](https://huggingface.co/Xenova).
+许多已转换为 ONNX 格式的模型可在[此处](https://huggingface.co/Xenova)获取。
 
-Example of using custom embedding model:
+使用自定义嵌入模型的示例：
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -86,6 +84,6 @@ Response<Embedding> response = embeddingModel.embed("test");
 Embedding embedding = response.content();
 ```
 
-## Examples
+## 示例
 
 - [InProcessEmbeddingModelExamples](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/embedding/model/InProcessEmbeddingModelExamples.java)

@@ -6,33 +6,33 @@ sidebar_position: 16
 
 :::note
 
-This is the documentation for the `OpenAI Official SDK` integration, that uses the [official OpenAI Java SDK](https://github.com/openai/openai-java).
+这是 `OpenAI Official SDK` 集成的文档，使用[官方 OpenAI Java SDK](https://github.com/openai/openai-java)。
 
-LangChain4j provides 3 different integrations with OpenAI for using embedding models, and this is #2 :
+LangChain4j 提供 3 种不同的 OpenAI 嵌入模型集成，这是第 2 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用自定义的 OpenAI REST API Java 实现，最适合 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
 
 :::
 
-## Use cases for this integration
+## 此集成的使用场景
 
-This integration uses the [OpenAI Java SDK GitHub Repository](https://github.com/openai/openai-java), and will work for all OpenAI models which can be provided by:
+本集成使用 [OpenAI Java SDK GitHub 仓库](https://github.com/openai/openai-java)，适用于以下来源提供的所有 OpenAI 模型：
 
 - OpenAI
 - Azure OpenAI
 - GitHub Models
 
-It will also work with models supporting the OpenAI API.
+同时也适用于支持 OpenAI API 的模型。
 
-## OpenAI Documentation
+## OpenAI 文档
 
-- [OpenAI Java SDK GitHub Repository](https://github.com/openai/openai-java)
-- [OpenAI API Documentation](https://platform.openai.com/docs/introduction)
-- [OpenAI API Reference](https://platform.openai.com/docs/api-reference)
+- [OpenAI Java SDK GitHub 仓库](https://github.com/openai/openai-java)
+- [OpenAI API 文档](https://platform.openai.com/docs/introduction)
+- [OpenAI API 参考](https://platform.openai.com/docs/api-reference)
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -42,12 +42,11 @@ It will also work with models supporting the OpenAI API.
 </dependency>
 ```
 
-## Configuring the models
+## 配置模型
 
-To use OpenAI models, you usually need an endpoint URL, an API key, and a model name. This depends on where the model is hosted, and this integration tries
-to make it easier with some auto-configuration:
+使用 OpenAI 模型通常需要端点 URL、API Key 和模型名称，具体取决于模型的托管位置。本集成通过一些自动配置简化了这一过程：
 
-### Generic configuration
+### 通用配置
 
 ```java
 import com.openai.models.embeddings.EmbeddingModel;
@@ -65,10 +64,9 @@ EmbeddingModel model = OpenAiOfficialEmbeddingModel.builder()
         .build();
 ```
 
-### Specific configurations for Azure OpenAI and GitHub Models.
+### Azure OpenAI 和 GitHub Models 的专项配置
 
-Similar to configuring the [OpenAI Official Chat Model](/integrations/language-models/open-ai-official), you can configure the `OpenAiOfficialEmbeddingModel` with
-Azure OpenAI and GitHub Models, using the `isAzure()` and `isGitHubModels()` methods.
+与配置 [OpenAI Official Chat Model](/integrations/language-models/open-ai-official) 类似，可通过 `isAzure()` 和 `isGitHubModels()` 方法为 `OpenAiOfficialEmbeddingModel` 配置 Azure OpenAI 和 GitHub Models。
 
 #### Azure OpenAI
 
@@ -77,11 +75,11 @@ EmbeddingModel model = OpenAiOfficialEmbeddingModel.builder()
         .baseUrl(System.getenv("AZURE_OPENAI_ENDPOINT"))
         .apiKey(System.getenv("AZURE_OPENAI_KEY"))
         .modelName(TEXT_EMBEDDING_3_SMALL)
-        .isAzure(true) // Not necessary if the base URL ends with `openai.azure.com`
+        .isAzure(true) // 如果 base URL 以 `openai.azure.com` 结尾则不必填写
         .build();
 ```
 
-You can also use "passwordless" authentication, as described in the [OpenAI Official Chat Model](/integrations/language-models/open-ai-official) documentation.
+也可使用"无密码"认证，详见 [OpenAI Official Chat Model](/integrations/language-models/open-ai-official) 文档。
 
 #### GitHub Models
 
@@ -92,10 +90,10 @@ EmbeddingModel model = OpenAiOfficialEmbeddingModel.builder()
         .build();
 ```
 
-## Using the models
+## 使用模型
 
-Once the model is configured, you can use it to create embeddings:
+配置好模型后，即可用于生成嵌入：
 
 ```java
-Response<Embedding> response = model.embed("Please embed this sentence.");
+Response<Embedding> response = model.embed("请为这句话生成嵌入向量。");
 ```

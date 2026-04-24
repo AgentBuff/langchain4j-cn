@@ -4,9 +4,9 @@ sidebar_position: 28
 
 # OceanBase
 
-The OceanBase Embedding Store integrates with [OceanBase](https://www.oceanbase.com/) database for vector similarity search and hybrid search capabilities.
+OceanBase 嵌入存储集成了 [OceanBase](https://www.oceanbase.com/) 数据库，提供向量相似度搜索和混合搜索功能。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -16,29 +16,29 @@ The OceanBase Embedding Store integrates with [OceanBase](https://www.oceanbase.
 </dependency>
 ```
 
-Note: This is a community integration module. You may need to add the langchain4j-community repository to your project configuration.
+注意：这是一个社区集成模块，可能需要在项目配置中添加 langchain4j-community 仓库。
 
-## APIs
+## API 参考 {#api}
 
 - `OceanBaseEmbeddingStore`
 
-## Requirements
+## 系统要求
 
-- OceanBase database instance (version 4.3.5 or later)
+- OceanBase 数据库实例（4.3.5 或更高版本）
 - Java >= 17
 
-## Features
+## 功能特性
 
-- Store embeddings with metadata (JSON format)
-- Vector similarity search with cosine, L2, or inner product distance
-- **Hybrid search** combining vector similarity and fulltext search (RRF algorithm)
-- Filter search results by metadata fields and table columns
-- Automatic table and vector index creation
-- Customizable field names and distance metrics
+- 存储带元数据的嵌入（JSON 格式）
+- 使用余弦、L2 或内积距离进行向量相似度搜索
+- **混合搜索**：结合向量相似度搜索和全文搜索（RRF 算法）
+- 按元数据字段和表列过滤搜索结果
+- 自动创建表和向量索引
+- 可自定义字段名称和距离度量
 
-## Usage
+## 使用方式
 
-### Basic Example
+### 基本示例
 
 ```java
 import dev.langchain4j.data.document.Metadata;
@@ -50,10 +50,10 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingSearchResult;
 import dev.langchain4j.store.embedding.oceanbase.OceanBaseEmbeddingStore;
 
-// Initialize embedding model
+// 初始化嵌入模型
 EmbeddingModel embeddingModel = new AllMiniLmL6V2QuantizedEmbeddingModel();
 
-// Create embedding store
+// 创建嵌入存储
 OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
     .url("jdbc:oceanbase://127.0.0.1:2881/test")
     .user("root@test")
@@ -62,14 +62,14 @@ OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
     .dimension(384)
     .build();
 
-// Add document with metadata
+// 添加带元数据的文档
 String id = embeddingStore.add(
     embeddingModel.embed("Java is a programming language").content(),
     TextSegment.from("Java is a programming language", 
         Metadata.from("category", "programming").put("language", "Java"))
 );
 
-// Search
+// 搜索
 Embedding queryEmbedding = embeddingModel.embed("programming language").content();
 EmbeddingSearchResult<TextSegment> results = embeddingStore.search(
     EmbeddingSearchRequest.builder()
@@ -78,7 +78,7 @@ EmbeddingSearchResult<TextSegment> results = embeddingStore.search(
         .build()
 );
 
-// Process results
+// 处理结果
 results.matches().forEach(match -> {
     System.out.println("Score: " + match.score());
     System.out.println("Text: " + match.embedded().text());
@@ -86,7 +86,7 @@ results.matches().forEach(match -> {
 });
 ```
 
-### Advanced Configuration
+### 高级配置
 
 ```java
 OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
@@ -95,7 +95,7 @@ OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
     .password("password")
     .tableName("embeddings")
     .dimension(384)
-    .metricType("cosine")  // Options: "cosine", "l2", "ip"
+    .metricType("cosine")  // 选项："cosine"、"l2"、"ip"
     .retrieveEmbeddingsOnSearch(true)
     .idFieldName("id_field")
     .textFieldName("text_field")
@@ -104,77 +104,77 @@ OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
     .build();
 ```
 
-## Distance Metrics
+## 距离度量
 
-OceanBase embedding store supports three distance metrics. The distance values are automatically converted to relevance scores in the range [0, 1], where 1 represents the most relevant match.
+OceanBase 嵌入存储支持三种距离度量。距离值会自动转换为 [0, 1] 范围内的相关度评分，1 表示最相关匹配。
 
-### Cosine Distance (Default) - `"cosine"`
+### 余弦距离（默认）- `"cosine"`
 
-**Best for:** Text embeddings, semantic similarity search
+**适用场景：** 文本嵌入、语义相似度搜索
 
-**How it works:**
-- OceanBase `cosine_distance` returns values in range [0, 2]
-  - `0` = identical vectors (same direction)
-  - `1` = orthogonal vectors (perpendicular)
-  - `2` = opposite vectors (completely opposite direction)
-- Converted to relevance score: `score = (2 - distance) / 2`
-- Results are independent of vector magnitude
-
-```java
-.metricType("cosine")  // Default, recommended for text embeddings
-```
-
-### L2 Distance (Euclidean) - `"l2"` or `"euclidean"`
-
-**Best for:** When both direction and magnitude matter
-
-**How it works:**
-- Measures straight-line distance between vectors
-- Range: [0, ∞)
-- Converted to relevance score: `score = 1 / (1 + distance)`
+**工作原理：**
+- OceanBase `cosine_distance` 返回 [0, 2] 范围内的值
+  - `0` = 相同向量（方向相同）
+  - `1` = 正交向量（垂直）
+  - `2` = 相反向量（方向完全相反）
+- 转换为相关度评分：`score = (2 - distance) / 2`
+- 结果与向量大小无关
 
 ```java
-.metricType("l2")  // or "euclidean"
+.metricType("cosine")  // 默认，推荐用于文本嵌入
 ```
 
-### Inner Product - `"inner_product"` or `"ip"`
+### L2 距离（欧氏）- `"l2"` 或 `"euclidean"`
 
-**Best for:** Normalized embeddings, performance-critical applications
+**适用场景：** 方向和大小都重要时
 
-**How it works:**
-- Measures dot product of vectors
-- For normalized vectors, range is [-1, 1]
-- Converted to relevance score: `score = (inner_product + 1) / 2`
+**工作原理：**
+- 测量向量之间的直线距离
+- 范围：[0, ∞)
+- 转换为相关度评分：`score = 1 / (1 + distance)`
 
 ```java
-.metricType("inner_product")  // or "ip"
+.metricType("l2")  // 或 "euclidean"
 ```
 
-**Reference:** [OceanBase Vector Distance Functions](https://www.oceanbase.com/docs/common-oceanbase-database-cn-1000000004475471)
+### 内积 - `"inner_product"` 或 `"ip"`
 
-## Filtering
+**适用场景：** 归一化嵌入、对性能要求高的应用
 
-OceanBase embedding store supports filtering search results by metadata fields and table columns.
+**工作原理：**
+- 测量向量的点积
+- 对于归一化向量，范围为 [-1, 1]
+- 转换为相关度评分：`score = (inner_product + 1) / 2`
 
-### Filter by Metadata Fields
+```java
+.metricType("inner_product")  // 或 "ip"
+```
+
+**参考：** [OceanBase 向量距离函数](https://www.oceanbase.com/docs/common-oceanbase-database-cn-1000000004475471)
+
+## 过滤
+
+OceanBase 嵌入存储支持按元数据字段和表列过滤搜索结果。
+
+### 按元数据字段过滤
 
 ```java
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder;
 import static dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey;
 
-// Filter by single metadata field
+// 按单个元数据字段过滤
 Filter filter = metadataKey("category").isEqualTo("programming");
 
-// Filter with multiple conditions
+// 多条件过滤
 Filter filter = new And(
     metadataKey("category").isEqualTo("programming"),
     metadataKey("language").isEqualTo("Java")
 );
 
-// Filter with IN operator
+// 使用 IN 运算符过滤
 Filter filter = metadataKey("language").isIn("Java", "Python", "C++");
 
-// Search with filter
+// 带过滤的搜索
 EmbeddingSearchResult<TextSegment> results = embeddingStore.search(
     EmbeddingSearchRequest.builder()
         .queryEmbedding(queryEmbedding)
@@ -184,51 +184,51 @@ EmbeddingSearchResult<TextSegment> results = embeddingStore.search(
 );
 ```
 
-### Filter by Table Columns
+### 按表列过滤
 
-You can also filter by table columns directly (id, text, metadata, vector):
+也可以直接按表列（id、text、metadata、vector）过滤：
 
 ```java
 import dev.langchain4j.store.embedding.filter.comparison.IsIn;
 import dev.langchain4j.store.embedding.filter.comparison.ContainsString;
 import dev.langchain4j.store.embedding.filter.comparison.IsEqualTo;
 
-// Filter by ID field
+// 按 ID 字段过滤
 Filter filter = new IsIn("id", List.of("id1", "id2", "id3"));
 
-// Filter by text field (contains)
+// 按文本字段过滤（包含）
 Filter textFilter = new ContainsString("text", "programming");
 
-// Filter by exact text match
+// 按文本精确匹配过滤
 Filter exactTextFilter = new IsEqualTo("text", "Java programming");
 ```
 
-**Note**: When filtering by table columns, use the actual field names defined in your `FieldDefinition`. The mapper automatically recognizes common aliases:
-- `id` → id field
-- `text` or `document` → text field  
-- `metadata` → metadata field
-- `vector` or `embedding` → vector field
+**注意**：按表列过滤时，使用 `FieldDefinition` 中定义的实际字段名称。映射器自动识别常见别名：
+- `id` → id 字段
+- `text` 或 `document` → text 字段
+- `metadata` → metadata 字段
+- `vector` 或 `embedding` → vector 字段
 
-### Supported Filter Operations
+### 支持的过滤操作
 
-- `isEqualTo`: Equal comparison
-- `isNotEqualTo`: Not equal comparison
-- `isGreaterThan`: Greater than comparison
-- `isGreaterThanOrEqualTo`: Greater than or equal comparison
-- `isLessThan`: Less than comparison
-- `isLessThanOrEqualTo`: Less than or equal comparison
-- `isIn`: IN operator (multiple values)
-- `isNotIn`: NOT IN operator
-- `containsString`: LIKE operator (pattern matching)
-- `And`: Logical AND
-- `Or`: Logical OR
-- `Not`: Logical NOT
+- `isEqualTo`：等于比较
+- `isNotEqualTo`：不等于比较
+- `isGreaterThan`：大于比较
+- `isGreaterThanOrEqualTo`：大于等于比较
+- `isLessThan`：小于比较
+- `isLessThanOrEqualTo`：小于等于比较
+- `isIn`：IN 操作（多个值）
+- `isNotIn`：NOT IN 操作
+- `containsString`：LIKE 操作（模式匹配）
+- `And`：逻辑与
+- `Or`：逻辑或
+- `Not`：逻辑非
 
-## Hybrid Search
+## 混合搜索
 
-Hybrid search combines vector similarity search and fulltext search to provide better search results. When enabled, it automatically creates a fulltext index on the text field and combines results using the **Reciprocal Rank Fusion (RRF)** algorithm.
+混合搜索将向量相似度搜索与全文搜索相结合，提供更好的搜索结果。启用后，它会自动在文本字段上创建全文索引，并使用**倒数排名融合（RRF）**算法合并结果。
 
-### Enable Hybrid Search
+### 启用混合搜索
 
 ```java
 OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
@@ -237,73 +237,72 @@ OceanBaseEmbeddingStore embeddingStore = OceanBaseEmbeddingStore.builder()
     .password("password")
     .tableName("embeddings")
     .dimension(384)
-    .enableHybridSearch(true)  // Enable hybrid search
+    .enableHybridSearch(true)  // 启用混合搜索
     .build();
 ```
 
-### Perform Hybrid Search
+### 执行混合搜索
 
 ```java
-// Perform hybrid search by providing both query embedding and query text
+// 同时提供查询嵌入和查询文本以执行混合搜索
 EmbeddingSearchResult<TextSegment> results = embeddingStore.search(
     EmbeddingSearchRequest.builder()
-        .queryEmbedding(queryEmbedding)  // Vector embedding for similarity search
-        .query("search text")            // Text query for fulltext search
+        .queryEmbedding(queryEmbedding)  // 用于相似度搜索的向量嵌入
+        .query("search text")            // 用于全文搜索的文本查询
         .maxResults(10)
         .build()
 );
 ```
 
-### How Hybrid Search Works
+### 混合搜索工作原理
 
-1. **Vector Search**: Performs similarity search using the query embedding
-2. **Fulltext Search**: Performs fulltext search using `MATCH AGAINST` on the text field
-3. **Result Fusion**: Combines results using RRF (Reciprocal Rank Fusion) algorithm
-   - Formula: `score = Σ(1 / (k + rank))` where k=60
-   - Each result from both searches contributes to the final score based on its rank
-   - Results are normalized and sorted by the combined RRF score
+1. **向量搜索**：使用查询嵌入执行相似度搜索
+2. **全文搜索**：对文本字段使用 `MATCH AGAINST` 执行全文搜索
+3. **结果融合**：使用 RRF（倒数排名融合）算法合并结果
+   - 公式：`score = Σ(1 / (k + rank))`，其中 k=60
+   - 两次搜索的每个结果根据其排名贡献最终评分
+   - 结果被归一化并按合并后的 RRF 评分排序
 
-**Benefits:**
-- Better recall: Finds documents by semantic similarity or exact keywords
-- Improved precision: RRF balances both search types effectively
-- Handles exact keyword matches better than vector search alone
+**优势：**
+- 更高召回率：通过语义相似度或精确关键词找到文档
+- 提升精度：RRF 有效平衡两种搜索类型
+- 比纯向量搜索更好地处理精确关键词匹配
 
-## Implementation Details
+## 实现细节
 
-### Score Calculation
+### 评分计算
 
-The embedding store calculates relevance scores directly in SQL queries:
-- **Cosine**: `score = (2 - cosine_distance) / 2`
-- **L2/Euclidean**: `score = 1 / (1 + distance)`
-- **Inner Product**: `score = (inner_product + 1) / 2`
+嵌入存储在 SQL 查询中直接计算相关度评分：
+- **余弦**：`score = (2 - cosine_distance) / 2`
+- **L2/欧氏**：`score = 1 / (1 + distance)`
+- **内积**：`score = (inner_product + 1) / 2`
 
-Scores are returned in the range [0, 1], where 1 represents the most relevant match.
+评分返回范围为 [0, 1]，1 表示最相关匹配。
 
-### Metadata Handling
+### 元数据处理
 
-- Metadata is stored as JSON in the database
-- Large `Long` values (> 2^53-1) are automatically serialized as strings to preserve precision
-- Filtering supports both direct column filtering and JSON metadata filtering
+- 元数据以 JSON 形式存储在数据库中
+- 大型 `Long` 值（> 2^53-1）自动序列化为字符串以保持精度
+- 过滤支持直接列过滤和 JSON 元数据过滤
 
-### Table Schema
+### 表结构
 
-By default, the embedding table will have the following columns:
+默认情况下，嵌入表包含以下列：
 
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| id | VARCHAR(36) | Primary key. Used to store UUID strings which are generated when the embedding store |
-| vector | JSON | Stores the embedding vector as JSON array |
-| text | TEXT | Stores the text segment |
-| metadata | JSON | Stores the metadata as JSON |
+| 名称 | 类型 | 描述 |
+| ---- | ---- | ---- |
+| id | VARCHAR(36) | 主键，存储嵌入存储生成的 UUID 字符串 |
+| vector | JSON | 将嵌入向量存储为 JSON 数组 |
+| text | TEXT | 存储文本段 |
+| metadata | JSON | 将元数据存储为 JSON |
 
-## Limitations
+## 限制
 
-- `removeAll(Filter)` and `removeAll()` methods are not yet supported. Use `removeAll(Collection<String> ids)` instead.
-- When filtering by table columns, the field names are case-insensitive but must match the actual column names or recognized aliases.
+- 尚不支持 `removeAll(Filter)` 和 `removeAll()` 方法，请改用 `removeAll(Collection<String> ids)`。
+- 按表列过滤时，字段名称不区分大小写，但必须与实际列名或已识别的别名匹配。
 
-## References
+## 参考资料
 
-- [OceanBase Documentation](https://www.oceanbase.com/docs)
-- [Reciprocal Rank Fusion](https://learn.microsoft.com/en-us/azure/search/hybrid-search-ranking)
-- [LangChain4j Documentation](https://docs.langchain4j.dev)
-
+- [OceanBase 文档](https://www.oceanbase.com/docs)
+- [倒数排名融合](https://learn.microsoft.com/en-us/azure/search/hybrid-search-ranking)
+- [LangChain4j 文档](https://docs.langchain4j.dev)

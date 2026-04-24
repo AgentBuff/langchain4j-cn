@@ -7,7 +7,7 @@ sidebar_position: 20
 https://www.pinecone.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,20 +17,19 @@ https://www.pinecone.io/
 </dependency>
 ```
 
-## Known Issues
+## 已知问题
 
 - https://github.com/langchain4j/langchain4j/issues/1948
-Pinecone stores all numbers as [floating-point values](https://docs.pinecone.io/guides/data/filter-with-metadata#supported-metadata-types),
-which means `Integer` and `Long` values (e.g., 1746714878034235396) stored in `Metadata`
-may be corrupted and returned as incorrect numbers!
-Possible workaround: convert integer/double values to `String` before storing them in `Metadata`.
-Please note that in this case metadata filtering might not work properly!
+Pinecone 将所有数字存储为[浮点值](https://docs.pinecone.io/guides/data/filter-with-metadata#supported-metadata-types)，
+这意味着存储在 `Metadata` 中的 `Integer` 和 `Long` 值（如 1746714878034235396）可能被损坏，以错误的数字形式返回！
+可能的解决方法：在将整数/双精度值存储到 `Metadata` 之前将其转换为 `String`。
+请注意，在这种情况下，元数据过滤可能无法正常工作！
 
-## APIs
+## API 参考 {#api}
 
 - `PineconeEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [PineconeEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/pinecone-example/src/main/java/PineconeEmbeddingStoreExample.java)

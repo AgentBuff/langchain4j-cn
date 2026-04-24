@@ -2,39 +2,40 @@
 sidebar_position: 2
 ---
 
-# Chat and Language Models
+# 聊天模型与语言模型
 
 :::note
-This page describes a low-level LLM API.
-See [AI Services](/tutorials/ai-services) for a high-level LLM API.
+本页介绍的是底层 LLM API。
+高层 LLM API 请参阅 [AI Services](/tutorials/ai-services)。
 :::
 
 :::note
-All supported LLMs can be found [here](/integrations/language-models).
+所有已支持的 LLM 可在[这里](/integrations/language-models)查看。
 :::
 
-LLMs are currently available in two API types:
-- `LanguageModel`s. Their API is very simple - they accept a `String` as input and return a `String` as output.
-This API is now becoming obsolete in favor of chat API (second API type).
-- `ChatModel`s. These accept multiple `ChatMessage`s as input and return a single `AiMessage` as output.
-`ChatMessage` usually contains text, but some LLMs also support other modalities (e.g., images, audio, etc.).
-Examples of such chat models include OpenAI's `gpt-4o-mini` and Google's `gemini-1.5-pro`.
+LLM 目前主要通过两种 API 形式提供：
+- `LanguageModel`。它的 API 非常简单，接受 `String` 作为输入，并返回 `String` 作为输出。
+  随着聊天 API（第二种 API 形式）的普及，这套 API 正逐渐变得过时。
+- `ChatModel`。它接受多个 `ChatMessage` 作为输入，并返回单个 `AiMessage` 作为输出。
+  `ChatMessage` 通常包含文本，但某些 LLM 还支持其他模态（例如图片、音频等）。
+  这类聊天模型的例子包括 OpenAI 的 `gpt-4o-mini` 和 Google 的 `gemini-1.5-pro`。
 
-Support for `LanguageModel`s will no longer be expanded in LangChain4j,
-so in all new features, we will use a `ChatModel` API.
+LangChain4j 不会继续扩展对 `LanguageModel` 的支持，
+因此所有新特性都会基于 `ChatModel` API。
 
-`ChatModel` is the low-level API to interact with LLMs in LangChain4j, offering the most power and flexibility.
-There is also a high-level API ([AI Services](/tutorials/ai-services)) that we will cover later, after we go over the basics.
+`ChatModel` 是 LangChain4j 中与 LLM 交互的底层 API，提供了最大的能力和灵活性。
+另外还有一个高层 API（[AI Services](/tutorials/ai-services)），
+我们会在讲完基础之后再介绍它。
 
-Apart from `ChatModel` and `LanguageModel`, LangChain4j supports the following types of models:
-- `EmbeddingModel` - This model can translate text into an `Embedding`.
-- `ImageModel` - This model can generate and edit `Image`s.
-- `ModerationModel` - This model can check if the text contains harmful content.
-- `ScoringModel` - This model can score (or rank) multiple pieces of text against a query,
-essentially determining how relevant each piece of text is to the query. This is useful for [RAG](/tutorials/rag).
-These will be covered later.
+除了 `ChatModel` 和 `LanguageModel` 之外，LangChain4j 还支持以下几类模型：
+- `EmbeddingModel`：可将文本转换为 `Embedding`
+- `ImageModel`：可生成和编辑 `Image`
+- `ModerationModel`：可检查文本是否包含有害内容
+- `ScoringModel`：可根据查询对多段文本打分（或排序），
+  本质上是在判断每一段文本与查询的相关度。这对于 [RAG](/tutorials/rag) 非常有用。
+这些内容会在后面继续介绍。
 
-Now, let's take a closer look at the `ChatModel` API.
+现在我们来更仔细地看看 `ChatModel` API。
 
 ```java
 public interface ChatModel {
@@ -44,10 +45,10 @@ public interface ChatModel {
     ...
 }
 ```
-As you can see, there is a simple `chat` method that takes a `String` as input and returns a `String` as output, similar to `LanguageModel`.
-This is just a convenience method so you can play around quickly and easily without needing to wrap the `String` in a `UserMessage`.
+如你所见，这里有一个简单的 `chat` 方法，它接受 `String` 输入并返回 `String` 输出，和 `LanguageModel` 很像。
+这只是一个便捷方法，让你无需先手动把 `String` 包装成 `UserMessage`，就能快速开始试验。
 
-Here are other chat API methods:
+下面是其他 chat API 方法：
 ```java
     ...
     
@@ -58,12 +59,12 @@ Here are other chat API methods:
     ...
 ```
 
-These versions of the `chat` methods take one or multiple `ChatMessage`s as input.
-`ChatMessage` is a base interface that represents a chat message.
-The next section will provide more details about chat messages.
+这些版本的 `chat` 方法接受一个或多个 `ChatMessage` 作为输入。
+`ChatMessage` 是表示聊天消息的基础接口。
+下一节会更详细地介绍 chat messages。
 
-If you wish to customize the request (e.g., specify model name, temperature, tools, JSON schema, etc.),
-you can use the `chat(ChatRequest)` method:
+如果你希望自定义请求（例如指定 model name、temperature、tools、JSON schema 等），
+可以使用 `chat(ChatRequest)` 方法：
 ```java
     ...
     
@@ -86,120 +87,119 @@ ChatRequest chatRequest = ChatRequest.builder()
     .toolSpecifications(...)
     .toolChoice(...)
     .responseFormat(...)
-    .parameters(...) // you can also set common or provider-specific parameters all at once
+    .parameters(...) // 你也可以一次性设置通用参数或厂商专用参数
     .build();
 
 ChatResponse chatResponse = chatModel.chat(chatRequest);
 ```
 
-### Types of `ChatMessage`
-There are currently five types of chat messages, one for each "source" of the message:
+### `ChatMessage` 的类型 {#types-of-chatmessage}
+目前一共有五种 chat message 类型，它们分别对应消息的不同“来源”：
 
-- `UserMessage`: This is a message from the user.
-  The user can be either an end user of your application (a human) or your application itself.
-  It can contain:
-    - `contents()`: the contents of the message. Depending on the modalities supported by the LLM,
-      it can contain either just a single text (`String)`,
-      or [other modalities](/tutorials/chat-and-language-models#multimodality).
-    - `name()`: the name of the user. Not all model providers support it.
-    - `attributes()`: additional attributes: These attributes are not sent to the model,
-      but they are stored in the [`ChatMemory`](/tutorials/chat-memory).
-- `AiMessage`: This is a message that was generated by the AI, in response to the sent message(s).
-  It can contain:
-    - `text()`: textual content
-    - `thinking()`: thinking/reasoning content
-    - `toolExecutionRequests()`: requests to execute tools. We will explore
-      tools [in another section](/tutorials/tools).
-    - `attributes()`: additional attributes, typically provider-specific
-- `ToolExecutionResultMessage`: This is the result of the `ToolExecutionRequest`.
-- `SystemMessage`: This is a message from the system.
-Usually, you, as a developer, should define the content of this message.
-Normally, you would write here instructions on what the LLM's role is in this conversation,
-how it should behave, in what style to answer, etc.
-LLMs are trained to pay more attention to `SystemMessage` than to other types of messages,
-so be careful, and it's better not to give an end user free access to define or inject some input into a `SystemMessage`.
-Usually, it is located at the start of the conversation.
-- `CustomMessage`: This is a custom message that can contain arbitrary attributes. This message type can only be used by
-`ChatModel` implementations that support it (currently only Ollama).
+- `UserMessage`：来自用户的消息。
+  这里的用户既可以是你应用的终端用户（人类），也可以是你的应用本身。
+  它可以包含：
+    - `contents()`：消息的内容。根据 LLM 支持的模态不同，
+      它既可以只包含单个文本（`String`），
+      也可以包含[其他模态](/tutorials/chat-and-language-models#multimodality)。
+    - `name()`：用户名称。不是所有模型提供商都支持。
+    - `attributes()`：附加属性。这些属性不会发送给模型，
+      但会存储到 [`ChatMemory`](/tutorials/chat-memory) 中。
+- `AiMessage`：AI 针对已发送消息所生成的响应。
+  它可以包含：
+    - `text()`：文本内容
+    - `thinking()`：思考 / 推理内容
+    - `toolExecutionRequests()`：执行工具的请求。我们会在
+      [另一节](/tutorials/tools)中介绍 tools。
+    - `attributes()`：附加属性，通常是厂商专用信息
+- `ToolExecutionResultMessage`：`ToolExecutionRequest` 的执行结果。
+- `SystemMessage`：来自系统的消息。
+  通常应该由你这个开发者来定义它的内容。
+  一般会在这里写明 LLM 在这段对话中的角色、行为方式、回答风格等指令。
+  LLM 在训练时通常会更加重视 `SystemMessage`，因此你需要谨慎处理，
+  最好不要让终端用户自由定义或注入 `SystemMessage` 的内容。
+  它通常位于对话开头。
+- `CustomMessage`：可包含任意属性的自定义消息类型。
+  只有支持它的 `ChatModel` 实现才能使用这种消息（目前仅 Ollama 支持）。
 
-Now that we know all types of `ChatMessage`, let's see how we can combine them in the conversation.
+现在我们已经了解了所有 `ChatMessage` 类型，接下来看看如何在对话中组合使用它们。
 
-In the simplest scenario we can provide a single instance of a `UserMessage` into the `chat` method.
-This is similar to the first version of the `chat` method, which takes a `String` as input.
-The major difference here is that it now returns not a `String`, but a `ChatResponse`.
-In addition to `AiMessage`, `ChatResponse` also contains `ChatResponseMetadata`.
-`ChatResponseMetadata` contains `TokenUsage`, which contains stats about how many tokens the input
-(all the `ChatMessages` that you provided to the generate method) contained,
-how many tokens were generated as output (in the `AiMessage`), and the total (input + output).
-You will need this information to calculate how much a given call to the LLM costs.
-Then, `ChatResponseMetadata` also contains `FinishReason`,
-which is an enum with various reasons why generation has stopped.
-Usually, it will be `FinishReason.STOP`, if the LLM decided to stop generation itself.
+在最简单的场景下，我们只需要给 `chat` 方法传入一个 `UserMessage` 实例即可。
+这和接受 `String` 输入的那个 `chat` 方法类似。
+最大的区别在于，这里返回的不再是 `String`，而是 `ChatResponse`。
+除了 `AiMessage` 之外，`ChatResponse` 还包含 `ChatResponseMetadata`。
+`ChatResponseMetadata` 中有 `TokenUsage`，它会记录输入中包含了多少 token
+（也就是你传给生成方法的所有 `ChatMessage` 的 token 数量）、
+输出生成了多少 token（在 `AiMessage` 中），以及总计的 token 数（输入 + 输出）。
+你会需要这些信息来计算一次 LLM 调用的成本。
+此外，`ChatResponseMetadata` 还包含 `FinishReason`，
+它是一个枚举，用于表示生成停止的原因。
+通常，如果是 LLM 自己决定停止生成，那么它会是 `FinishReason.STOP`。
 
-There are multiple ways to create a `UserMessage`, depending on the contents.
-The simplest one is `new UserMessage("Hi")` or `UserMessage.from("Hi")`.
+创建 `UserMessage` 有多种方式，取决于内容类型。
+最简单的是 `new UserMessage("Hi")` 或 `UserMessage.from("Hi")`。
 
-### Multiple `ChatMessage`s
-Now, why do you need to provide multiple `ChatMessage`s as input, instead of just one?
-This is because LLMs are stateless by nature, meaning they do not maintain the state of the conversation.
-So, if you want to support multi-turn conversations, you should take care of managing the state of the conversation.
+### 多个 `ChatMessage` {#multiple-chatmessages}
+那么，为什么有时你需要传入多个 `ChatMessage`，而不只是一个？
+这是因为 LLM 天生是无状态的，也就是说它并不会自己维护对话状态。
+因此，如果你想支持多轮对话，就需要自己负责管理会话上下文。
 
-Let's say you want to build a chatbot. Imagine a simple multi-turn conversation between a user and a chatbot (AI):
-- User: Hello, my name is Klaus
-- AI: Hi Klaus, how can I help you?
-- User: What is my name?
-- AI: Klaus
+假设你要构建一个聊天机器人。下面是一段简单的多轮对话示例：
+- 用户：你好，我叫 Klaus
+- AI：你好 Klaus，我能帮你什么？
+- 用户：我叫什么名字？
+- AI：Klaus
 
-This is what interactions with `ChatModel` will look like:
+使用 `ChatModel` 时，交互会像这样：
 ```java
-UserMessage firstUserMessage = UserMessage.from("Hello, my name is Klaus");
-AiMessage firstAiMessage = model.chat(firstUserMessage).aiMessage(); // Hi Klaus, how can I help you?
-UserMessage secondUserMessage = UserMessage.from("What is my name?");
+UserMessage firstUserMessage = UserMessage.from("你好，我叫 Klaus");
+AiMessage firstAiMessage = model.chat(firstUserMessage).aiMessage(); // 你好 Klaus，我能帮你什么？
+UserMessage secondUserMessage = UserMessage.from("我叫什么名字？");
 AiMessage secondAiMessage = model.chat(firstUserMessage, firstAiMessage, secondUserMessage).aiMessage(); // Klaus
 ```
-As you can see, in the second call of the `chat` method, we provide not just a single `secondUserMessage`,
-but also previous messages in the conversation.
+如你所见，在第二次调用 `chat` 方法时，我们传入的不只是单独的 `secondUserMessage`，
+还包括了这段对话之前的消息。
 
-Maintaining and managing these messages manually is cumbersome.
-Therefore, the concept of `ChatMemory` exists, which we will explore in the [next section](/tutorials/chat-memory).
+手工维护和管理这些消息会非常繁琐。
+因此才有了 `ChatMemory` 这个概念，我们会在[下一节](/tutorials/chat-memory)继续介绍。
 
-### Multimodality
+### 多模态 {#multimodality}
 
-`UserMessage` can contain not only text, but other types of content as well.
-`UserMessage` contains a `List<Content> contents`.
-`Content` is an interface and has the following implementations:
+`UserMessage` 不仅可以包含文本，还可以包含其他类型的内容。
+`UserMessage` 内部持有的是一个 `List<Content> contents`。
+`Content` 是一个接口，目前有以下实现：
 - `TextContent`
 - `ImageContent`
 - `AudioContent`
 - `VideoContent`
 - `PdfFileContent`
 
-You can see which LLM providers support which modalities in the comparison table [here](/integrations/language-models).
+你可以在[这里](/integrations/language-models)的对比表中查看不同 LLM 提供商分别支持哪些模态。
 
-Here is an example of sending both text and an image to the LLM:
+下面是一个同时向 LLM 发送文本和图片的例子：
 ```java
 UserMessage userMessage = UserMessage.from(
-    TextContent.from("Describe the following image"),
+    TextContent.from("请描述下面这张图片"),
     ImageContent.from("https://example.com/cat.jpg")
 );
 ChatResponse response = model.chat(userMessage);
 ```
 
-#### Text Content
-`TextContent` is the simplest form of `Content` that represents plain text and wraps a single `String`.
-`UserMessage.from(TextContent.from("Hello!"))` is equivalent to `UserMessage.from("Hello!")`.
+#### 文本内容
+`TextContent` 是最简单的一种 `Content`，它表示纯文本，并封装一个 `String`。
+`UserMessage.from(TextContent.from("Hello!"))` 等价于 `UserMessage.from("Hello!")`。
 
-One can provide one or multiple `TextContent`s inside the `UserMessage`:
+你可以在一个 `UserMessage` 中放入一个或多个 `TextContent`：
 ```java
 UserMessage userMessage = UserMessage.from(
-    TextContent.from("Hello!"),
-    TextContent.from("How are you?")
+    TextContent.from("你好！"),
+    TextContent.from("你好吗？")
 );
 ```
 
-#### Image Content
-Depending on the LLM provider, `ImageContent` can be created either from the URL of the **remote** image (see an example above),
-or from the Base64-encoded binary data:
+#### 图片内容
+根据不同的 LLM 提供商，`ImageContent` 可以通过**远程**图片 URL 创建（见前面的例子），
+也可以通过 Base64 编码后的二进制数据创建：
 ```java
 byte[] imageBytes = readBytes("/home/me/cat.jpg");
 String base64Data = Base64.getEncoder().encodeToString(imageBytes);
@@ -207,22 +207,38 @@ ImageContent imageContent = ImageContent.from(base64Data, "image/jpg");
 UserMessage userMessage = UserMessage.from(imageContent);
 ```
 
-One can also specify `DetailLevel` enum (with `LOW`/`HIGH`/`AUTO` options) to control how the model processes the image.
-See more details [here](https://platform.openai.com/docs/guides/vision#low-or-high-fidelity-image-understanding).
+你还可以指定 `DetailLevel` 枚举（`LOW` / `HIGH` / `AUTO`）来控制模型处理图片的精细程度。
+更多细节请参阅[这里](https://platform.openai.com/docs/guides/vision#low-or-high-fidelity-image-understanding)。
 
-#### Audio Content
-`AudioContent` is similar to the `ImageContent`, but represents audio content.
+#### 音频内容
+`AudioContent` 与 `ImageContent` 类似，只不过表示的是音频内容。
 
-#### Video Content
-`VideoContent` is similar to the `ImageContent`, but represents video content.
+#### 视频内容
+`VideoContent` 与 `ImageContent` 类似，只不过表示的是视频内容。
 
-#### PDF File Content
-`PdfFileContent` is similar to the `ImageContent`, but represents binary contents of a PDF file.
+#### PDF 文件内容
+`PdfFileContent` 与 `ImageContent` 类似，只不过表示的是 PDF 文件的二进制内容。
 
-### Kotlin Extensions
+### Kotlin 扩展
 
-The `ChatModel` [Kotlin extensions](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-kotlin/src/main/kotlin/dev/langchain4j/kotlin/model/chat/ChatModelExtensions.kt) provide asynchronous methods for handling chat interactions with a language model, utilizing Kotlin's [coroutine](https://kotlinlang.org/docs/coroutines-guide.html) capabilities. The `chatAsync` methods allow non-blocking processing of `ChatRequest` or `ChatRequest.Builder` configurations, returning `ChatResponse` with the model's reply. Similarly, `generateAsync` handles the asynchronous generation of responses from chat messages. These extensions simplify building chat requests and handling conversations efficiently in Kotlin applications. Note that these methods are marked as experimental and may evolve over time.
+`ChatModel` 的 [Kotlin 扩展](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-kotlin/src/main/kotlin/dev/langchain4j/kotlin/model/chat/ChatModelExtensions.kt)
+提供了基于 Kotlin [协程](https://kotlinlang.org/docs/coroutines-guide.html)的异步方法，
+用于处理与语言模型的聊天交互。
+`chatAsync` 方法可以对 `ChatRequest` 或 `ChatRequest.Builder` 配置进行非阻塞处理，
+并返回包含模型回复的 `ChatResponse`。
+类似地，`generateAsync` 也可以异步生成聊天消息的响应。
+这些扩展能够帮助你在 Kotlin 应用中更高效地构建聊天请求和处理会话。
+请注意，这些方法目前被标记为 experimental，后续可能发生变化。
 
-**`ChatModel.chatAsync(request: ChatRequest)`**: Designed for Kotlin coroutines, this *asynchronous* extension function wraps the synchronous `chat` method within a coroutine scope using `Dispatchers.IO`. This enables non-blocking operations, crucial for maintaining application responsiveness.  It's named `chatAsync` specifically to avoid conflicts with the existing synchronous `chat`. Its function signature is: `suspend fun ChatModel.chatAsync(request: ChatRequest): ChatResponse`. The keyword `suspend` designates it as a coroutine function.
+**`ChatModel.chatAsync(request: ChatRequest)`**：
+这是一个面向 Kotlin 协程设计的*异步*扩展函数。
+它会在协程作用域内借助 `Dispatchers.IO` 包装同步的 `chat` 方法。
+这样就能实现非阻塞操作，这对于保持应用响应性非常关键。
+它之所以命名为 `chatAsync`，就是为了避免和现有同步版 `chat` 冲突。
+它的函数签名是：`suspend fun ChatModel.chatAsync(request: ChatRequest): ChatResponse`。
+关键字 `suspend` 表示这是一个协程函数。
 
-**`ChatModel.chat(block: ChatRequestBuilder.() -> Unit)`**: This variant of `chat` offers a more streamlined approach by using Kotlin's type-safe builder DSL. It simplifies constructing `ChatRequest` objects while internally using `chatAsync` for asynchronous execution. This version offers both conciseness and non-blocking behavior through coroutines.
+**`ChatModel.chat(block: ChatRequestBuilder.() -> Unit)`**：
+这是 `chat` 的另一种变体，通过 Kotlin 的 type-safe builder DSL 提供更简洁的写法。
+它能够简化 `ChatRequest` 对象的构建，同时内部使用 `chatAsync` 实现异步执行。
+这种形式兼顾了简洁性与基于协程的非阻塞特性。

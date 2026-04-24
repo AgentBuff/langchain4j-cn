@@ -5,7 +5,7 @@ sidebar_position: 2
 # Amazon Bedrock
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -16,25 +16,25 @@ sidebar_position: 2
 ```
 
 
-## AWS credentials
-In order to use Amazon Bedrock embeddings, you need to configure AWS credentials.
-One of the options is to set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables.
-More information can be found [here](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+## AWS 凭据
+要使用 Amazon Bedrock 嵌入模型，需要配置 AWS 凭据。
+其中一种方式是设置环境变量 `AWS_ACCESS_KEY_ID` 和 `AWS_SECRET_ACCESS_KEY`。
+更多信息请参阅[此处](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html)。
 
-## Cohere Models
+## Cohere 模型
 - `BedrockCohereEmbeddingModel`
 
-## Cohere Embedding Models
-Support is provided for Bedrock Cohere embedding models, enabling the use of the following versions:
+## Cohere 嵌入模型
+支持 Bedrock Cohere 嵌入模型，可使用以下版本：
 
 - **`cohere.embed-english-v3`**
 - **`cohere.embed-multilingual-v3`**
 
-These models are ideal for generating high-quality text embeddings for English and multilingual text processing tasks.
+这些模型非常适合为英文和多语言文本处理任务生成高质量的文本嵌入。
 
-### Implementation Example
+### 实现示例
 
-Below is an example of how to configure and use a Bedrock embedding model:
+以下是配置和使用 Bedrock 嵌入模型的示例：
 
 ```
 BedrockCohereEmbeddingModel embeddingModel = BedrockCohereEmbeddingModel
@@ -46,11 +46,11 @@ BedrockCohereEmbeddingModel embeddingModel = BedrockCohereEmbeddingModel
         .build();
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `BedrockTitanEmbeddingModel`
 - `BedrockCohereEmbeddingModel`
 
-## Examples
+## 示例
 
 - [BedrockEmbeddingIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-bedrock/src/test/java/dev/langchain4j/model/bedrock/BedrockEmbeddingIT.java)

@@ -2,34 +2,34 @@
 sidebar_position: 6
 ---
 
-# GitHub Models [Deprecated]
+# GitHub Models [已弃用]
 
-This module is deprecated, please use the [OpenAI Official SDK module](/integrations/language-models/open-ai-official) instead.
+此模块已弃用，请改用 [OpenAI Official SDK 模块](/integrations/language-models/open-ai-official)。
 
 :::note
 
-This is the documentation for the `GitHub Models` integration, that uses the Azure AI Inference API to access GitHub Models.
+本文档介绍 `GitHub Models` 集成，它使用 Azure AI Inference API 访问 GitHub Models。
 
-LangChain4j provides 4 different integrations with OpenAI for using chat models, and this is #4 :
+LangChain4j 提供了 4 种不同的 OpenAI 集成方式，本文介绍的是第 4 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
-- [GitHub Models](/integrations/language-models/github-models) uses the Azure AI Inference API to access GitHub Models.
+- [OpenAI](/integrations/language-models/open-ai) 使用自定义 Java 实现的 OpenAI REST API，最适合与 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）配合使用。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合使用微软 Java 技术栈（包括高级 Azure 认证机制）的场景。
+- [GitHub Models](/integrations/language-models/github-models) 使用 Azure AI Inference API 访问 GitHub Models。
 
 :::
 
-If you want to develop a generative AI application, you can use GitHub Models to find and experiment with AI models for free.
-Once you are ready to bring your application to production, you can switch to a token from a paid Azure account.
+如果您想开发生成式 AI 应用，可以使用 GitHub Models 免费查找和体验 AI 模型。
+一旦准备好将应用投入生产，可以切换到付费 Azure 账号的令牌。
 
-## GitHub Models Documentation
+## GitHub Models 文档
 
-- [GitHub Models Documentation](https://docs.github.com/en/github-models)
-- [GitHub Models Marketplace](https://github.com/marketplace/models)
+- [GitHub Models 文档](https://docs.github.com/en/github-models)
+- [GitHub Models 市场](https://github.com/marketplace/models)
 
-## Maven Dependency
+## Maven 依赖
 
-### Plain Java
+### 纯 Java
 
 ```xml
 <dependency>
@@ -39,21 +39,21 @@ Once you are ready to bring your application to production, you can switch to a 
 </dependency>
 ```
 
-## GitHub token
+## GitHub 令牌
 
-To use GitHub Models, you need to use a GitHub token for authentication.
+使用 GitHub Models 需要通过 GitHub 令牌进行身份验证。
 
-Token are created and managed in [GitHub Developer Settings > Personal access tokens](https://github.com/settings/tokens).
+令牌可在 [GitHub 开发者设置 > 个人访问令牌](https://github.com/settings/tokens) 中创建和管理。
 
-Once you have a token, you can set it as an environment variable and use it in your code:
+获取令牌后，将其设置为环境变量并在代码中使用：
 
 ```bash
 export GITHUB_TOKEN="<your-github-token-goes-here>"
 ```
 
-## Creating a `GitHubModelsChatModel` with a GitHub token
+## 使用 GitHub 令牌创建 `GitHubModelsChatModel`
 
-### Plain Java
+### 纯 Java
 
 ```java
 GitHubModelsChatModel model = GitHubModelsChatModel.builder()
@@ -62,12 +62,12 @@ GitHubModelsChatModel model = GitHubModelsChatModel.builder()
         .build();
 ```
 
-This will create an instance of `GitHubModelsChatModel`.
-Model parameters (e.g. `temperature`) can be customized by providing values in the `GitHubModelsChatModel`'s builder.
+这将创建一个 `GitHubModelsChatModel` 实例。
+可以在 `GitHubModelsChatModel` 的构建器中自定义模型参数（如 `temperature`）。
 
 ### Spring Boot
 
-Create a `GitHubModelsChatModelConfiguration` Spring Bean:
+创建一个 `GitHubModelsChatModelConfiguration` Spring Bean：
 
 ```Java
 package com.example.demo.configuration.github;
@@ -97,9 +97,9 @@ public class GitHubModelsChatModelConfiguration {
 }
 ```
 
-This configuration will create an `GitHubModelsChatModel` bean,
-which can be either used by an [AI Service](https://docs.langchain4j.dev/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter)
-or autowired where needed, for example:
+该配置将创建一个 `GitHubModelsChatModel` Bean，
+可由 [AI Service](https://docs.langchain4j.dev/tutorials/spring-boot-integration/#langchain4j-spring-boot-starter) 使用，
+也可在需要时自动装配，例如：
 
 ```java
 @RestController
@@ -118,9 +118,9 @@ class ChatModelController {
 }
 ```
 
-## Creating a `GitHubModelsStreamingChatModel` with a GitHub token
+## 使用 GitHub 令牌创建 `GitHubModelsStreamingChatModel`
 
-### Plain Java
+### 纯 Java
 
 ```java
 GitHubModelsStreamingChatModel model = GitHubModelsStreamingChatModel.builder()
@@ -132,7 +132,7 @@ GitHubModelsStreamingChatModel model = GitHubModelsStreamingChatModel.builder()
 
 ### Spring Boot
 
-Create a `GitHubModelsStreamingChatModelConfiguration` Spring Bean:
+创建一个 `GitHubModelsStreamingChatModelConfiguration` Spring Bean：
 ```Java
 package com.example.demo.configuration.github;
 
@@ -161,6 +161,6 @@ public class GitHubModelsStreamingChatModelConfiguration {
 }
 ```
 
-## Examples
+## 示例
 
-- [GitHub Models Examples](https://github.com/langchain4j/langchain4j-examples/tree/main/github-models-examples/src/main/java)
+- [GitHub Models 示例](https://github.com/langchain4j/langchain4j-examples/tree/main/github-models-examples/src/main/java)

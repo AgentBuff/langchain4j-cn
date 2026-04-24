@@ -7,7 +7,7 @@ sidebar_position: 17
 https://opensearch.org/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,23 +18,23 @@ https://opensearch.org/
 ```
 
 
-## APIs
+## API 参考 {#api}
 
-The `OpenSearchEmbeddingStore` uses exact k-NN with scoring script implementation for similarity search.
-See [OpenSearch k-NN documentation](https://opensearch.org/docs/latest/search-plugins/knn/knn-score-script/) for more details.
+`OpenSearchEmbeddingStore` 使用精确 k-NN 和评分脚本实现相似度搜索。
+详见 [OpenSearch k-NN 文档](https://opensearch.org/docs/latest/search-plugins/knn/knn-score-script/)。
 
-### Features
+### 功能特性
 
-- **Metadata filtering**: Supports filtering search results by metadata using the `Filter` API
-- **Removal operations**:
-  - Remove embeddings by ID
-  - Remove embeddings by metadata filter
-  - Remove all embeddings (drops the index)
-- **AWS Support**: Native support for Amazon OpenSearch Service and Amazon OpenSearch Serverless
+- **元数据过滤**：支持使用 `Filter` API 按元数据过滤搜索结果
+- **删除操作**：
+  - 按 ID 删除嵌入
+  - 按元数据过滤条件删除嵌入
+  - 删除所有嵌入（删除索引）
+- **AWS 支持**：原生支持 Amazon OpenSearch Service 和 Amazon OpenSearch Serverless
 
-### Basic Usage
+### 基本用法
 
-To create the `OpenSearchEmbeddingStore` instance for local or network-reachable OpenSearch:
+为本地或网络可达的 OpenSearch 创建 `OpenSearchEmbeddingStore` 实例：
 
 ```java
 OpenSearchEmbeddingStore store = OpenSearchEmbeddingStore.builder()
@@ -43,7 +43,7 @@ OpenSearchEmbeddingStore store = OpenSearchEmbeddingStore.builder()
         .build();
 ```
 
-With authentication:
+带认证：
 
 ```java
 OpenSearchEmbeddingStore store = OpenSearchEmbeddingStore.builder()
@@ -56,7 +56,7 @@ OpenSearchEmbeddingStore store = OpenSearchEmbeddingStore.builder()
 
 ### AWS OpenSearch
 
-For Amazon OpenSearch Service or OpenSearch Serverless:
+用于 Amazon OpenSearch Service 或 OpenSearch Serverless：
 
 ```java
 AwsSdk2TransportOptions options = AwsSdk2TransportOptions.builder()
@@ -65,16 +65,16 @@ AwsSdk2TransportOptions options = AwsSdk2TransportOptions.builder()
 
 OpenSearchEmbeddingStore store = OpenSearchEmbeddingStore.builder()
         .serverUrl("https://search-domain.us-east-1.es.amazonaws.com")
-        .serviceName("es") // or "aoss" for Serverless
+        .serviceName("es") // 或 "aoss"（Serverless）
         .region("us-east-1")
         .options(options)
         .indexName("my-embeddings")
         .build();
 ```
 
-### Metadata Filtering
+### 元数据过滤
 
-Filter search results by metadata:
+按元数据过滤搜索结果：
 
 ```java
 Filter filter = metadataKey("category").isEqualTo("documentation");
@@ -88,30 +88,30 @@ EmbeddingSearchRequest searchRequest = EmbeddingSearchRequest.builder()
 EmbeddingSearchResult<TextSegment> result = store.search(searchRequest);
 ```
 
-Supported filter operations:
-- Comparison: `isEqualTo`, `isNotEqualTo`, `isGreaterThan`, `isGreaterThanOrEqualTo`, `isLessThan`, `isLessThanOrEqualTo`
-- Collection: `isIn`, `isNotIn`
-- Logical: `and`, `or`, `not`
+支持的过滤操作：
+- 比较：`isEqualTo`、`isNotEqualTo`、`isGreaterThan`、`isGreaterThanOrEqualTo`、`isLessThan`、`isLessThanOrEqualTo`
+- 集合：`isIn`、`isNotIn`
+- 逻辑：`and`、`or`、`not`
 
-### Removal Operations
+### 删除操作
 
-Remove embeddings by ID:
+按 ID 删除嵌入：
 ```java
 store.removeAll(List.of("id1", "id2", "id3"));
 ```
 
-Remove embeddings by metadata filter:
+按元数据过滤条件删除嵌入：
 ```java
 Filter filter = metadataKey("status").isEqualTo("archived");
 store.removeAll(filter);
 ```
 
-Remove all embeddings (drops the index):
+删除所有嵌入（删除索引）：
 ```java
 store.removeAll();
 ```
 
 
-## Examples
+## 示例
 
 - [OpenSearchEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/opensearch-example/src/main/java/OpenSearchEmbeddingStoreExample.java)

@@ -7,9 +7,9 @@ sidebar_position: 22
 - https://inference.readthedocs.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 <dependency>
@@ -19,7 +19,7 @@ sidebar_position: 22
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或使用 BOM 统一管理依赖：
 
 ```xml
 <dependencyManagement>
@@ -33,11 +33,11 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `XinferenceEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [XinferenceEmbeddingModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-xinference/src/test/java/dev/langchain4j/community/model/xinference/XinferenceEmbeddingModelIT.java)

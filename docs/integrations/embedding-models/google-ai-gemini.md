@@ -1,29 +1,29 @@
-# Google AI Gemini Embeddings
+# Google AI Gemini 嵌入
 
 https://ai.google.dev/gemini-api/docs/embeddings
 
-## Table of Contents
+## 目录
 
-- [Maven Dependency](#maven-dependency)
+- [Maven 依赖](#maven-dependency)
 - [API Key](#api-key)
-- [Models Available](#models-available)
+- [可用模型](#models-available)
 - [GoogleAiEmbeddingModel](#googleaiembeddingmodel)
-    - [Basic Usage](#basic-usage)
-    - [Embedding Multiple Texts](#embedding-multiple-texts)
-    - [Configuring the Embedding Model](#configuring-the-embedding-model)
-    - [Task Types](#task-types)
-    - [Using Metadata for Document Titles](#using-metadata-for-document-titles)
-    - [Output Dimensionality](#output-dimensionality)
-    - [Batch Processing](#batch-processing)
-- [Batch Embedding Processing](#batch-embedding-processing)
+    - [基本用法](#basic-usage)
+    - [嵌入多段文本](#embedding-multiple-texts)
+    - [配置嵌入模型](#configuring-the-embedding-model)
+    - [任务类型](#task-types)
+    - [通过文档标题使用元数据](#using-metadata-for-document-titles)
+    - [输出维度](#output-dimensionality)
+    - [批量处理](#batch-processing)
+- [批量嵌入处理](#batch-embedding-processing)
     - [GoogleAiGeminiBatchEmbeddingModel](#googleaigeminibatchembeddingmodel)
-    - [Creating Batch Embedding Jobs](#creating-batch-embedding-jobs)
-    - [Handling Batch Responses](#handling-batch-responses)
-    - [Polling for Results](#polling-for-results)
-    - [Managing Batch Jobs](#managing-batch-jobs)
-    - [File-Based Batch Processing](#file-based-batch-processing)
+    - [创建批量嵌入任务](#creating-batch-embedding-jobs)
+    - [处理批量响应](#handling-batch-responses)
+    - [轮询结果](#polling-for-results)
+    - [管理批量任务](#managing-batch-jobs)
+    - [基于文件的批量处理](#file-based-batch-processing)
 
-## Maven Dependency
+## Maven 依赖 {#maven-dependency}
 
 ```xml
 <dependency>
@@ -33,23 +33,23 @@ https://ai.google.dev/gemini-api/docs/embeddings
 </dependency>
 ```
 
-## API Key
+## API 密钥 {#api-key}
 
-Get an API key for free here: https://ai.google.dev/gemini-api/docs/api-key .
+在此免费获取 API Key：https://ai.google.dev/gemini-api/docs/api-key 。
 
-## Models available
+## 可用模型 {#models-available}
 
-Check the list of [available models](https://ai.google.dev/gemini-api/docs/embeddings#model-versions) in the documentation.
+查看文档中的[可用模型列表](https://ai.google.dev/gemini-api/docs/embeddings#model-versions)。
 
 * `gemini-embedding-001`
-    * Input token limit: 2,048
-    * Output dimension size: Flexible, supports: 128 - 3072, Recommended: 768, 1536, 3072
+    * 输入 token 限制：2,048
+    * 输出维度大小：灵活可配，支持：128 - 3072，推荐：768、1536、3072
 
 ## GoogleAiEmbeddingModel
 
-The `GoogleAiEmbeddingModel` allows you to generate embeddings from text using Google AI Gemini's embedding models.
+`GoogleAiEmbeddingModel` 允许您使用 Google AI Gemini 嵌入模型从文本生成嵌入向量。
 
-### Basic Usage
+### 基本用法 {#basic-usage}
 
 ```java
 EmbeddingModel embeddingModel = GoogleAiEmbeddingModel.builder()
@@ -61,20 +61,20 @@ Response<Embedding> response = embeddingModel.embed("Hello, world!");
 Embedding embedding = response.content();
 ```
 
-### Embedding Multiple Texts
+### 嵌入多段文本 {#embedding-multiple-texts}
 
 ```java
 List<TextSegment> segments = List.of(
-    TextSegment.from("First document"),
-    TextSegment.from("Second document"),
-    TextSegment.from("Third document")
+    TextSegment.from("第一个文档"),
+    TextSegment.from("第二个文档"),
+    TextSegment.from("第三个文档")
 );
 
 Response<List<Embedding>> response = embeddingModel.embedAll(segments);
 List<Embedding> embeddings = response.content();
 ```
 
-### Configuring the Embedding Model
+### 配置嵌入模型 {#configuring-the-embedding-model}
 
 ```java
 EmbeddingModel embeddingModel = GoogleAiEmbeddingModel.builder()
@@ -89,65 +89,65 @@ EmbeddingModel embeddingModel = GoogleAiEmbeddingModel.builder()
     .build();
 ```
 
-### Task Types
+### 任务类型 {#task-types}
 
-The `taskType` parameter optimizes the embedding for specific use cases:
+`taskType` 参数可针对特定使用场景优化嵌入效果：
 
-- `RETRIEVAL_QUERY`: For search queries
-- `RETRIEVAL_DOCUMENT`: For documents to be retrieved (default for document indexing)
-- `SEMANTIC_SIMILARITY`: For measuring text similarity
-- `CLASSIFICATION`: For text classification tasks
-- `CLUSTERING`: For grouping similar texts
-- `QUESTION_ANSWERING`: For Q&A systems
-- `FACT_VERIFICATION`: For fact-checking applications
+- `RETRIEVAL_QUERY`：用于搜索查询
+- `RETRIEVAL_DOCUMENT`：用于待检索文档（文档索引的默认值）
+- `SEMANTIC_SIMILARITY`：用于度量文本相似度
+- `CLASSIFICATION`：用于文本分类任务
+- `CLUSTERING`：用于聚合相似文本
+- `QUESTION_ANSWERING`：用于问答系统
+- `FACT_VERIFICATION`：用于事实核查应用
 
-### Using Metadata for Document Titles
+### 通过文档标题使用元数据 {#using-metadata-for-document-titles}
 
-When using `TaskType.RETRIEVAL_DOCUMENT`, you can provide document titles via metadata:
+使用 `TaskType.RETRIEVAL_DOCUMENT` 时，可通过元数据提供文档标题：
 
 ```java
 EmbeddingModel embeddingModel = GoogleAiEmbeddingModel.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .modelName("gemini-embedding-001")
     .taskType(GoogleAiEmbeddingModel.TaskType.RETRIEVAL_DOCUMENT)
-    .titleMetadataKey("title") // defaults to "title"
+    .titleMetadataKey("title") // 默认为 "title"
     .build();
 
 TextSegment segment = TextSegment.from(
-    "This is the document content",
-    Metadata.from("title", "My Document Title")
+    "这是文档内容",
+    Metadata.from("title", "我的文档标题")
 );
 
 Response<Embedding> response = embeddingModel.embed(segment);
 ```
 
-### Output Dimensionality
+### 输出维度 {#output-dimensionality}
 
-You can specify the output dimensionality to reduce the embedding size:
+可指定输出维度以减少嵌入向量大小：
 
 ```java
 EmbeddingModel embeddingModel = GoogleAiEmbeddingModel.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .modelName("gemini-embedding-001")
-    .outputDimensionality(256) // Reduce from default 768 dimensions
+    .outputDimensionality(256) // 从默认 768 维降低
     .build();
 ```
 
-### Batch Processing
+### 批量处理 {#batch-processing}
 
-The model automatically batches requests when embedding multiple segments, with a maximum of 100 segments per batch for optimal performance.
+嵌入多个段时，模型会自动将请求批量处理，每批最多 100 个段以获得最佳性能。
 
-**Note:** This is not the discounted batch API, instead this is a convenience method for processing multiple embeddings.
+**注意：** 这不是折扣批量 API，而是处理多个嵌入的便捷方法。
 
-## Batch Embedding Processing
+## 批量嵌入处理 {#batch-embedding-processing}
 
 ### GoogleAiGeminiBatchEmbeddingModel {#googleaigeminibatchembeddingmodel}
 
-The `GoogleAiGeminiBatchEmbeddingModel` provides an interface for processing large volumes of embedding requests asynchronously at a reduced cost (50% of standard pricing). It is ideal for non-urgent, large-scale embedding tasks with a 24-hour turnaround SLO.
+`GoogleAiGeminiBatchEmbeddingModel` 提供了一个接口，用于以较低成本（标准定价的 50%）异步处理大量嵌入请求。适用于非紧急、大规模嵌入任务，SLO 为 24 小时。
 
-### Creating Batch Embedding Jobs
+### 创建批量嵌入任务 {#creating-batch-embedding-jobs}
 
-**Inline batch creation:**
+**内联批量创建：**
 
 ```java
 GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel.builder()
@@ -157,27 +157,27 @@ GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel
     .outputDimensionality(768)
     .build();
 
-// Create batch of text segments
+// 创建文本段批次
 List<TextSegment> segments = List.of(
-    TextSegment.from("First document to embed"),
-    TextSegment.from("Second document to embed"),
-    TextSegment.from("Third document to embed")
+    TextSegment.from("第一个待嵌入文档"),
+    TextSegment.from("第二个待嵌入文档"),
+    TextSegment.from("第三个待嵌入文档")
 );
 
-// Submit the batch
+// 提交批次
 BatchResponse<Embedding> response = batchModel.createBatchInline(
-    "Document Embeddings Batch",  // display name
-    0L,                            // priority (optional, defaults to 0)
+    "Document Embeddings Batch",  // 显示名称
+    0L,                            // 优先级（可选，默认为 0）
     segments
 );
 ```
 
-**File-based batch creation:**
+**基于文件的批量创建：**
 
-For larger batches, you can create a batch from an uploaded file:
+对于较大的批次，可从已上传的文件创建批次：
 
 ```java
-// First, upload a file with batch requests
+// 首先上传包含批量请求的文件
 GeminiFiles filesApi = GeminiFiles.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .build();
@@ -187,48 +187,48 @@ GeminiFile uploadedFile = filesApi.uploadFile(
     "Batch Embedding Requests"
 );
 
-// Wait for file to be active
+// 等待文件处于活跃状态
 while (uploadedFile.isProcessing()) {
     Thread.sleep(1000);
     uploadedFile = filesApi.getMetadata(uploadedFile.name());
 }
 
-// Create batch from file
+// 从文件创建批次
 BatchResponse<Embedding> response = batchModel.createBatchFromFile(
     "My Embedding Batch Job",
     uploadedFile
 );
 ```
 
-### Handling Batch Responses
+### 处理批量响应 {#handling-batch-responses}
 
-The `BatchResponse` is a sealed interface with three possible states:
+`BatchResponse` 是一个密封接口，有三种可能状态：
 
 ```java
 BatchResponse<Embedding> response = batchModel.createBatchInline("My Batch", null, segments);
 
 switch (response) {
     case BatchIncomplete incomplete -> {
-        System.out.println("Batch is " + incomplete.state());
-        System.out.println("Batch name: " + incomplete.batchName().value());
+        System.out.println("批次状态：" + incomplete.state());
+        System.out.println("批次名称：" + incomplete.batchName().value());
     }
     case BatchSuccess success -> {
-        System.out.println("Batch completed successfully!");
+        System.out.println("批次成功完成！");
         for (Embedding embedding : success.responses()) {
-            System.out.println("Embedding dimensions: " + embedding.dimension());
+            System.out.println("嵌入维度：" + embedding.dimension());
         }
     }
     case BatchError error -> {
-        System.err.println("Batch failed: " + error.message());
-        System.err.println("Error code: " + error.code());
-        System.err.println("State: " + error.state());
+        System.err.println("批次失败：" + error.message());
+        System.err.println("错误码：" + error.code());
+        System.err.println("状态：" + error.state());
     }
 }
 ```
 
-### Polling for Results
+### 轮询结果 {#polling-for-results}
 
-Since batch processing is asynchronous, you need to poll for results:
+由于批量处理是异步的，需要轮询结果：
 
 ```java
 BatchResponse<Embedding> initialResponse = batchModel.createBatchInline(
@@ -237,102 +237,102 @@ BatchResponse<Embedding> initialResponse = batchModel.createBatchInline(
     segments
 );
 
-// Extract the batch name for polling
+// 提取批次名称用于轮询
 BatchName batchName = switch (initialResponse) {
     case BatchIncomplete incomplete -> incomplete.batchName();
     case BatchSuccess success -> success.batchName();
-    case BatchError error -> throw new RuntimeException("Batch creation failed");
+    case BatchError error -> throw new RuntimeException("批次创建失败");
 };
 
-// Poll until completion
+// 轮询直到完成
 BatchResponse<Embedding> result;
 do {
-    Thread.sleep(5000); // Wait 5 seconds between polls
+    Thread.sleep(5000); // 每次轮询等待 5 秒
     result = batchModel.retrieveBatchResults(batchName);
 } while (result instanceof BatchIncomplete);
 
-// Process final result
+// 处理最终结果
 if (result instanceof BatchSuccess success) {
     List<Embedding> embeddings = success.responses();
-    System.out.println("Generated " + embeddings.size() + " embeddings");
+    System.out.println("生成了 " + embeddings.size() + " 个嵌入");
 } else if (result instanceof BatchError error) {
-    System.err.println("Batch failed: " + error.message());
+    System.err.println("批次失败：" + error.message());
 }
 ```
 
-### Managing Batch Jobs
+### 管理批量任务 {#managing-batch-jobs}
 
-**Cancel a batch job:**
+**取消批量任务：**
 
 ```java
-BatchName batchName = // ... obtained from createBatchInline or createBatchFromFile
+BatchName batchName = // ... 从 createBatchInline 或 createBatchFromFile 获取
 
 try {
     batchModel.cancelBatchJob(batchName);
-    System.out.println("Batch cancelled successfully");
+    System.out.println("批次已成功取消");
 } catch (HttpException e) {
-    System.err.println("Failed to cancel batch: " + e.getMessage());
+    System.err.println("取消批次失败：" + e.getMessage());
 }
 ```
 
-**Delete a batch job:**
+**删除批量任务：**
 
 ```java
 batchModel.deleteBatchJob(batchName);
-System.out.println("Batch deleted successfully");
+System.out.println("批次已成功删除");
 ```
 
-**List batch jobs:**
+**列出批量任务：**
 
 ```java
-// List first page of batch jobs
+// 列出第一页批量任务
 BatchList<Embedding> batchList = batchModel.listBatchJobs(10, null);
 
 for (BatchResponse<Embedding> batch : batchList.batches()) {
-    System.out.println("Batch: " + batch);
+    System.out.println("批次：" + batch);
 }
 
-// Get next page if available
+// 如有下一页则获取
 if (batchList.nextPageToken() != null) {
     BatchList<Embedding> nextPage = batchModel.listBatchJobs(10, batchList.nextPageToken());
 }
 ```
 
-### File-Based Batch Processing
+### 基于文件的批量处理 {#file-based-batch-processing}
 
-For advanced use cases, you can write batch requests to a JSONL file and upload it:
+对于高级使用场景，可将批量请求写入 JSONL 文件后上传：
 
 ```java
-// Create a JSONL file with batch requests
+// 创建包含批量请求的 JSONL 文件
 Path batchFile = Files.createTempFile("batch", ".jsonl");
 
 try (JsonLinesWriter writer = new StreamingJsonLinesWriter(batchFile)) {
     List<BatchFileRequest<TextSegment>> fileRequests = List.of(
-        new BatchFileRequest<>("segment-1", TextSegment.from("First document")),
-        new BatchFileRequest<>("segment-2", TextSegment.from("Second document")),
-        new BatchFileRequest<>("segment-3", TextSegment.from("Third document"))
+        new BatchFileRequest<>("segment-1", TextSegment.from("第一个文档")),
+        new BatchFileRequest<>("segment-2", TextSegment.from("第二个文档")),
+        new BatchFileRequest<>("segment-3", TextSegment.from("第三个文档"))
     );
     
     batchModel.writeBatchToFile(writer, fileRequests);
 }
 
-// Upload the file
+// 上传文件
 GeminiFiles filesApi = GeminiFiles.builder()
     .apiKey(System.getenv("GEMINI_AI_KEY"))
     .build();
 
 GeminiFile uploadedFile = filesApi.uploadFile(batchFile, "Batch Embedding Requests");
 
-// Create batch from file
+// 从文件创建批次
 BatchResponse<Embedding> response = batchModel.createBatchFromFile(
     "File-Based Embedding Batch",
     uploadedFile
 );
 ```
 
-### Using Metadata with Batch Embeddings
+### 在批量嵌入中使用元数据
 
-When using `TaskType.RETRIEVAL_DOCUMENT`, you can include document titles via metadata:
+使用 `TaskType.RETRIEVAL_DOCUMENT` 时，可通过元数据包含文档标题：
 
 ```java
 GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel.builder()
@@ -344,12 +344,12 @@ GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel
 
 List<TextSegment> segments = List.of(
     TextSegment.from(
-        "Content of first document",
-        Metadata.from("title", "First Document Title")
+        "第一个文档的内容",
+        Metadata.from("title", "第一个文档标题")
     ),
     TextSegment.from(
-        "Content of second document",
-        Metadata.from("title", "Second Document Title")
+        "第二个文档的内容",
+        Metadata.from("title", "第二个文档标题")
     )
 );
 
@@ -360,9 +360,9 @@ BatchResponse<Embedding> response = batchModel.createBatchInline(
 );
 ```
 
-### Configuration
+### 配置
 
-The `GoogleAiGeminiBatchEmbeddingModel` supports the same configuration options as `GoogleAiEmbeddingModel`:
+`GoogleAiGeminiBatchEmbeddingModel` 支持与 `GoogleAiEmbeddingModel` 相同的配置选项：
 
 ```java
 GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel.builder()
@@ -377,15 +377,15 @@ GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel
     .build();
 ```
 
-### Important Constraints
+### 重要限制
 
-- **Size Limit**: The inline API supports a total request size of 20 MB or under
-- **Batch Size**: Maximum of 100 segments per batch for optimal performance
-- **Cost**: Batch processing offers 50% cost reduction compared to real-time requests
-- **Turnaround**: 24-hour SLO, though completion is often much quicker
-- **Use Cases**: Best for large-scale embedding generation for document indexing or semantic search
+- **大小限制**：内联 API 支持不超过 20 MB 的总请求大小
+- **批次大小**：每批最多 100 个段以获得最佳性能
+- **成本**：批量处理与实时请求相比节省 50% 费用
+- **周转时间**：SLO 为 24 小时，通常完成得更快
+- **适用场景**：最适合用于文档索引或语义搜索的大规模嵌入生成
 
-### Example: Complete Workflow
+### 示例：完整工作流
 
 ```java
 GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel.builder()
@@ -395,63 +395,63 @@ GoogleAiGeminiBatchEmbeddingModel batchModel = GoogleAiGeminiBatchEmbeddingModel
     .outputDimensionality(768)
     .build();
 
-// Prepare batch of text segments
+// 准备文本段批次
 List<TextSegment> segments = new ArrayList<>();
 for (int i = 0; i < 500; i++) {
     segments.add(TextSegment.from(
-        "Document content #" + i,
-        Metadata.from("title", "Document " + i)
+        "文档内容 #" + i,
+        Metadata.from("title", "文档 " + i)
     ));
 }
 
-// Submit batch
+// 提交批次
 BatchResponse<Embedding> response = batchModel.createBatchInline(
     "Large Document Collection",
     0L,
     segments
 );
 
-// Get batch name
+// 获取批次名称
 BatchName batchName = switch (response) {
     case BatchIncomplete incomplete -> incomplete.batchName();
     case BatchSuccess success -> success.batchName();
-    case BatchError error -> throw new RuntimeException("Failed: " + error.message());
+    case BatchError error -> throw new RuntimeException("失败：" + error.message());
 };
 
-// Poll for completion
+// 轮询直到完成
 BatchResponse<Embedding> finalResult;
 int attempts = 0;
-int maxAttempts = 720; // 1 hour with 5-second intervals
+int maxAttempts = 720; // 以 5 秒为间隔，共 1 小时
 
 do {
     if (attempts++ >= maxAttempts) {
-        throw new RuntimeException("Batch processing timeout");
+        throw new RuntimeException("批量处理超时");
     }
     Thread.sleep(5000);
     finalResult = batchModel.retrieveBatchResults(batchName);
     
     if (finalResult instanceof BatchIncomplete incomplete) {
-        System.out.println("Status: " + incomplete.state());
+        System.out.println("状态：" + incomplete.state());
     }
 } while (finalResult instanceof BatchIncomplete);
 
-// Process results
+// 处理结果
 if (finalResult instanceof BatchSuccess success) {
     List<Embedding> embeddings = success.responses();
-    System.out.println("Generated " + embeddings.size() + " embeddings");
+    System.out.println("生成了 " + embeddings.size() + " 个嵌入");
     
-    // Store embeddings in your vector database
+    // 将嵌入存储到向量数据库
     for (int i = 0; i < embeddings.size(); i++) {
         Embedding embedding = embeddings.get(i);
-        System.out.println("Embedding " + i + " has " + embedding.dimension() + " dimensions");
+        System.out.println("嵌入 " + i + " 共 " + embedding.dimension() + " 维");
         // vectorStore.add(embedding, segments.get(i));
     }
 } else if (finalResult instanceof BatchError error) {
-    System.err.println("Batch failed: " + error.message());
+    System.err.println("批次失败：" + error.message());
 }
 ```
 
-## Learn more
+## 了解更多
 
-If you're interested in learning more about the Google AI Gemini embedding models, please have a look at the
-[documentation](https://ai.google.dev/gemini-api/docs/embeddings).
+如果您希望了解更多关于 Google AI Gemini 嵌入模型的信息，请查阅
+[文档](https://ai.google.dev/gemini-api/docs/embeddings)。

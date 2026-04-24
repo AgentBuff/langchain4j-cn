@@ -4,20 +4,14 @@ sidebar_position: 4
 
 # Google Cloud Vertex AI Ranking API
 
-- [Google Cloud Vertex AI Ranking documentation](https://cloud.google.com/generative-ai-app-builder/docs/ranking)
-- [Google Cloud Vertex AI Ranking API description](https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.rankingConfigs/rank)
+- [Google Cloud Vertex AI Ranking 文档](https://cloud.google.com/generative-ai-app-builder/docs/ranking)
+- [Google Cloud Vertex AI Ranking API 说明](https://cloud.google.com/generative-ai-app-builder/docs/reference/rest/v1/projects.locations.rankingConfigs/rank)
 
+### 简介
 
-### Introduction
+Google Cloud Vertex AI Ranking API 是一个强大的工具，通过优化检索到的文档与给定查询的相关性来增强搜索结果。与传统搜索方法不同，它利用先进的机器学习算法来理解查询和文档的语义上下文，提供更精确和相关的结果。通过分析查询与每个文档之间的语义关系，该 API 可以根据计算出的相关性分数对候选文档重新排序，确保最相关的结果出现在搜索结果页面的顶部。
 
-The Google Cloud Vertex AI Ranking API is a powerful tool that enhances search results by refining the relevance of
-retrieved documents to a given query. Unlike traditional search methods, it leverages advanced machine learning 
-algorithms to understand the semantic context of both the query and the documents, delivering more precise and relevant 
-results. By analyzing the semantic relationship between the query and each document, the API can reorder the candidate 
-documents based on their calculated relevance scores, ensuring that the most relevant results appear at the top of the 
-search results page.
-
-### Maven Dependency
+### Maven 依赖
 
 ```xml
 <dependency>
@@ -27,21 +21,19 @@ search results page.
 </dependency>
 ```
 
-### Usage
+### 用法
 
-To configure the model, you'll have to specify:
-* the Google Cloud project ID, 
-* the project number, 
-* the location (ex. `us-central1`, `europe-west1`), 
-* and the model you want to use.
+要配置模型，需要指定：
+* Google Cloud 项目 ID
+* 项目编号
+* 位置（例如 `us-central1`、`europe-west1`）
+* 要使用的模型
 
-> Note: You can find the project number in the Google Cloud console, or by running `gcloud projects describe your-project-id`.
+> 注意：您可以在 Google Cloud 控制台中找到项目编号，或通过运行 `gcloud projects describe your-project-id` 获取。
 
-You can score a single string or `TextSegment` against a query 
-thanks to the `score(text, query)` and `score(segment, query)` methods.
+您可以通过 `score(text, query)` 和 `score(segment, query)` 方法对单个字符串或 `TextSegment` 进行查询评分。
 
-It is also possible to score several strings or `TextSegment`s against the query, 
-with the `scoreAll(segments, query)` method:
+也可以使用 `scoreAll(segments, query)` 方法对多个字符串或 `TextSegment` 进行查询评分：
 
 ```java
 VertexAiScoringModel scoringModel = VertexAiScoringModel.builder()
@@ -66,11 +58,9 @@ Response<List<Double>> score = scoringModel.scoreAll(Stream.of(
 // [0.8199999928474426, 0.4300000071525574]
 ```
 
-If you pass `TextSegment`s which have a particular `title` key, the Ranker model can take this metadata into account in its calculation.
-To specify a custom title key, you can use the `titleMetadataKey()` builder method.`
+如果您传入包含特定 `title` 键的 `TextSegment`，Ranker 模型可以在计算中考虑此元数据。要指定自定义标题键，可以使用 `titleMetadataKey()` builder 方法。
 
-You can use scoring models with `AiServices` and its `contentAgregator()` method, 
-which takes a `ContentAggregator` class that can specify a scoring model:
+您可以将评分模型与 `AiServices` 及其 `contentAggregator()` 方法一起使用，该方法接受可指定评分模型的 `ContentAggregator` 类：
 
 ```java
 VertexAiScoringModel scoringModel = VertexAiScoringModel.builder()

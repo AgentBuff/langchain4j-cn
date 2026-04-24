@@ -1,8 +1,8 @@
 {
-  "label": "Scoring (Reranking) Models",
+  "label": "评分（重排序）模型",
   "position": 8,
   "link": {
     "type": "generated-index",
-    "description": "Scoring (Reranking) Models"
+    "description": "评分（重排序）模型"
   }
 }

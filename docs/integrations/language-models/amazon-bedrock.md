@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Amazon Bedrock
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,20 +14,21 @@ sidebar_position: 1
 </dependency>
 ```
 
-## AWS credentials
-In order to use Amazon Bedrock models, you need to configure AWS credentials.
-One of the options is to set the `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` environment variables. More information can be found [here](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html). Alternatively, set the `AWS_BEARER_TOKEN_BEDROCK` environment variable locally for API Key authentication. For additional API key details, refer to [docs](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html).
+## AWS 凭证
+使用 Amazon Bedrock 模型需要配置 AWS 凭证。
+一种方式是设置 `AWS_ACCESS_KEY_ID` 和 `AWS_SECRET_ACCESS_KEY` 环境变量，详情请参阅[此处](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html)。
+也可在本地设置 `AWS_BEARER_TOKEN_BEDROCK` 环境变量以进行 API Key 认证，更多 API Key 详情请参阅[文档](https://docs.aws.amazon.com/bedrock/latest/userguide/api-keys.html)。
 
 ## BedrockChatModel
 :::note
-Guardrails is not supported by the current implementation.
+当前实现不支持 Guardrails。
 :::
 
-Supported models and their features can be found [here](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html).
+支持的模型及其功能可在[此处](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html)查找。
 
-Models ids can be found [here](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
+模型 ID 可在[此处](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)查找。
 
-### Configuration
+### 配置
 ```java
 ChatModel model = BedrockChatModel.builder()
         .client(BedrockRuntimeClient)
@@ -56,21 +57,21 @@ ChatModel model = BedrockChatModel.builder()
         .build();
 ```
 
-### Examples
+### 示例
 
 - [BedrockChatModelExample](https://github.com/langchain4j/langchain4j-examples/blob/main/bedrock-examples/src/main/java/converse/BedrockChatModelExample.java)
 
 ## BedrockStreamingChatModel
 
 :::note
-Guardrails is not supported by the current implementation.
+当前实现不支持 Guardrails。
 :::
 
-Supported models and their features can be found [here](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html).
+支持的模型及其功能可在[此处](https://docs.aws.amazon.com/bedrock/latest/userguide/conversation-inference-supported-models-features.html)查找。
 
-Models ids can be found [here](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
+模型 ID 可在[此处](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)查找。
 
-### Configuration
+### 配置
 ```java
 StreamingChatModel model = BedrockStreamingChatModel.builder()
         .client(BedrockRuntimeAsyncClient)
@@ -98,25 +99,25 @@ StreamingChatModel model = BedrockStreamingChatModel.builder()
         .build();
 ```
 
-### Examples
+### 示例
 
 - [BedrockStreamingChatModelExample](https://github.com/langchain4j/langchain4j-examples/blob/main/bedrock-examples/src/main/java/converse/BedrockStreamingChatModelExample.java)
 
 
-## Additional Model Request Fields
+## 附加模型请求字段
 
-The field `additionalModelRequestFields` in the `BedrockChatRequestParameters` is a `Map<String, Object>`.
-As explained [here](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html#bedrock-runtime_Converse-request-additionalModelRequestFields)
-it allows to add inference parameters for a specific model that is not covered by common `InferenceConfiguration`.
+`BedrockChatRequestParameters` 中的 `additionalModelRequestFields` 字段类型为 `Map<String, Object>`。
+如[此处](https://docs.aws.amazon.com/bedrock/latest/APIReference/API_runtime_Converse.html#bedrock-runtime_Converse-request-additionalModelRequestFields)所述，
+它允许为特定模型添加通用 `InferenceConfiguration` 未涵盖的推理参数。
 
 
-## Thinking / Reasoning
+## 思考 / 推理
 
-To enable Claude thinking process, call `enableReasoning` on `BedrockChatRequestParameters` and set it via
-`defaultRequestParameters` when building the model:
+要启用 Claude 的思考过程，请在 `BedrockChatRequestParameters` 上调用 `enableReasoning`，
+并在构建模型时通过 `defaultRequestParameters` 传入：
 ```java
 BedrockChatRequestParameters parameters = BedrockChatRequestParameters.builder()
-        .enableReasoning(1024) // token budget
+        .enableReasoning(1024) // token 预算
         .build();
 
 ChatModel model = BedrockChatModel.builder()
@@ -127,25 +128,21 @@ ChatModel model = BedrockChatModel.builder()
         .build();
 ```
 
-The following parameters also control thinking behaviour:
-- `returnThinking`: controls whether to return thinking (if available) inside `AiMessage.thinking()`
-and whether to invoke `StreamingChatResponseHandler.onPartialThinking()` and `TokenStream.onPartialThinking()`
-callbacks when using `BedrockStreamingChatModel`.
-Disabled by default. If enabled, tinking signatures will also be stored and returned inside the `AiMessage.attributes()`.
-- `sendThinking`: controls whether to send thinking and signatures stored in `AiMessage` to the LLM in follow-up requests.
-Enabled by default.
+以下参数也控制思考行为：
+- `returnThinking`：控制是否在 `AiMessage.thinking()` 中返回思考内容（如果可用），以及在使用 `BedrockStreamingChatModel` 时是否触发 `StreamingChatResponseHandler.onPartialThinking()` 和 `TokenStream.onPartialThinking()` 回调。默认禁用。启用后，思考签名也会存储在 `AiMessage.attributes()` 中并随之返回。
+- `sendThinking`：控制是否将存储在 `AiMessage` 中的思考内容和签名发送给后续请求中的 LLM。默认启用。
 
-## Prompt Caching
+## 提示缓存
 
-AWS Bedrock supports prompt caching to improve performance and reduce costs when making repeated API calls with similar prompts. This feature can reduce latency by up to 85% and costs by up to 90% for cached content.
+AWS Bedrock 支持提示缓存，可在使用相同提示重复调用 API 时提高性能并降低成本。此功能可将延迟降低最多 85%，缓存内容的成本降低最多 90%。
 
-### How It Works
+### 工作原理
 
-Prompt caching allows you to mark specific points in your conversation to be cached. When you make subsequent API calls with the same cached content, Bedrock can reuse the cached portion, significantly reducing processing time and costs. The cache has a 5-minute TTL (Time To Live) which resets on each cache hit.
+提示缓存允许您在对话中标记特定节点进行缓存。当后续 API 调用包含相同的缓存内容时，Bedrock 可复用缓存部分，显著减少处理时间和成本。缓存的 TTL（生存时间）为 5 分钟，每次缓存命中时都会重置。
 
-### Supported Models
+### 支持的模型
 
-Prompt caching is supported on the following models:
+提示缓存支持以下模型：
 - Claude Opus 4.5
 - Claude Opus 4.1
 - Claude Opus 4
@@ -154,12 +151,12 @@ Prompt caching is supported on the following models:
 - Claude Sonnet 4
 - Claude 3.7 Sonnet
 - Claude 3.5 Sonnet
-- Claude 3.5 Haiku 
-- Amazon Nova models
+- Claude 3.5 Haiku
+- Amazon Nova 系列模型
 
-### Configuration
+### 配置
 
-To enable prompt caching, use the `promptCaching()` method in `BedrockChatRequestParameters`:
+使用 `BedrockChatRequestParameters` 中的 `promptCaching()` 方法启用提示缓存：
 
 ```java
 import dev.langchain4j.model.bedrock.BedrockChatRequestParameters;
@@ -178,20 +175,20 @@ ChatModel model = BedrockChatModel.builder()
         .build();
 ```
 
-### Cache Point Placement Options
+### 缓存点位置选项
 
-The `BedrockCachePointPlacement` enum provides three options for where to place the cache point in your conversation:
+`BedrockCachePointPlacement` 枚举提供三种缓存点位置选项：
 
-- **`AFTER_SYSTEM`**: Places the cache point after the system message. This is ideal when you have a consistent system prompt that you want to reuse across multiple conversations.
-- **`AFTER_USER_MESSAGE`**: Places the cache point after the user message. Useful when you have a standard user prompt or context that remains the same.
-- **`AFTER_TOOLS`**: Places the cache point after tool definitions. This is beneficial when you have a consistent set of tools that you want to cache.
+- **`AFTER_SYSTEM`**：将缓存点放置在系统消息之后。适用于跨多次对话使用相同系统提示词的场景。
+- **`AFTER_USER_MESSAGE`**：将缓存点放置在用户消息之后。适用于有标准用户提示词或上下文保持不变的场景。
+- **`AFTER_TOOLS`**：将缓存点放置在工具定义之后。适用于有稳定工具集需要缓存的场景。
 
-### Examples
+### 示例
 
-#### Basic Usage with System Message Caching
+#### 系统消息缓存的基本用法
 
 ```java
-// Configure prompt caching to cache after system message
+// 配置提示缓存，在系统消息之后缓存
 BedrockChatRequestParameters params = BedrockChatRequestParameters.builder()
         .promptCaching(BedrockCachePointPlacement.AFTER_SYSTEM)
         .build();
@@ -201,7 +198,7 @@ ChatModel model = BedrockChatModel.builder()
         .defaultRequestParameters(params)
         .build();
 
-// First request - establishes the cache
+// 第一次请求 - 建立缓存
 ChatRequest request1 = ChatRequest.builder()
         .messages(Arrays.asList(
                 SystemMessage.from("You are a helpful coding assistant with expertise in Java."),
@@ -211,7 +208,7 @@ ChatRequest request1 = ChatRequest.builder()
 
 ChatResponse response1 = model.chat(request1);
 
-// Second request - benefits from cached system message
+// 第二次请求 - 受益于已缓存的系统消息
 ChatRequest request2 = ChatRequest.builder()
         .messages(Arrays.asList(
                 SystemMessage.from("You are a helpful coding assistant with expertise in Java."),
@@ -219,17 +216,17 @@ ChatRequest request2 = ChatRequest.builder()
         ))
         .build();
 
-ChatResponse response2 = model.chat(request2); // Faster response due to caching
+ChatResponse response2 = model.chat(request2); // 由于缓存，响应更快
 ```
 
-#### Combining with Other Features
+#### 与其他功能组合使用
 
-Prompt caching can be combined with other Bedrock features like reasoning:
+提示缓存可与其他 Bedrock 功能（如推理）组合使用：
 
 ```java
 BedrockChatRequestParameters params = BedrockChatRequestParameters.builder()
         .promptCaching(BedrockCachePointPlacement.AFTER_SYSTEM)
-        .enableReasoning(1000)  // Enable reasoning with 1000 token budget
+        .enableReasoning(1000)  // 启用推理，token 预算为 1000
         .temperature(0.3)
         .maxOutputTokens(2000)
         .build();
@@ -240,16 +237,16 @@ ChatModel model = BedrockChatModel.builder()
         .build();
 ```
 
-### Best Practices
+### 最佳实践
 
-1. **Cache Stable Content**: Use caching for content that doesn't change frequently, such as system prompts, tool definitions, or common context.
-2. **Choose Appropriate Placement**: 
-   - Use `AFTER_SYSTEM` when your system prompt is consistent across conversations
-   - Use `AFTER_TOOLS` when you have a stable set of tool definitions
-   - Use `AFTER_USER_MESSAGE` for scenarios with repeated user contexts
-3. **Monitor Cache Hits**: The 5-minute TTL resets on each cache hit, so frequent requests with the same cached content will maintain the cache.
-4. **Cost Optimization**: Caching is particularly beneficial for long system prompts or tool definitions that are used repeatedly.
+1. **缓存稳定内容**：对不常变化的内容使用缓存，如系统提示词、工具定义或通用上下文。
+2. **选择合适的位置**：
+   - 当系统提示词在各次对话中保持一致时，使用 `AFTER_SYSTEM`
+   - 当有稳定的工具定义集时，使用 `AFTER_TOOLS`
+   - 当存在重复的用户上下文时，使用 `AFTER_USER_MESSAGE`
+3. **监控缓存命中**：5 分钟 TTL 在每次缓存命中时都会重置，因此频繁使用相同缓存内容的请求可保持缓存有效。
+4. **成本优化**：对于重复使用的长系统提示词或工具定义，缓存尤为有益。
 
-### Additional Resources
+### 更多资源
 
-- [AWS Bedrock Prompt Caching Documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html)
+- [AWS Bedrock 提示缓存文档](https://docs.aws.amazon.com/bedrock/latest/userguide/prompt-caching.html)

@@ -54,5 +54,9 @@
   "homepage.features.toolbox.description": {
     "message": "从底层的提示词模板、聊天记忆、输出解析，到高层的 Agents 与 RAG，LangChain4j 提供了覆盖常见 LLM 场景的完整工具箱。",
     "description": "Homepage feature description"
+  },
+  "faq.heading": {
+    "message": "LangChain4j 常见问题 FAQ",
+    "description": "FAQ page heading"
   }
 }

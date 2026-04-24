@@ -2,30 +2,31 @@
 sidebar_position: 32
 ---
 
-# Skills
+# 技能
 
 :::note
-The Skills API is experimental. APIs and behavior may still change in future releases.
+Skills API 属于实验性功能。其 API 和行为在未来版本中仍可能发生变化。
 :::
 
-Skills is a mechanism for equipping an LLM with reusable, self-contained behavioral instructions.
-A skill bundles a name, a short description, and a body of instructions (its _content_),
-together with optional resources (e.g., references, assets, templates, etc.).
-The LLM loads a skill on demand, keeping the initial context small and only pulling in
-the detailed instructions when they are actually needed.
+Skills 是一种让 LLM 获得可复用、可独立封装行为指令的机制。
+一个 skill 会打包名称、简短描述以及一段指令正文（即它的 _content_），
+并且还可以带上可选资源（例如参考资料、素材、模板等）。
+LLM 会按需加载某个 skill，
+从而让初始上下文保持精简，
+只有在真正需要时才拉取详细指令。
 
 :::note
-Skills are designed according to the [Agent Skills specification](https://agentskills.io).
+Skills 的设计遵循 [Agent Skills specification](https://agentskills.io)。
 :::
 
-## Creating Skills
+## 创建 Skills
 
-### From the File System
+### 从文件系统创建
 
-Typically, each skill lives in its own directory containing a `SKILL.md` file.
-The file must start with a YAML front matter block that declares the skill's `name` and `description`.
-Everything below the front matter becomes the skill's content — the instructions given to the LLM
-when it activates the skill.
+通常，每个 skill 都位于自己的目录中，并包含一个 `SKILL.md` 文件。
+该文件必须以 YAML front matter 开头，用于声明 skill 的 `name` 和 `description`。
+front matter 下面的所有内容都会成为这个 skill 的正文内容，
+也就是当 LLM 激活该 skill 时收到的指令。
 
 ```
 skills/
@@ -37,7 +38,7 @@ skills/
     └── SKILL.md
 ```
 
-Example `SKILL.md`:
+`SKILL.md` 示例：
 
 ```markdown
 ---
@@ -51,10 +52,12 @@ When the user asks you to edit a Word document:
    ...
 ```
 
-Any file in the skill directory (other than `SKILL.md` itself and files under a `scripts/`
-subdirectory) is automatically loaded as a `SkillResource` that the LLM can read on demand.
+skill 目录中的任何文件，
+只要不是 `SKILL.md` 本身，且不位于 `scripts/` 子目录下，
+都会被自动加载为一个 `SkillResource`，供 LLM 按需读取。
 
-Use `FileSystemSkillLoader` from the `langchain4j-skills` module to load skills from the file system:
+使用 `langchain4j-skills` 模块中的 `FileSystemSkillLoader`，
+可以从文件系统加载 skills：
 
 ```xml
 <dependency>
@@ -72,11 +75,11 @@ List<FileSystemSkill> skills = FileSystemSkillLoader.loadSkills(Path.of("skills/
 FileSystemSkill skill = FileSystemSkillLoader.loadSkill(Path.of("skills/docx"));
 ```
 
-### From the Classpath
+### 从 Classpath 创建
 
-`ClassPathSkillLoader` works like `FileSystemSkillLoader` but resolves skill directories from
-the classpath instead of the filesystem. This is useful when skills are bundled inside your
-JAR or located under `src/main/resources`:
+`ClassPathSkillLoader` 的工作方式与 `FileSystemSkillLoader` 类似，
+只不过它是从 classpath 而不是文件系统解析 skill 目录。
+当 skill 被打包进 JAR，或位于 `src/main/resources` 下时，这会很有用：
 
 ```
 src/main/resources/
@@ -97,20 +100,21 @@ List<FileSystemSkill> skills = ClassPathSkillLoader.loadSkills("skills");
 FileSystemSkill skill = ClassPathSkillLoader.loadSkill("skills/docx");
 ```
 
-By default, `ClassPathSkillLoader` uses the thread's context class loader.
-You can pass a custom `ClassLoader` if needed:
+默认情况下，`ClassPathSkillLoader` 会使用当前线程的 context class loader。
+如果有需要，也可以传入自定义 `ClassLoader`：
 
 ```java
 FileSystemSkill skill = ClassPathSkillLoader.loadSkill("skills/docx", myClassLoader);
 ```
 
-The same `SKILL.md` format, resource loading rules, and `scripts/` exclusion apply
-as with `FileSystemSkillLoader`.
+`SKILL.md` 的格式、资源加载规则，以及对 `scripts/` 目录的排除规则，
+都与 `FileSystemSkillLoader` 相同。
 
-### Programmatically
+### 以编程方式创建
 
-Skills do not have to be file-system based.
-You can create them from any source — a database, a remote API, generated at runtime — using the builder API:
+Skills 不一定必须来自文件系统。
+你可以通过 builder API 从任意来源创建它们，
+例如数据库、远程 API，或者运行时动态生成：
 
 ```java
 Skill skill = Skill.builder()
@@ -126,7 +130,7 @@ Skill skill = Skill.builder()
         .build();
 ```
 
-You can also attach resources programmatically:
+你也可以以编程方式附加资源：
 
 ```java
 SkillResource reference = SkillResource.builder()
@@ -142,26 +146,29 @@ Skill skill = Skill.builder()
         .build();
 ```
 
-## Modes
+## 模式
 
-Skills can be integrated with an AI Service in two distinct modes, depending on how much
-control and trust you need.
+Skills 可以通过两种不同模式集成到 AI Service 中，
+取决于你需要多少控制力与信任边界。
 
-### Tool Mode (Recommended)
+### 工具模式（推荐）
 
-**Class:** `Skills` (from the `langchain4j-skills` module)
+**Class:** `Skills`（位于 `langchain4j-skills` 模块）
 
-This corresponds to the **Tool-based agents** integration approach described in the
-[Agent Skills specification](https://agentskills.io/integrate-skills).
+这对应于 [Agent Skills specification](https://agentskills.io/integrate-skills)
+中描述的 **Tool-based agents** 集成方式。
 
-In this mode, the LLM activates a skill to receive step-by-step instructions, then carries
-them out by calling the [tools](/tutorials/tools) you have explicitly registered.
-**The LLM has no access to the file system at inference time** — all skill content and
-resources are loaded into memory upfront (e.g. via `FileSystemSkillLoader`), and the `activate_skill`
-and `read_skill_resource` tools returns that preloaded content rather than reading from disk.
-Because only your pre-defined tools can be invoked, **there is no risk of arbitrary code execution**.
+在这种模式下，LLM 会先激活某个 skill 以获取分步指令，
+然后通过你显式注册的 [tools](/tutorials/tools) 来执行这些步骤。
+**LLM 在推理时无法直接访问文件系统**。
+所有 skill 内容与资源都会预先加载到内存中
+（例如通过 `FileSystemSkillLoader`），
+而 `activate_skill` 与 `read_skill_resource` 这两个工具返回的也是这些预加载内容，
+而不是在运行时再去读磁盘。
+由于 LLM 只能调用你预定义的工具，
+**因此不会有任意代码执行的风险**。
 
-#### Registered Tools
+#### 已注册的工具
 
 | Tool                  | When registered                                                                               |
 |-----------------------|-----------------------------------------------------------------------------------------------|
@@ -169,17 +176,18 @@ Because only your pre-defined tools can be invoked, **there is no risk of arbitr
 | `read_skill_resource` | When at least one skill has resources. The LLM calls this to read individual reference files. |
 | Skill-scoped tools    | After the skill is activated.                                                                 |
 
-#### How It Works
+#### 工作方式
 
-1. The system message lists the available skills (names and descriptions) so the LLM can choose.
-2. The user asks a question that requires a specific skill.
-3. The LLM calls `activate_skill("my-skill")` to receive its instructions.
-4. The LLM follows those instructions to complete the task, optionally reading resource files along the way.
+1. system message 会列出可用 skills（名称和描述），供 LLM 选择。
+2. 用户提出一个需要特定 skill 的问题。
+3. LLM 调用 `activate_skill("my-skill")` 以获取该 skill 的完整指令。
+4. LLM 按照这些指令完成任务，必要时还可以继续读取资源文件。
 
-#### Example Skill
+#### 示例 Skill
 
-Skills describe the _policy_ — the exact order of calls, required arguments, error-handling steps,
-and worked examples — while the actual execution stays in type-safe, tested Java code:
+Skill 负责描述 _policy_，
+也就是调用顺序、所需参数、错误处理步骤以及示例；
+而真正执行动作的部分，仍然放在类型安全、经过测试的 Java 代码里：
 
 ```markdown
 ---
@@ -197,11 +205,11 @@ To process an order:
 If any step fails, call `rollbackOrder(orderId)` before reporting the error.
 ```
 
-#### Wiring It Up
+#### 接线方式
 
-Pass the `ToolProvider` from `Skills` to your AI Service builder alongside your regular tools.
-Use `formatAvailableSkills()` to inject the skill catalogue into the system message so
-the LLM knows which skills it can activate:
+将 `Skills` 提供的 `ToolProvider` 与普通 tools 一起传给 AI Service builder。
+使用 `formatAvailableSkills()` 把 skill 目录注入 system message，
+这样 LLM 才知道有哪些 skills 可以激活：
 
 ```java
 Skills skills = Skills.from(FileSystemSkillLoader.loadSkills(Path.of("skills/")));
@@ -215,7 +223,8 @@ MyAiService service = AiServices.builder(MyAiService.class)
         .build();
 ```
 
-`formatAvailableSkills()` returns an XML-formatted block listing each skill's name and description:
+`formatAvailableSkills()` 会返回一个 XML 格式的片段，
+列出每个 skill 的名称和描述：
 
 ```xml
 
@@ -231,10 +240,10 @@ MyAiService service = AiServices.builder(MyAiService.class)
 </available_skills>
 ```
 
-#### Customisation
+#### 自定义
 
-The name, description, and parameter metadata of each tool can be overridden through the
-corresponding config class on the builder:
+每个工具的名称、描述以及参数元数据，
+都可以通过 builder 上对应的配置类覆盖：
 
 ```java
 Skills skills = Skills.builder()
@@ -259,16 +268,17 @@ Skills skills = Skills.builder()
         .build();
 ```
 
-#### Skill-Scoped Tools
+#### 技能作用域工具
 
-You can attach tools directly to a skill. These tools are **only exposed to the LLM
-after the skill has been activated** via the `activate_skill` tool.
-This keeps the LLM's tool list small and focused, and ensures skill-specific tools only
-appear when they are relevant.
+你还可以把工具直接绑定到某个 skill 上。
+这些工具**只有在该 skill 通过 `activate_skill` 被激活后**，
+才会暴露给 LLM。
+这样可以让 LLM 可见的工具列表更小、更聚焦，
+也能保证 skill 专属工具只在真正相关时才出现。
 
-##### Using `@Tool`-Annotated Methods
+##### 使用 `@Tool` 标注的方法
 
-The simplest way to attach tools is to pass objects with `@Tool`-annotated methods:
+最简单的方式，就是传入带有 `@Tool` 标注方法的对象：
 
 ```java
 class OrderTools {
@@ -298,8 +308,8 @@ Skill skill = Skill.builder()
         .build();
 ```
 
-Tools can also be attached to an already-built skill using `toBuilder()` — for example,
-to add tools to a skill loaded from the file system:
+你也可以通过 `toBuilder()` 把工具附加到一个已经构建好的 skill 上，
+例如给从文件系统加载的 skill 动态补充工具：
 
 ```java
 FileSystemSkill skill = FileSystemSkillLoader.loadSkill(Path.of("skills/process-order"));
@@ -309,10 +319,10 @@ Skill skillWithTools = skill.toBuilder()
         .build();
 ```
 
-##### Using Tool Providers
+##### 使用 Tool Providers
 
-You can also attach `ToolProvider`s to a skill — for example, to expose tools from an
-MCP server only after the skill is activated:
+你也可以把 `ToolProvider` 绑定到某个 skill 上。
+例如，只有在该 skill 被激活后，才暴露来自 MCP server 的工具：
 
 ```java
 ToolProvider mcpToolProvider = McpToolProvider.builder()
@@ -330,9 +340,10 @@ Skill skill = Skill.builder()
         .build();
 ```
 
-##### Using a `Map<ToolSpecification, ToolExecutor>`
+##### 使用 `Map<ToolSpecification, ToolExecutor>`
 
-For full control over tool specifications and execution logic, you can pass a map directly:
+如果你希望完全控制工具规格和执行逻辑，
+也可以直接传入一个 map：
 
 ```java
 ToolSpecification validateOrder = ToolSpecification.builder()
@@ -357,8 +368,8 @@ Skill skill = Skill.builder()
         .build();
 ```
 
-All three approaches can be combined — `@Tool` methods, `ToolProvider`s, and `Map` entries
-are merged into a single set of skill-scoped tools:
+这三种方式可以混合使用。
+`@Tool` 方法、`ToolProvider` 与 `Map` 条目最终都会合并成同一组 skill-scoped tools：
 
 ```java
 Skill skill = Skill.builder()
@@ -371,7 +382,7 @@ Skill skill = Skill.builder()
         .build();
 ```
 
-##### Wiring It Up
+##### 接线方式
 
 ```java
 Skills skills = Skills.from(skill);
@@ -385,29 +396,36 @@ MyAiService service = AiServices.builder(MyAiService.class)
         .build();
 ```
 
-##### How Skill-Scoped Tools Work
+##### Skill-Scoped Tools 的工作方式
 
-1. Before skill activation, the LLM only sees the `activate_skill` (and `read_skill_resource`) tools.
-   Skill-scoped tools are not included in the tool list.
-2. When the LLM calls `activate_skill("process-order")`, the activation is recorded in the `ToolExecutionResultMessage`.
-3. Before the next LLM call (within the same AI Service invocation), the AI Service re-evaluates dynamic tool providers
-   against the current messages. The skill-scoped tools (e.g. `validateOrder`) become
-   visible and the LLM can call them immediately, in the same AI Service invocation.
-   The skill-scoped tools stay visible to the LLM in the next AI Service invocations, they become invisible only when
-   the skill is deactivated.
+1. 在 skill 激活之前，LLM 只能看到 `activate_skill`（以及 `read_skill_resource`）这两个工具。
+   skill-scoped tools 不会出现在工具列表里。
+2. 当 LLM 调用 `activate_skill("process-order")` 后，
+   这次激活会记录在 `ToolExecutionResultMessage` 中。
+3. 在下一次 LLM 调用前
+   （并且仍然处于同一次 AI Service 调用之内），
+   AI Service 会根据当前消息重新评估动态 tool providers。
+   这时 skill-scoped tools（例如 `validateOrder`）就会变得可见，
+   LLM 可以在同一次 AI Service 调用中立刻使用它们。
+   这些 skill-scoped tools 会在后续 AI Service 调用中持续可见，
+   只有当 skill 被停用后才会重新变为不可见。
 
-##### Using Skills with Tool Search
+##### 将 Skills 与 Tool Search 一起使用
 
-Skills work alongside [Tool Search](/tutorials/tools#tool-search). When both are configured,
-they operate independently:
+Skills 可以与 [Tool Search](/tutorials/tools#tool-search) 一起工作。
+当二者同时启用时，它们是彼此独立的：
 
-- **Skill-scoped tools are never searchable.** They don't appear in the searchable tool pool
-  and cannot be found via `tool_search_tool`. They only become visible after the LLM activates
-  the corresponding skill.
-- **Regular tools remain searchable.** Tools registered via `.tools(...)` on the AI Service
-  (not on a skill) continue to be searchable, regardless of whether any skill is activated.
-- **`activate_skill` is always visible.** It is marked as `ALWAYS_VISIBLE`, so the LLM can
-  always call it even when Tool Search is enabled.
+- **skill-scoped tools 永远不会进入可搜索池。**
+  它们不会出现在 searchable tool pool 中，
+  也不能通过 `tool_search_tool` 被找到。
+  它们只有在对应 skill 被激活后才会变得可见。
+- **普通 tools 仍然可以被搜索。**
+  通过 AI Service 上 `.tools(...)` 注册的工具
+  （而不是绑定在某个 skill 上的工具）
+  无论是否已有 skill 被激活，依然可以被 Tool Search 搜索到。
+- **`activate_skill` 永远可见。**
+  它会被标记为 `ALWAYS_VISIBLE`，
+  因此即使启用了 Tool Search，LLM 依然始终可以调用它。
 
 ```java
 Skills skills = Skills.from(mySkills);
@@ -423,42 +441,44 @@ MyAiService service = AiServices.builder(MyAiService.class)
         .build();
 ```
 
-### Shell Mode (Experimental)
+### Shell 模式（实验性）
 
-**Class:** `ShellSkills` (from the `langchain4j-experimental-skills-shell` module)
+**Class:** `ShellSkills`（位于 `langchain4j-experimental-skills-shell` 模块）
 
-This corresponds to the **Filesystem-based agents** integration approach described in the
-[Agent Skills specification](https://agentskills.io/integrate-skills).
+这对应于 [Agent Skills specification](https://agentskills.io/integrate-skills)
+中的 **Filesystem-based agents** 集成方式。
 
 :::warning
-**Shell execution is inherently unsafe.**
-Commands run directly in the host process environment **without any sandboxing, containerization,
-or privilege restriction**. A misbehaving or prompt-injected LLM can execute arbitrary commands
-on the machine running your application.
-Only use this in controlled environments where you fully trust the input and accept
-the associated risks.
+**Shell 执行天然不安全。**
+命令会直接在宿主进程环境中执行，**没有任何沙箱、容器化或权限限制**。
+一旦 LLM 行为异常，或受到 prompt injection 影响，
+它就可能在运行你应用的机器上执行任意命令。
+只有在受控环境中、你完全信任输入并且接受相关风险时，
+才应该使用这种模式。
 :::
 
-In this mode, the LLM is given a single `run_shell_command` tool and reads skill instructions
-directly from the file system using shell commands. There is no `activate_skill` or
-`read_skill_resource` tool — the LLM navigates skill files like a human developer would.
+在这种模式下，LLM 只会得到一个 `run_shell_command` 工具，
+并通过 shell 命令直接从文件系统读取 skill 指令。
+这里没有 `activate_skill` 或 `read_skill_resource` 工具，
+LLM 会像人类开发者一样自行浏览 skill 文件。
 
-#### Registered Tools
+#### 已注册的工具
 
 | Tool                | When registered                                                                                   |
 |---------------------|---------------------------------------------------------------------------------------------------|
 | `run_shell_command` | Always. The LLM runs shell commands to read `SKILL.md` files, resource files and execute scripts. |
 
-#### How It Works
+#### 工作方式
 
-1. The system message lists available skills with their absolute filesystem paths.
-2. The user asks a question that requires a specific skill.
-3. The LLM runs `cat /path/to/skills/docx/SKILL.md` to read the instructions.
-4. The LLM follows those instructions by running further shell commands.
+1. system message 会列出可用 skills 及其绝对文件系统路径。
+2. 用户提出一个需要某个特定 skill 的问题。
+3. LLM 执行 `cat /path/to/skills/docx/SKILL.md` 来读取指令。
+4. LLM 再通过进一步的 shell 命令来执行这些指令。
 
-#### Dependency
+#### 依赖
 
-Shell execution lives in a separate experimental artifact — add it to your build:
+Shell 执行位于单独的实验性 artifact 中，
+需要先把它加入构建：
 
 ```xml
 
@@ -469,10 +489,11 @@ Shell execution lives in a separate experimental artifact — add it to your bui
 </dependency>
 ```
 
-#### Wiring It Up
+#### 接线方式
 
-All skills must be filesystem-based (loaded via `FileSystemSkillLoader`).
-Use `ShellSkills` instead of `Skills`:
+所有 skills 都必须是基于文件系统的
+（通过 `FileSystemSkillLoader` 加载）。
+这里应使用 `ShellSkills`，而不是 `Skills`：
 
 ```java
 ShellSkills skills = ShellSkills.from(FileSystemSkillLoader.loadSkills(Path.of("skills/")));
@@ -485,8 +506,8 @@ MyAiService service = AiServices.builder(MyAiService.class)
         .build();
 ```
 
-`formatAvailableSkills()` includes a `<location>` field so the LLM knows
-exactly where to find each `SKILL.md`:
+`formatAvailableSkills()` 会额外包含一个 `<location>` 字段，
+让 LLM 知道每个 `SKILL.md` 的确切位置：
 
 ```xml
 
@@ -504,18 +525,18 @@ exactly where to find each `SKILL.md`:
 </available_skills>
 ```
 
-#### When to Use Shell Mode
+#### 何时使用 Shell Mode
 
-This mode is best suited for **experimentation and prototyping**, or when you want to use
-third-party skills published by the community (e.g. from the
-[agentskills.io](https://agentskills.io) ecosystem) without first porting them to Java.
-It lets you wire up a working workflow quickly, then migrate individual actions
-to tools as the solution matures.
+这种模式更适合**实验和原型阶段**，
+或者当你希望直接使用社区发布的第三方 skills
+（例如来自 [agentskills.io](https://agentskills.io) 生态）时，
+无需先把它们迁移成 Java 工具。
+它可以让你快速接上一个可运行工作流，
+之后再随着方案成熟，逐步把具体动作迁移为 tools。
 
-#### Customisation
+#### 自定义
 
-Use `RunShellCommandToolConfig` to tune the working directory, output limits,
-and parameter names:
+可以使用 `RunShellCommandToolConfig` 来调整工作目录、输出限制与参数名称：
 
 ```java
 ShellSkills skills = ShellSkills.builder()

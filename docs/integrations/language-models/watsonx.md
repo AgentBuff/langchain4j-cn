@@ -4,10 +4,10 @@ sidebar_position: 22
 
 # watsonx.ai
 
-- [watsonx.ai API Reference](https://cloud.ibm.com/apidocs/watsonx-ai#chat-completions)
+- [watsonx.ai API 参考](https://cloud.ibm.com/apidocs/watsonx-ai#chat-completions)
 - [watsonx.ai Java SDK](https://github.com/IBM/watsonx-ai-java-sdk)
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,19 +17,17 @@ sidebar_position: 22
 </dependency>
 ```
 
-## Authentication
+## 认证
 
-Watsonx.ai supports authentication via the `Authenticator` interface.
+Watsonx.ai 通过 `Authenticator` 接口支持多种认证方式，可根据部署环境选择不同机制：
 
-This allows to use different authentication mechanisms depending on your deployment:
+- **IBMCloudAuthenticator** — 使用 API Key 在 **IBM Cloud** 上进行认证，是最简单的方式，通过 `apiKey(...)` 构建器方法使用。
+- **CP4DAuthenticator** — 用于 **Cloud Pak for Data** 部署。
+- **自定义认证器** — 可使用任何实现 `Authenticator` 接口的类。
 
-- **IBMCloudAuthenticator** – authenticates with **IBM Cloud** using an API key. This is the simplest approach and is used when you provide the `apiKey(...)` builder method.
-- **CP4DAuthenticator** – authenticates with **Cloud Pak for Data** deployments.
-- **Custom authenticators** – any implementation of the `Authenticator` interface can be used.
+`WatsonxChatModel`、`WatsonxStreamingChatModel` 等服务构建器既支持通过 `.apiKey(...)` 简写配置，也支持通过 `.authenticator(...)` 传入完整的 `Authenticator` 实例。
 
-The `WatsonxChatModel`, `WatsonxStreamingChatModel`, and other service builders accept either a shortcut via `.apiKey(...)` or a full `Authenticator` instance via `.authenticator(...)`.
-
-### Example
+### 示例
 ```java
 import dev.langchain4j.model.chat.ChatModel;
 import dev.langchain4j.model.watsonx.WatsonxChatModel;
@@ -39,14 +37,14 @@ import com.ibm.watsonx.ai.CloudRegion;
 
 WatsonxChatModel.builder()
     .baseUrl(CloudRegion.FRANKFURT)
-    .apiKey("your-api-key") // Simple IBM Cloud authentication
+    .apiKey("your-api-key") // 简单的 IBM Cloud 认证
     .projectId("your-project-id")
     .modelName("ibm/granite-4-h-small")
     .build();
 
 WatsonxChatModel.builder()
     .baseUrl("https://my-instance-url")
-    .authenticator( // For Cloud Pak for Data deployments
+    .authenticator( // 用于 Cloud Pak for Data 部署
         CP4DAuthenticator.builder()
             .baseUrl("https://my-instance-url")
             .username("username")
@@ -59,11 +57,11 @@ WatsonxChatModel.builder()
     .build();
 ```
 
-### Custom HttpClient and SSL Configuration
+### 自定义 HttpClient 和 SSL 配置
 
-#### Using a custom HttpClient
+#### 使用自定义 HttpClient
 
-All services and authenticators support a custom `HttpClient` instance through the builder pattern. This is particularly useful for Cloud Pak for Data environments where you may need to configure custom TLS/SSL settings, proxy configuration, or other HTTP client properties.
+所有服务和认证器均支持通过构建器模式传入自定义 `HttpClient` 实例。在 Cloud Pak for Data 环境中尤其有用，可用于配置自定义 TLS/SSL 设置、代理配置或其他 HTTP 客户端属性。
 
 ```java
 HttpClient httpClient = HttpClient.newBuilder()
@@ -75,65 +73,65 @@ EmbeddingModel embeddingModel = WatsonxEmbeddingModel.builder()
     .baseUrl("https://my-instance-url")
     .modelName("ibm/granite-embedding-278m-multilingual")
     .projectId("project-id")
-    .httpClient(httpClient) // Custom HttpClient
+    .httpClient(httpClient) // 自定义 HttpClient
     .authenticator(
         CP4DAuthenticator.builder()
             .baseUrl("https://my-instance-url")
             .username("username")
             .apiKey("api-key")
-            .httpClient(httpClient) // Custom HttpClient
+            .httpClient(httpClient) // 自定义 HttpClient
             .build()
     )
     .build();
 ```
 
-> **Note:** When using a custom `HttpClient` with Cloud Pak for Data, make sure to set it on both the service builder and the authenticator builder to ensure consistent HTTP behavior across all requests.
+> **注意：** 在 Cloud Pak for Data 中使用自定义 `HttpClient` 时，请确保在服务构建器和认证器构建器中均设置该实例，以保证所有请求的 HTTP 行为一致。
 
-#### Disabling SSL verification
+#### 禁用 SSL 验证
 
-If you only need to disable SSL certificate verification, you can use the `verifySsl(false)` option instead of providing a custom `HttpClient`:
+如果只需禁用 SSL 证书验证，可以使用 `verifySsl(false)` 选项，而无需提供自定义 `HttpClient`：
 
 ```java
 EmbeddingModel embeddingModel = WatsonxEmbeddingModel.builder()
     .baseUrl("https://my-instance-url")
     .modelName("ibm/granite-embedding-278m-multilingual")
     .projectId("project-id")
-    .verifySsl(false) // Disable SSL verification
+    .verifySsl(false) // 禁用 SSL 验证
     .authenticator(
         CP4DAuthenticator.builder()
             .baseUrl("https://my-instance-url")
             .username("username")
             .apiKey("api-key")
-            .verifySsl(false) // Disable SSL verification
+            .verifySsl(false) // 禁用 SSL 验证
             .build()
     )
     .build();
 ```
 
-### How to create an IBM Cloud API Key
+### 如何创建 IBM Cloud API Key
 
-You can create an API key at [https://cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys) by clicking **Create +**.
+访问 [https://cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys)，点击 **Create +** 创建 API Key。
 
-### How to find your Project ID
+### 如何查找 Project ID
 
-1. Visit [https://dataplatform.cloud.ibm.com/projects/?context=wx](https://dataplatform.cloud.ibm.com/projects/?context=wx)  
-2. Open your project  
-3. Go to the **Manage** tab  
-4. Copy the **Project ID** from the **Details** section  
+1. 访问 [https://dataplatform.cloud.ibm.com/projects/?context=wx](https://dataplatform.cloud.ibm.com/projects/?context=wx)
+2. 打开您的项目
+3. 进入 **Manage** 标签页
+4. 从 **Details** 部分复制 **Project ID**
 
 ## WatsonxChatModel
 
-The `WatsonxChatModel` class allows you to create an instance of the `ChatModel` interface fully encapsulated within LangChain4j.  
-To create an instance, you must specify the mandatory parameters:
+`WatsonxChatModel` 类允许创建完全封装在 LangChain4j 内的 `ChatModel` 接口实例。
+创建实例时必须指定以下必填参数：
 
-- `baseUrl(...)` – IBM Cloud endpoint URL (as `String`, `URI`, or `CloudRegion`);
-- `apiKey(...)` – IBM Cloud IAM API key;
-- `projectId(...)` – IBM Cloud Project ID (or use `spaceId(...)`);
-- `modelName(...)` – Foundation model ID for inference;
+- `baseUrl(...)` — IBM Cloud 端点 URL（可为 `String`、`URI` 或 `CloudRegion`）；
+- `apiKey(...)` — IBM Cloud IAM API Key；
+- `projectId(...)` — IBM Cloud 项目 ID（或使用 `spaceId(...)`）；
+- `modelName(...)` — 用于推理的基础模型 ID；
 
-> You can authenticate using either `.apiKey(...)` or a full `Authenticator` instance via `.authenticator(...)`.
+> 可使用 `.apiKey(...)` 或通过 `.authenticator(...)` 传入完整的 `Authenticator` 实例进行认证。
 
-### Example
+### 示例
 
 ```java
 import dev.langchain4j.model.chat.ChatModel;
@@ -149,19 +147,19 @@ ChatModel chatModel = WatsonxChatModel.builder()
     .maxOutputTokens(0)
     .build();
 
-String answer = chatModel.chat("Hello from watsonx.ai");
+String answer = chatModel.chat("来自 watsonx.ai 的问好");
 System.out.println(answer);
 ```
 
-> 🔗 [View available models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx#ibm-provided)
+> 🔗 [查看可用模型](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx#ibm-provided)
 
 ## WatsonxStreamingChatModel
 
-The `WatsonxStreamingChatModel` provides streaming support for IBM watsonx.ai within LangChain4j. It’s useful when you want to process tokens as they are generated, ideal for real-time applications such as chat UIs or long text generation.
+`WatsonxStreamingChatModel` 为 LangChain4j 中的 IBM watsonx.ai 提供流式支持。适用于需要在 token 生成时即处理的场景，非常适合聊天 UI 或长文本生成等实时应用。
 
-Streaming uses the same configuration structure and parameters as the non-streaming [`WatsonxChatModel`](#watsonxchatmodel). The main difference is that responses are delivered incrementally through a handler interface.
+流式模式使用与非流式 [`WatsonxChatModel`](#watsonxchatmodel) 相同的配置结构和参数，主要区别在于响应通过处理器接口增量传递。
 
-### Example
+### 示例
 
 ```java
 import dev.langchain4j.model.chat.StreamingChatModel;
@@ -178,16 +176,16 @@ StreamingChatModel model = WatsonxStreamingChatModel.builder()
     .maxOutputTokens(0)
     .build();
 
-model.chat("What is the capital of Italy?", new StreamingChatResponseHandler() {
+model.chat("意大利的首都是哪里？", new StreamingChatResponseHandler() {
 
     @Override
     public void onPartialResponse(String partialResponse) {
-        System.out.println("Partial: " + partialResponse);
+        System.out.println("部分响应：" + partialResponse);
     }
 
     @Override
     public void onCompleteResponse(ChatResponse completeResponse) {
-        System.out.println("Complete: " + completeResponse);
+        System.out.println("完整响应：" + completeResponse);
     }
 
     @Override
@@ -197,13 +195,13 @@ model.chat("What is the capital of Italy?", new StreamingChatResponseHandler() {
 });
 ```
 
-> 🔗 [View available models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx#ibm-provided)
+> 🔗 [查看可用模型](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html?context=wx#ibm-provided)
 
-## Tool Integration
+## 工具集成
 
-Both `WatsonxChatModel` and `WatsonxStreamingChatModel` support **LangChain4j Tools**, allowing the model to call Java methods annotated with `@Tool`.
+`WatsonxChatModel` 和 `WatsonxStreamingChatModel` 均支持 **LangChain4j 工具**，允许模型调用使用 `@Tool` 注解的 Java 方法。
 
-Here’s an example using the synchronous model (`WatsonxChatModel`), but the same approach applies to the streaming variant.
+以下示例使用同步模型（`WatsonxChatModel`），但同样的方式也适用于流式变体。
 
 ```java
 static class Tools {
@@ -236,42 +234,43 @@ AiService aiService = AiServices.builder(AiService.class)
         .tools(new Tools())
         .build();
 
-String answer = aiService.chat("What is the date today?");
+String answer = aiService.chat("今天是几号？");
 System.out.println(answer);
 ```
 
-> **NOTE:** Ensure your selected model supports tool use.
+> **注意：** 请确保所选模型支持工具调用。
+
 ---
 
-## Enabling Thinking / Reasoning Output
+## 启用思考 / 推理输出
 
-Some foundation models can include internal *reasoning* (also referred to as *thinking*) steps as part of their responses.  
-Depending on the model, this reasoning may be **embedded in the same text as the final response**, or **returned separately** in a dedicated field from `watsonx.ai`.  
+某些基础模型可以在响应中包含内部*推理*（也称为*思考*）步骤。
+根据模型不同，该推理内容可能**与最终响应嵌入在同一文本中**，也可能**由 watsonx.ai 单独在专用字段中返回**。
 
-To correctly enable and capture this behavior, you must configure the `thinking(...)` builder method according to the model’s output format.  
-This ensures that LangChain4j can automatically extract the reasoning and response content from the model output.
+为正确启用并捕获此行为，必须根据模型的输出格式配置 `thinking(...)` 构建器方法，
+以便 LangChain4j 能自动从模型输出中提取推理和响应内容。
 
-There are two main configuration modes:
+主要有两种配置模式：
 
-- **`ExtractionTags`** → for models that return reasoning and response in the same text block (e.g **ibm/granite-3-3-8b-instruct**).  
-- **`ThinkingEffort`** → for models that already separate reasoning and response automatically (e.g **openai/gpt-oss-120b**).  
+- **`ExtractionTags`** → 适用于将推理和响应返回在同一文本块中的模型（如 **ibm/granite-3-3-8b-instruct**）。
+- **`ThinkingEffort`** → 适用于已自动分离推理和响应的模型（如 **openai/gpt-oss-120b**）。
 
-### Models that return reasoning and response together
+### 将推理和响应一并返回的模型
 
-Use **`ExtractionTags`** when the model outputs reasoning and response in the same text string.  
-The tags define XML-like markers used to separate the reasoning from the final response.
+当模型将推理和响应输出在同一文本字符串中时，使用 **`ExtractionTags`**。
+标签定义了用于分隔推理和最终响应的类 XML 标记。
 
-**Example tags:**
+**示例标签：**
 
-- **Reasoning tag:** `<think>` — contains the model's internal reasoning.  
-- **Response tag:** `<response>` — contains the user-facing answer.  
+- **推理标签：** `<think>` — 包含模型的内部推理。
+- **响应标签：** `<response>` — 包含面向用户的答案。
 
-#### Behavior
+#### 行为
 
-- If **both tags** are specified, they are used directly to extract reasoning and response segments.  
-- If **only the reasoning tag** is specified, everything outside that tag is considered the response.  
+- 若**同时指定两个标签**，则直接用于提取推理和响应段落。
+- 若**只指定推理标签**，则该标签之外的所有内容均视为响应。
 
-#### Example for **ibm/granite-3-3-8b-instruct**
+#### **ibm/granite-3-3-8b-instruct** 示例
 
 ```java
 ChatModel chatModel = WatsonxChatModel.builder()
@@ -284,7 +283,7 @@ ChatModel chatModel = WatsonxChatModel.builder()
     .build();
 
 ChatResponse chatResponse = chatModel.chat(
-    UserMessage.userMessage("Why is the sky blue?")
+    UserMessage.userMessage("天空为什么是蓝色的？")
 );
 
 AiMessage aiMessage = chatResponse.aiMessage();
@@ -293,12 +292,12 @@ System.out.println(aiMessage.thinking());
 System.out.println(aiMessage.text());
 ```
 
-### Models that return reasoning and response separately.
+### 将推理和响应分开返回的模型
 
-For models that already return reasoning and response as separate fields, use the **`ThinkingEffort`** to control how much reasoning the model applies during generation.
-Alternatively, enable it using the boolean flag.
+对于已将推理和响应作为单独字段返回的模型，使用 **`ThinkingEffort`** 控制模型在生成过程中应用的推理量。
+也可使用布尔标志启用。
 
-#### Example for **openai/gpt-oss-120b**
+#### **openai/gpt-oss-120b** 示例
 
 ```java
 ChatModel chatModel = WatsonxChatModel.builder()
@@ -310,7 +309,7 @@ ChatModel chatModel = WatsonxChatModel.builder()
     .build();
 ```
 
-or
+或
 
 ```java
 ChatModel chatModel = WatsonxChatModel.builder()
@@ -322,7 +321,7 @@ ChatModel chatModel = WatsonxChatModel.builder()
     .build();
 ```
 
-### Streaming Example
+### 流式示例
 
 ```java
 StreamingChatModel model = WatsonxStreamingChatModel.builder()
@@ -334,7 +333,7 @@ StreamingChatModel model = WatsonxStreamingChatModel.builder()
     .build();
 
 List<ChatMessage> messages = List.of(
-    UserMessage.userMessage("Why is the sky blue?")
+    UserMessage.userMessage("天空为什么是蓝色的？")
 );
 
 ChatRequest chatRequest = ChatRequest.builder()
@@ -355,17 +354,17 @@ model.chat(chatRequest, new StreamingChatResponseHandler() {
 });
 ```
 
-> **Notes:**
-> - Ensure that the selected model supports reasoning output.  
-> - Use `ExtractionTags` for models that embed reasoning and response in a single text string.  
-> - Use `ThinkingEffort` or `thinking(true)` for models that already separate reasoning and response automatically.  
+> **注意：**
+> - 请确保所选模型支持推理输出。
+> - 对于将推理和响应嵌入在同一文本字符串中的模型，使用 `ExtractionTags`。
+> - 对于已自动分离推理和响应的模型，使用 `ThinkingEffort` 或 `thinking(true)`。
 
 ## WatsonxModelCatalog
 
-The `WatsonxModelCatalog` provides a programmatic way to discover and list all available foundation models on IBM watsonx.ai.
-It implements the LangChain4j `ModelCatalog` interface, allowing you to retrieve detailed information about each model.
+`WatsonxModelCatalog` 提供了一种以编程方式发现和列出 IBM watsonx.ai 上所有可用基础模型的途径。
+它实现了 LangChain4j 的 `ModelCatalog` 接口，允许检索每个模型的详细信息。
 
-### Example
+### 示例
 
 ```java
 import dev.langchain4j.model.catalog.ModelCatalog;
@@ -382,16 +381,16 @@ var models = modelCatalog.listModels();
 
 ## WatsonxModerationModel
 
-The `WatsonxModerationModel` provides a LangChain4j implementation of the `ModerationModel` interface using IBM watsonx.ai.  
-It allows to automatically detect and flag sensitive, unsafe, or policy-violating content in text through **detectors**.
+`WatsonxModerationModel` 提供了使用 IBM watsonx.ai 的 LangChain4j `ModerationModel` 接口实现。
+可通过**检测器**自动检测和标记文本中的敏感、不安全或违规内容。
 
-One or multiple **detectors** can be used to identify different types of content, such as:
+可以使用一个或多个**检测器**来识别不同类型的内容，例如：
 
-- **Pii** – Detects Personally Identifiable Information (e.g., emails, phone numbers)  
-- **Hap** – Detects hate, abuse, or profanity  
-- **GraniteGuardian** – Detects risky or harmful language  
+- **Pii** — 检测个人身份信息（如邮箱、电话号码）
+- **Hap** — 检测仇恨、滥用或亵渎内容
+- **GraniteGuardian** — 检测有风险或有害的语言
 
-### Example
+### 示例
 
 ```java
 ModerationModel model = WatsonxModerationModel.builder()
@@ -404,58 +403,59 @@ ModerationModel model = WatsonxModerationModel.builder()
 Response<Moderation> response = model.moderate("...");
 ```
 
-### Metadata
+### 元数据
 
-Each moderation response includes a `metadata` map that provides additional context about the detection.  
+每个审核响应都包含一个 `metadata` Map，提供关于检测结果的额外上下文。
 
-| Key | Description | 
-|-----|--------------|
-| `detection` | The detected label or category assigned by the detector
-| `detection_type` | The type of detector that triggered the flag 
-| `start` | The starting character index of the detected segment 
-| `end` | The ending character index of the detected segment 
-| `score` | The confidence score of the detection 
+| 键 | 说明 |
+|-----|------|
+| `detection` | 检测器分配的检测标签或类别 |
+| `detection_type` | 触发标记的检测器类型 |
+| `start` | 检测到的片段起始字符索引 |
+| `end` | 检测到的片段结束字符索引 |
+| `score` | 检测结果的置信度评分 |
 
-These metadata values are available via `Response.metadata()`:
+这些元数据值可通过 `Response.metadata()` 获取：
 
 ```java
 Map<String, Object> metadata = response.metadata();
-System.out.println("Detection type: " + metadata.get("detection_type"));
-System.out.println("Score: " + metadata.get("score"));
+System.out.println("检测类型：" + metadata.get("detection_type"));
+System.out.println("评分：" + metadata.get("score"));
 ```
-## Configuration via Environment Variables
 
-The LangChain4j watsonx integration allows customization of internal HTTP behavior through environment variables.  
-These settings are optional and sensible defaults are used when variables are not explicitly defined.
+## 通过环境变量配置
 
-### Retry Configuration
+LangChain4j watsonx 集成允许通过环境变量自定义内部 HTTP 行为。
+这些设置是可选的，未显式定义时将使用合理的默认值。
 
-HTTP requests are automatically retried in case of transient failures or expired authentication tokens.  
-Retry behavior can be customized using the following environment variables:
+### 重试配置
 
-| Environment Variable | Description | Default |
-|---------------------|-------------|---------|
-| `WATSONX_RETRY_TOKEN_EXPIRED_MAX_RETRIES` | Maximum number of retries when an authentication token has expired (HTTP 401 / 403) | `1` |
-| `WATSONX_RETRY_STATUS_CODES_MAX_RETRIES` | Maximum number of retries for transient HTTP status codes (`429`, `503`, `504`, `520`) | `10` |
-| `WATSONX_RETRY_STATUS_CODES_BACKOFF_ENABLED` | Enables exponential backoff for transient retries | `true` |
-| `WATSONX_RETRY_STATUS_CODES_INITIAL_INTERVAL_MS` | Initial retry interval in milliseconds (used as base for exponential backoff) | `20` |
+HTTP 请求在遇到瞬态故障或认证 token 过期时会自动重试。
+可通过以下环境变量自定义重试行为：
 
-### HTTP IO Executor Configuration
+| 环境变量 | 说明 | 默认值 |
+|---|---|---|
+| `WATSONX_RETRY_TOKEN_EXPIRED_MAX_RETRIES` | 认证 token 过期（HTTP 401 / 403）时的最大重试次数 | `1` |
+| `WATSONX_RETRY_STATUS_CODES_MAX_RETRIES` | 瞬态 HTTP 状态码（`429`、`503`、`504`、`520`）的最大重试次数 | `10` |
+| `WATSONX_RETRY_STATUS_CODES_BACKOFF_ENABLED` | 为瞬态重试启用指数退避 | `true` |
+| `WATSONX_RETRY_STATUS_CODES_INITIAL_INTERVAL_MS` | 初始重试间隔（毫秒，用作指数退避的基数） | `20` |
 
-Streaming responses and HTTP response processing are handled by an internal IO executor.  
-By default, a single-threaded executor is used to ensure sequential processing of streaming events.
+### HTTP IO 执行器配置
 
-This behavior can be customized using the following environment variable:
+流式响应和 HTTP 响应处理由内部 IO 执行器处理。
+默认使用单线程执行器以确保流式事件的顺序处理。
 
-| Environment Variable | Description | Default |
-|---------------------|-------------|---------|
-| `WATSONX_IO_EXECUTOR_THREADS` | Number of threads used for HTTP IO and SSE stream parsing | `1` |
+可通过以下环境变量自定义此行为：
+
+| 环境变量 | 说明 | 默认值 |
+|---|---|---|
+| `WATSONX_IO_EXECUTOR_THREADS` | 用于 HTTP IO 和 SSE 流解析的线程数 | `1` |
 
 ## Quarkus
 
-See more details [here](https://docs.quarkiverse.io/quarkus-langchain4j/dev/watsonx-chat-model.html).
+详情请参阅[此处](https://docs.quarkiverse.io/quarkus-langchain4j/dev/watsonx-chat-model.html)。
 
-## Examples
+## 示例
 
 - [WatsonxChatModelTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxChatModelTest.java)
 - [WatsonxChatModelReasoningTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxChatModelReasoningTest.java)
@@ -463,4 +463,3 @@ See more details [here](https://docs.quarkiverse.io/quarkus-langchain4j/dev/wats
 - [WatsonxStreamingChatModelReasoningTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxStreamingChatModelTest.java)
 - [WatsonxToolsTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxToolsTest.java)
 - [WatsonxTokenCounterEstimatorTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxTokenCounterEstimatorTest.java)
-- [WatsonxModerationModelTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxModerationModelTest.java)

@@ -6,21 +6,20 @@ sidebar_position: 2
 
 :::note
 
-This is the documentation for the `OpenAI` integration, that uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
+这是 `OpenAI` 集成的文档，使用 OpenAI REST API 的自定义 Java 实现，最适合 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）。
 
+LangChain4j 提供 3 种不同的 OpenAI 图像生成集成，这是第 1 种：
 
-LangChain4j provides 3 different integrations with OpenAI for generating images, and this is #1 :
-
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用 OpenAI REST API 的自定义 Java 实现，最适合 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合与微软 Java 技术栈结合使用，包括高级 Azure 身份验证机制。
 
 :::
 
-## Maven Dependency
+## Maven 依赖
 
-### Plain Java
+### 纯 Java {#plain-java}
+
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -28,50 +27,3 @@ LangChain4j provides 3 different integrations with OpenAI for generating images,
     <version>1.13.0</version>
 </dependency>
 ```
-
-### Spring Boot
-```xml
-<dependency>
-    <groupId>dev.langchain4j</groupId>
-    <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
-    <version>1.13.0-beta23</version>
-</dependency>
-```
-
-
-## Creating `OpenAiImageModel`
-
-### Plain Java
-```java
-ImageModel model = OpenAiImageModel.builder()
-        .apiKey(System.getenv("OPENAI_API_KEY"))
-        .modelName("dall-e-3")
-        .build();
-```
-
-### Spring Boot
-Add to the `application.properties`:
-```properties
-# Mandatory properties:
-langchain4j.open-ai.image-model.api-key=${OPENAI_API_KEY}
-langchain4j.open-ai.image-model.model-name=dall-e-3
-
-# Optional properties:
-langchain4j.open-ai.image-model.base-url=...
-langchain4j.open-ai.image-model.custom-headers=...
-langchain4j.open-ai.image-model.log-requests=...
-langchain4j.open-ai.image-model.log-responses=...
-langchain4j.open-ai.image-model.max-retries=...
-langchain4j.open-ai.image-model.organization-id=...
-langchain4j.open-ai.image-model.project-id=...
-langchain4j.open-ai.image-model.quality=...
-langchain4j.open-ai.image-model.response-format=...
-langchain4j.open-ai.image-model.size=...
-langchain4j.open-ai.image-model.style=...
-langchain4j.open-ai.image-model.timeout=...
-langchain4j.open-ai.image-model.user=...
-```
-
-## Examples
-
-- [OpenAiImageModelExamples](https://github.com/langchain4j/langchain4j-examples/blob/main/open-ai-examples/src/main/java/OpenAiImageModelExamples.java)

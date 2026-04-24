@@ -4,369 +4,204 @@ sidebar_position: 9
 
 # Google Vertex AI Anthropic
 
-Google Vertex AI provides access to Anthropic's Claude models through Google Cloud Platform. This integration allows you to use Claude's advanced language capabilities while leveraging Google Cloud's infrastructure and security features.
+## 简介
 
-## Get started
+Google Cloud 的 Model Garden 提供了对 Anthropic Claude 系列模型的访问，包括 Claude Opus 4、Sonnet 4 和 Haiku 等。
 
-### Create Google Cloud Account
+## 前提条件
 
-If you're new to Google Cloud, you can create a new account by clicking on the `[create an account]` button located under `Get set up on Google Cloud` dropdown menu on the following page:
+1. **Google Cloud 账号及项目**：确保拥有一个已启用计费功能的 Google Cloud 项目。
+2. **启用 Vertex AI API**。
+3. **在 Model Garden 中启用 Claude 模型**：
+   - 访问 [Vertex AI Model Garden](https://console.cloud.google.com/vertex-ai/model-garden)
+   - 搜索 "Claude"，选择需要使用的 Claude 模型
+   - 点击 "Enable"
 
-[Create an account](https://cloud.google.com/vertex-ai/generative-ai/docs/start/quickstarts/quickstart-multimodal#new-to-google-cloud)
+## 认证
 
-### Create a project within your Google Cloud Platform account
+可使用以下两种方式之一进行认证：
 
-Within your Google Cloud Account create a new project and enable the Vertex AI APIs by following the steps outlined below:
-
-[Create a new project](https://cloud.google.com/vertex-ai/docs/start/cloud-environment#set_up_a_project)
-
-Note your `PROJECT_ID` as it will be required for future API calls.
-
-### Enable Claude models in Vertex AI Model Garden
-
-Claude models need to be enabled in your Google Cloud project:
-
-1. Go to the [Vertex AI Model Garden](https://console.cloud.google.com/vertex-ai/model-garden)
-2. Search for "Claude" models
-3. Enable the Claude models you want to use (e.g., Claude 3.5 Sonnet, Claude 3 Opus)
-
-### Select the Google Cloud authentication strategy
-
-There are several ways on how your application authenticates to Google Cloud services and APIs. For example, you can create a [service account](https://cloud.google.com/docs/authentication/provide-credentials-adc#local-key) and set up environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the path of the JSON file that contains your credentials.
-
-You can discover all the authentication strategies [here](https://cloud.google.com/docs/authentication/provide-credentials-adc). But for simplicity of local testing we will be using authentication via `gcloud` utility.
-
-### Install Google Cloud CLI (Optional)
-
-To access your cloud projects locally, you can install `gcloud` tool by following the [installation instructions](https://cloud.google.com/sdk/docs/install). For GNU/Linux operating systems, the installation steps are as follows:
-
-1. Download SDK:
-
-```bash
-curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-467.0.0-linux-x86_64.tar.gz
-```
-
-2. Extract an archive:
-
-```bash
-tar -xf google-cloud-cli-467.0.0-linux-x86_64.tar.gz
-```
-
-3. Run an installation script:
-
-```bash
-cd google-cloud-sdk/
-./install.sh
-```
-
-4. Run the following command to set up a default project and authentication credentials:
+### 通过 gcloud CLI 认证
 
 ```bash
 gcloud auth application-default login
 ```
 
-This authentication method is compatible with the `langchain4j-vertex-ai-anthropic` package.
+### 通过服务账号认证
 
-## Add dependencies
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account.json
+```
 
-To get started, add the following dependencies to your project's `pom.xml`:
+## Maven 依赖
 
 ```xml
 <dependency>
-  <groupId>dev.langchain4j</groupId>
-  <artifactId>langchain4j-vertex-ai-anthropic</artifactId>
-  <version>1.13.0-beta23</version>
+    <groupId>dev.langchain4j</groupId>
+    <artifactId>langchain4j-vertex-ai-anthropic</artifactId>
+    <version>1.13.0-beta23</version>
 </dependency>
 ```
 
-or project's `build.gradle`:
-
-```groovy
-implementation 'dev.langchain4j:langchain4j-vertex-ai-anthropic:1.13.0-beta23'
-```
-
-### Try out an example code
-
-The `PROJECT_ID` field represents the variable you set when creating a new Google Cloud project.
+## 使用 `VertexAiAnthropicChatModel`
 
 ```java
-import dev.langchain4j.data.message.UserMessage;
-import dev.langchain4j.model.chat.ChatModel;
-import dev.langchain4j.model.chat.request.ChatRequest;
-import dev.langchain4j.model.chat.response.ChatResponse;
-import dev.langchain4j.model.vertexai.anthropic.VertexAiAnthropicChatModel;
-
-public class VertexAiAnthropicExample {
-
-    private static final String PROJECT_ID = "YOUR-PROJECT-ID";
-    private static final String LOCATION = "us-central1";
-    private static final String MODEL_NAME = "claude-3-5-sonnet-v2@20241022";
-
-    public static void main(String[] args) {
-        ChatModel model = VertexAiAnthropicChatModel.builder()
-                .project(PROJECT_ID)
-                .location(LOCATION)
-                .modelName(MODEL_NAME)
-                .maxTokens(1000)
-                .temperature(0.7)
-                .build();
-
-        ChatResponse response = model.chat(ChatRequest.builder()
-                .messages(List.of(UserMessage.from("Hello, Claude!")))
-                .build());
-
-        System.out.println(response.aiMessage().text());
-    }
-}
-```
-
-Streaming is also supported thanks to the `VertexAiAnthropicStreamingChatModel` class:
-
-```java
-import dev.langchain4j.model.vertexai.anthropic.VertexAiAnthropicStreamingChatModel;
-import dev.langchain4j.model.chat.StreamingChatResponseHandler;
-
-var model = VertexAiAnthropicStreamingChatModel.builder()
-        .project(PROJECT_ID)
-        .location(LOCATION)
-        .modelName(MODEL_NAME)
+VertexAiAnthropicChatModel model = VertexAiAnthropicChatModel.builder()
+        .project("your-project-id")
+        .location("us-east5")
+        .modelName("claude-sonnet-4-20250514")
+        .maxTokens(1024)
         .build();
 
-model.
+String response = model.chat("讲一个关于 Java 程序员的笑话");
+System.out.println(response);
+```
 
-chat(ChatRequest.builder()
-    .
+## 使用 `VertexAiAnthropicStreamingChatModel`
 
-messages(List.of(UserMessage.from("Tell me a story")))
-        .
+```java
+VertexAiAnthropicStreamingChatModel model = VertexAiAnthropicStreamingChatModel.builder()
+        .project("your-project-id")
+        .location("us-east5")
+        .modelName("claude-sonnet-4-20250514")
+        .maxTokens(1024)
+        .build();
 
-build(), new
-
-StreamingChatResponseHandler() {
-
+model.chat("讲一个关于 Java 程序员的笑话", new StreamingChatResponseHandler() {
     @Override
-    public void onPartialResponse (String partialResponse){
+    public void onPartialResponse(String partialResponse) {
         System.out.print(partialResponse);
     }
 
     @Override
-    public void onCompleteResponse (ChatResponse completeResponse){
-        System.out.println("\nDone!");
+    public void onCompleteResponse(ChatResponse completeResponse) {
+        System.out.println("\n完成！");
     }
 
     @Override
-    public void onError (Throwable error){
+    public void onError(Throwable error) {
         error.printStackTrace();
     }
 });
 ```
 
-You can use the shortcut `onPartialResponse()` and `onPartialResponseAndError()` utility functions from `LambdaStreamingResponseHandler`:
+### 使用 Lambda 简化流式处理
 
 ```java
-import static dev.langchain4j.model.chat.response.streaming.LambdaStreamingResponseHandler.onPartialResponse;
-import static dev.langchain4j.model.chat.response.streaming.LambdaStreamingResponseHandler.onPartialResponseAndError;
-
-model.chat(ChatRequest.builder()
-    .messages(List.of(UserMessage.from("Why is the sky blue?")))
-    .build(), onPartialResponse(System.out::print));
-
-model.chat(ChatRequest.builder()
-    .messages(List.of(UserMessage.from("Why is the sky blue?")))
-    .build(), onPartialResponseAndError(System.out::print, Throwable::printStackTrace));
+model.chat("讲一个笑话",
+        LambdaStreamingResponseHandler.onPartialResponse(System.out::print));
 ```
 
-### Available models
+## 配置参数
 
-List of available models for [Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/claude).
-You can learn about the models in the [Claude model documentation](https://docs.anthropic.com/en/docs/about-claude/models).
+| 参数 | 说明 |
+|---|---|
+| `project` | Google Cloud 项目 ID |
+| `location` | 模型部署区域（如 `us-east5`） |
+| `modelName` | Claude 模型名称 |
+| `maxTokens` | 最大输出 token 数 |
+| `temperature` | 采样温度（0 到 1） |
+| `topP` | 核采样参数 |
+| `topK` | 采样时考虑的候选 token 数 |
+| `stopSequences` | 停止序列列表 |
+| `enablePromptCaching` | 是否启用提示缓存 |
+| `credentials` | 自定义 GoogleCredentials |
 
-## Configuration
+## 视觉能力
 
-```java
-ChatModel model = VertexAiAnthropicChatModel.builder()
-    .project(PROJECT_ID)            // your Google Cloud project ID
-    .location(LOCATION)             // the region where AI inference should take place
-    .modelName(MODEL_NAME)          // the Claude model used
-    .maxTokens(4096)               // the maximum number of tokens to generate
-    .temperature(0.7)              // temperature (between 0 and 1)
-    .topP(0.95)                    // topP (between 0 and 1) — cumulative probability
-    .topK(40)                      // topK (positive integer) — pick from top K tokens
-    .stopSequences(Arrays.asList("Human:", "Assistant:")) // stop sequences
-    .enablePromptCaching(true)     // enable prompt caching for cost/latency optimization
-    .credentials(credentials)      // custom Google Cloud credentials
-    .logRequests(true)             // log input requests
-    .logResponses(true)            // log output responses
-    .build();
-```
-
-The same parameters are also available on the streaming chat model.
-
-## More examples
-
-Claude is a powerful multimodal model that accepts both text and images as input.
-
-### Vision capabilities
+可通过 `ImageContent` 和 `TextContent` 传入图片：
 
 ```java
-import dev.langchain4j.data.image.Image;
-import dev.langchain4j.data.message.ImageContent;
-import dev.langchain4j.data.message.TextContent;
-import dev.langchain4j.data.message.UserMessage;
-
-ChatModel model = VertexAiAnthropicChatModel.builder()
-    .project(PROJECT_ID)
-    .location(LOCATION)
-    .modelName("claude-3-5-sonnet-v2@20241022")
-    .build();
-
-Image image = Image.builder()
-    .base64Data("base64-encoded-image-data")
-    .mimeType("image/jpeg")
-    .build();
-
-UserMessage userMessage = UserMessage.from(
-    ImageContent.from(image),
-    TextContent.from("What do you see in this image?")
+var imageContent = ImageContent.from(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/JPEG_example_flower.jpg/800px-JPEG_example_flower.jpg",
+        "image/jpeg"
 );
+var textContent = TextContent.from("这张图片里有什么？");
 
-ChatResponse response = model.chat(ChatRequest.builder()
-    .messages(List.of(userMessage))
-    .build());
-
-System.out.println(response.aiMessage().text());
+UserMessage userMessage = UserMessage.from(imageContent, textContent);
+ChatResponse response = model.chat(userMessage);
 ```
 
-### Tool calling
+## 工具调用
+
+可使用 `ToolSpecification` 和 `JsonObjectSchema` 定义工具：
 
 ```java
-import dev.langchain4j.agent.tool.ToolSpecification;
-import dev.langchain4j.data.message.ToolExecutionResultMessage;
-import dev.langchain4j.model.output.structured.JsonObjectSchema;
-
-ChatModel model = VertexAiAnthropicChatModel.builder()
-        .project(PROJECT_ID)
-        .location(LOCATION)
-        .modelName("claude-3-5-sonnet-v2@20241022")
-        .build();
-
-ToolSpecification weatherToolSpec = ToolSpecification.builder()
-        .name("getWeatherForecast")
-        .description("Get the weather forecast for a location")
+ToolSpecification calculatorTool = ToolSpecification.builder()
+        .name("calculator")
+        .description("执行基本算术运算")
         .parameters(JsonObjectSchema.builder()
-                .addStringProperty("location", "the location to get the weather forecast for")
-                .required("location")
+                .addStringProperty("expression", "要求值的数学表达式")
+                .required("expression")
                 .build())
         .build();
 
 ChatRequest request = ChatRequest.builder()
-        .messages(List.of(UserMessage.from("What is the weather in Paris?")))
-        .toolSpecifications(List.of(weatherToolSpec))
+        .messages(UserMessage.from("3 加 4 等于多少？"))
+        .toolSpecifications(calculatorTool)
         .build();
-
-ChatResponse response = model.chat(request);
 ```
 
-The model will reply back with a tool execution request instead of a text message.
-Your responsibility will be to provide the model with the response of that execution request,
-by sending a `ToolExecutionResultMessage` back to the model.
-The model will then be able to reply with a text response.
-
-### Tool support with AiServices
-
-You can use `AiServices` to create your own assistants powered by tools.
-The following example shows a `Calculator` tool to do some math calculations,
-an `Assistant` interface to specify the contract of our assistant,
-then we configure `AiServices` to use Claude, with a chat memory, and the calculator tool.
+## 使用 AiServices 和工具
 
 ```java
-import dev.langchain4j.service.AiServices;
-import dev.langchain4j.agent.tool.Tool;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
+interface MathAssistant {
+    String calculate(String expression);
+}
 
 static class Calculator {
-    @Tool("Adds two given numbers")
-    double add(double a, double b) {
-        return a + b;
-    }
-
-    @Tool("Multiplies two given numbers")
-    String multiply(double a, double b) {
-        return String.valueOf(a * b);
+    @Tool("执行基本算术运算")
+    double evaluate(@P("要求值的数学表达式") String expression) {
+        return new ExpressionParser().evaluate(expression);
     }
 }
 
-interface Assistant {
-    String chat(String userMessage);
-}
-
-Calculator calculator = new Calculator();
-
-Assistant assistant = AiServices.builder(Assistant.class)
-        .chatModel(model)
-        .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
-        .tools(calculator)
+VertexAiAnthropicChatModel model = VertexAiAnthropicChatModel.builder()
+        .project("your-project-id")
+        .location("us-east5")
+        .modelName("claude-sonnet-4-20250514")
         .build();
 
-String answer = assistant.chat("How much is 74589613588 + 4786521789?");
+MathAssistant assistant = AiServices.builder(MathAssistant.class)
+        .chatModel(model)
+        .tools(new Calculator())
+        .build();
+
+String result = assistant.calculate("2 + 2");
 ```
 
-### Prompt caching
+## 提示缓存
 
-Claude supports prompt caching to reduce costs and improve response times for repeated or lengthy prompts:
+通过设置 `enablePromptCaching(true)` 启用提示缓存，可降低长提示词的延迟和成本：
 
 ```java
-import dev.langchain4j.data.message.SystemMessage;
-
-ChatModel model = VertexAiAnthropicChatModel.builder()
-    .project(PROJECT_ID)
-    .location(LOCATION)
-    .modelName("claude-3-5-sonnet-v2@20241022")
-    .enablePromptCaching(true)
-    .build();
-
-SystemMessage systemMessage = SystemMessage.from(
-    "You are an expert software engineer with deep knowledge of Java, " +
-    "Spring Boot, microservices architecture, and cloud-native development. " +
-    "Always provide detailed, production-ready code examples with proper " +
-    "error handling, logging, and best practices."
-);
-
-UserMessage userMessage = UserMessage.from("How do I implement JWT authentication?");
-
-ChatResponse response = model.chat(ChatRequest.builder()
-    .messages(List.of(systemMessage, userMessage))
-    .build());
+VertexAiAnthropicChatModel model = VertexAiAnthropicChatModel.builder()
+        .project("your-project-id")
+        .location("us-east5")
+        .modelName("claude-opus-4-20250514")
+        .enablePromptCaching(true)
+        .build();
 ```
 
-Prompt caching provides:
-- **Cost Reduction**: Up to 90% cheaper for cached content
-- **Latency Improvement**: Up to 85% faster response times
-- **Automatic Optimization**: No manual cache management required
-
-### Custom authentication
-
-You can provide custom Google Cloud credentials:
+## 自定义认证
 
 ```java
 import com.google.auth.oauth2.GoogleCredentials;
-import java.io.FileInputStream;
 
 GoogleCredentials credentials = GoogleCredentials.fromStream(
-    new FileInputStream("path/to/service-account-key.json"));
+        new FileInputStream("/path/to/service-account.json"))
+        .createScoped("https://www.googleapis.com/auth/cloud-platform");
 
-ChatModel model = VertexAiAthropicChatModel.builder()
-    .project(PROJECT_ID)
-    .location(LOCATION)
-    .modelName("claude-3-5-sonnet-v2@20241022")
-    .credentials(credentials)
-    .build();
+VertexAiAnthropicChatModel model = VertexAiAnthropicChatModel.builder()
+        .project("your-project-id")
+        .location("us-east5")
+        .modelName("claude-sonnet-4-20250514")
+        .credentials(credentials)
+        .build();
 ```
- 
-## References
 
-[Available locations](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/locations#available-regions)
+## 参考资料
 
-[Claude model documentation](https://docs.anthropic.com/en/docs/about-claude/models)
-
-[Vertex AI Model Garden](https://console.cloud.google.com/vertex-ai/model-garden)
+- [可用区域](https://cloud.google.com/vertex-ai/generative-ai/docs/partner-models/use-claude#regions)
+- [Claude 模型文档](https://docs.anthropic.com/en/docs/about-claude/models/all-models)
+- [Vertex AI Model Garden](https://console.cloud.google.com/vertex-ai/model-garden)

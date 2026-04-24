@@ -7,13 +7,13 @@ sidebar_position: 25
 https://github.com/vearch/vearch
 
 
-## Maven Dependency
+## Maven 依赖
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-vearch` has migrated to `langchain4j-community` and is renamed to `langchain4j-community-vearch`.
+自 `1.0.0-alpha1` 起，`langchain4j-vearch` 已迁移至 `langchain4j-community`，并更名为 `langchain4j-community-vearch`。
 :::
 
-`0.36.2` and previous:
+`0.36.2` 及之前版本：
 
 ```xml
 <dependency>
@@ -23,7 +23,7 @@ Since `1.0.0-alpha1`, `langchain4j-vearch` has migrated to `langchain4j-communit
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及之后版本：
 
 ```xml
 <dependency>
@@ -33,7 +33,7 @@ Since `1.0.0-alpha1`, `langchain4j-vearch` has migrated to `langchain4j-communit
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或使用 BOM 统一管理依赖：
 
 ```xml
 <dependencyManagement>
@@ -47,25 +47,25 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## APIs
+## API 参考 {#api}
 
-### `1.0.0-alpha1` and previous
+### `1.0.0-alpha1` 及之前版本
 
 :::note
-* `1.0.0-alpha1` and previous `langchain4j-vearch` uses `Vearch` [old api](https://vearch.readthedocs.io/zh-cn/v3.3.x/overview.html), which is deprecated in vearch 3.4.x version. 
-* `1.0.0-alpha1` and later `langchain4j-community-vearch` uses `Vearch` [latest api](https://vearch.readthedocs.io/zh-cn/latest/overview.html), which supports 3.5.x and 3.4.x version.
+* `1.0.0-alpha1` 及之前的 `langchain4j-vearch` 使用 Vearch [旧版 API](https://vearch.readthedocs.io/zh-cn/v3.3.x/overview.html)，该 API 在 vearch 3.4.x 版本中已弃用。
+* `1.0.0-alpha1` 及之后的 `langchain4j-community-vearch` 使用 Vearch [最新 API](https://vearch.readthedocs.io/zh-cn/latest/overview.html)，支持 3.5.x 和 3.4.x 版本。
 
-We recommend to use `langchain4j-community-vearch` which supports the latest version of `Vearch`.
+推荐使用支持最新版本 Vearch 的 `langchain4j-community-vearch`。
 :::
 
-To use `VearchEmbeddingStore`, you need to instantiate a `VearchConfig`:
+使用 `VearchEmbeddingStore` 需要先实例化 `VearchConfig`：
 
 ```java
 String embeddingFieldName = "text_embedding";
 String textFieldName = "text";
 Map<String, Object> metadata = createMetadata().toMap();
 
-// init properties
+// 初始化属性
 Map<String, SpacePropertyParam> properties = new HashMap<>(4);
 properties.put(embeddingFieldName, SpacePropertyParam.VectorParam.builder()
         .index(true)
@@ -73,7 +73,7 @@ properties.put(embeddingFieldName, SpacePropertyParam.VectorParam.builder()
         .dimension(384)
         .build());
 properties.put(textFieldName, SpacePropertyParam.StringParam.builder().build());
-// put metadata... e.g. properties.put("name", SpacePropertyParam.StringParam.builder().build());
+// 添加元数据... 例如：properties.put("name", SpacePropertyParam.StringParam.builder().build());
 
 VearchConfig vearchConfig = VearchConfig.builder()
         .spaceEngine(SpaceEngine.builder()
@@ -96,7 +96,7 @@ VearchConfig vearchConfig = VearchConfig.builder()
         .build();
 ```
 
-Then, you can create a `VearchEmbeddingStore`:
+然后创建 `VearchEmbeddingStore`：
 
 ```java
 VearchEmbeddingStore embeddingStore = VearchEmbeddingStore.builder()
@@ -106,16 +106,16 @@ VearchEmbeddingStore embeddingStore = VearchEmbeddingStore.builder()
 ```
 
 
-### `1.0.0-alpha1` and later
+### `1.0.0-alpha1` 及之后版本
 
-To use `VearchEmbeddingStore`, you need to instantiate a `VearchConfig`:
+使用 `VearchEmbeddingStore` 需要先实例化 `VearchConfig`：
 
 ```java
 String embeddingFieldName = "text_embedding";
 String textFieldName = "text";
 String spaceName = "embedding_space_" + ThreadLocalRandom.current().nextInt(0, Integer.MAX_VALUE);
 
-// init Fields
+// 初始化字段
 List<Field> fields = new ArrayList<>(4);
 List<String> metadataFieldNames = new ArrayList<>();
 fields.add(VectorField.builder()
@@ -134,7 +134,7 @@ fields.add(VectorField.builder()
         .build()
 );
 fields.add(StringField.builder().name(textFieldName).fieldType(FieldType.STRING).build());
-// put metadata... e.g. fields.add(StringField.builder().name("name").fieldType(FieldType.STRING).build());
+// 添加元数据... 例如：fields.add(StringField.builder().name("name").fieldType(FieldType.STRING).build());
 
 VearchConfig vearchConfig = VearchConfig.builder()
         .databaseName(databaseName)
@@ -144,14 +144,14 @@ VearchConfig vearchConfig = VearchConfig.builder()
         .fields(fields)
         .metadataFieldNames(metadataFieldNames)
         .searchIndexParam(HNSWSearchParam.builder()
-                // Only support INNER_PRODUCT now
+                // 目前仅支持 INNER_PRODUCT
                 .metricType(MetricType.INNER_PRODUCT)
                 .efSearch(64)
                 .build())
         .build();
 ```
 
-Then, you can create a `VearchEmbeddingStore`:
+然后创建 `VearchEmbeddingStore`：
 
 ```java
 VearchEmbeddingStore embeddingStore = VearchEmbeddingStore.builder()
@@ -163,6 +163,6 @@ VearchEmbeddingStore embeddingStore = VearchEmbeddingStore.builder()
 ```
 
 
-## Examples
+## 示例
 
 - [VearchEmbeddingStoreIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-vearch/src/test/java/dev/langchain4j/store/embedding/vearch/VearchEmbeddingStoreIT.java)

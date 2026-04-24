@@ -7,7 +7,7 @@ sidebar_position: 4
 https://azure.microsoft.com/en-us/products/cosmos-db/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ https://azure.microsoft.com/en-us/products/cosmos-db/
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `AzureCosmosDbMongoVCoreEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [AzureCosmosDBMongoVCoreEmbeddingStoreIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-azure-cosmos-mongo-vcore/src/test/java/dev/langchain4j/store/embedding/azure/cosmos/mongo/vcore/AzureCosmosDBMongoVCoreEmbeddingStoreIT.java)

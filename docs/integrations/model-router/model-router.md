@@ -2,15 +2,13 @@
 sidebar_position: 1
 ---
 
-# Model Router
+# 模型路由器
 
-This is the documentation for the `ModelRouter`, which acts as a router for messages to multiple ChatModel instances and uses pluggable RoutingStrategies.
-The module comes with two default implementations: FailoverStrategy and LowestTokenUsageRoutingStrategy.
+这是 `ModelRouter` 的文档，它充当路由器，将消息路由到多个 `ChatModel` 实例，并使用可插拔的 `RoutingStrategy`。该模块内置了两种默认实现：`FailoverStrategy` 和 `LowestTokenUsageRoutingStrategy`。
 
+## Maven 依赖
 
-## Maven Dependencies
-
-The `langchain4j-community-model-router`library is available on Maven Central.
+`langchain4j-community-model-router` 库可在 Maven Central 上获取。
 
 ```xml
 <dependency>
@@ -19,18 +17,18 @@ The `langchain4j-community-model-router`library is available on Maven Central.
     <version>1.13.0-beta23</version>
 </dependency>
 ```
-## FailoverStrategy
 
-`FailoverStrategy` sends Messages to the first available model in order of registration. If this model fails (has an error) the message is immediately send to the next model. This strategy ignores failed ChatModels for a cooldown period and retries them again afterwards. The default cooldown is 1 minute. If all models fail, a `NoMatchingModelFoundException` is thrown.
+## 故障转移策略（FailoverStrategy） {#failoverstrategy}
 
+`FailoverStrategy` 按注册顺序将消息发送给第一个可用的模型。如果该模型失败（发生错误），消息会立即发送给下一个模型。此策略会在冷却期内忽略失败的 ChatModel，之后再重试。默认冷却时间为 1 分钟。如果所有模型都失败，则抛出 `NoMatchingModelFoundException`。
 
 ```java
-	ChatModel firstModel = AzureOpenAiChatModel.builder()
-		...
+        ChatModel firstModel = AzureOpenAiChatModel.builder()
+                ...
          .build();
 
     ChatModel secondModel = OpenAiOfficialChatModel.builder()
-		...
+                ...
          .build();
 
     ModelRouter router = ModelRouter.builder()
@@ -39,30 +37,27 @@ The `langchain4j-community-model-router`library is available on Maven Central.
         .build();
             
    router.chat(new UserMessage("Provide 3 short bullet points explaining why Java is awesome"));
-	   
-	   
 ```
 
-Now if the first model fails, messages are send to the second model.
+现在，如果第一个模型失败，消息会被发送给第二个模型。
 
 :::note
 
-As the FailoverStrategy sends messages to the next model, if one model fails, Exceptions thrown by this model are hidden from the calling code. You need to register an error listener if you want to keep track of them.
+由于 `FailoverStrategy` 会将消息发送给下一个模型，当某个模型失败时，该模型抛出的异常会被隐藏在调用代码之外。如果你想跟踪这些异常，需要注册一个错误监听器。
 
 :::
 
+## 最低 Token 使用量路由策略（LowestTokenUsageRoutingStrategy） {#lowesttokenusageroutingstrategy}
 
-## LowestTokenUsageRoutingStrategy
-
-`LowestTokenUsageRoutingStrategy` sends Messages to the model which has the least overall token consumption. 
+`LowestTokenUsageRoutingStrategy` 将消息发送给整体 token 消耗最少的模型。
 
 ```java
 ChatModel firstModel = AzureOpenAiChatModel.builder()
-	...
+        ...
      .build();
 
 ChatModel secondModel = OpenAiOfficialChatModel.builder()
-	...
+        ...
      .build();
 
 ModelRouter router = ModelRouter.builder()
@@ -71,16 +66,16 @@ ModelRouter router = ModelRouter.builder()
         .build();
 
 
-ChatResponse first = router.chat(new UserMessage("Hello")); // uses first model    
+ChatResponse first = router.chat(new UserMessage("Hello")); // 使用第一个模型    
 
-ChatResponse second = router.chat(new UserMessage("Hello")); // uses second model
+ChatResponse second = router.chat(new UserMessage("Hello")); // 使用第二个模型
 
-ChatResponse third = router.chat(new UserMessage("Hello")); // uses first model  
-	   	   
+ChatResponse third = router.chat(new UserMessage("Hello")); // 使用第一个模型  
 ```
-## Custom implementations
 
-You can write your own strategy by implementing the functional interface ModelRoutingStrategy.
+## 自定义实现
+
+你可以通过实现函数式接口 `ModelRoutingStrategy` 来编写自己的策略。
 
 ```java
 interface ModelRoutingStrategy {
@@ -98,8 +93,7 @@ interface ModelRoutingStrategy {
 }
 ```
 
-For example, if you have a model which has a small context window and a more expensive one with a larger context window, you could build a simple router which takes the length of the message into account.
-This example routes messages with less than 500 characters to the small model and the rest to a large model.
+例如，如果你有一个上下文窗口较小的模型和一个更昂贵但上下文窗口更大的模型，可以构建一个简单的路由器，根据消息长度进行路由。以下示例将少于 500 个字符的消息路由到小模型，其余路由到大模型。
 
 ```java
 ChatModel smallModel = AzureOpenAiChatModel.builder()
@@ -128,8 +122,6 @@ ChatResponse shortMsg = router.chat(new UserMessage("Quick summary?")); // small
 ChatResponse longMsg = router.chat(new UserMessage("...very long prompt...")); // largeModel
 ```
 
-
-## Examples
+## 示例
 
 - [ModelRouter Examples](https://github.com/langchain4j/langchain4j-examples/tree/main/model-router-examples/src/main/java)
-

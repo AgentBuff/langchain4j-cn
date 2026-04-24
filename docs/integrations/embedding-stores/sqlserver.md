@@ -4,9 +4,9 @@ sidebar_position: 23
 
 # SQL Server
 
-The SQL Server Embedding Store integrates with the [Vector search and vector indexes](https://learn.microsoft.com/en-us/sql/sql-server/ai/vectors?view=sql-server-ver17) introduced in SQL Server 2025.
+SQL Server 嵌入存储集成了 SQL Server 2025 中引入的[向量搜索和向量索引](https://learn.microsoft.com/en-us/sql/sql-server/ai/vectors?view=sql-server-ver17)功能。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -16,34 +16,31 @@ The SQL Server Embedding Store integrates with the [Vector search and vector ind
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `SQLServerEmbeddingStore`
 
-## Usage
+## 使用方式
 
-Instances of this store can be created by configuring a builder. The builder 
-requires that a DataSource and an embedding table be provided.
+可通过配置 builder 创建此存储的实例。builder 需要提供 DataSource 和嵌入表。
 
-It is recommended to configure a DataSource which pools connections, such as the
-Universal Connection Pool or Hikari. A connection pool will avoid the latency of
-repeatedly creating new database connections.
+建议配置连接池的 DataSource，如 Universal Connection Pool 或 Hikari，以避免重复创建数据库连接带来的延迟。
 
-### Examples of Embedding Store Configuration
+### 嵌入存储配置示例
 
-If an embedding table already exists in your database, provide the table configuration:
+如果数据库中已存在嵌入表，请提供表配置：
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceBuilder()
    .dataSource(myDataSource)
    .embeddingTable(EmbeddingTable.builder()
            .name("my_embedding_table")
-           .dimension(384) // Must specify dimension
+           .dimension(384) // 必须指定维度
            .build())
    .build();
 ```
 
-If the table does not already exist, it can be created by setting the create option:
+如果表不存在，可通过设置 create 选项来创建：
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceBuilder()
@@ -56,7 +53,7 @@ EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceB
    .build();
 ```
 
-The previous option will fail if the table already exists. In that case, you can use the CREATE_IF_NOT_EXISTS option:
+如果表已存在，上述选项会失败。此时可使用 CREATE_IF_NOT_EXISTS 选项：
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceBuilder()
@@ -69,7 +66,7 @@ EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceB
    .build();
 ```
 
-Finally, If you want to recreate the table, you can use the CREATE_OR_REPLACE option:
+如需重新创建表，可使用 CREATE_OR_REPLACE 选项：
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceBuilder()
@@ -82,8 +79,7 @@ EmbeddingStore<TextSegment> embeddingStore = SQLServerEmbeddingStore.dataSourceB
    .build();
 ```
 
-If the columns of your existing table do not match the predefined column names
-or you would like to use different column names, you can customize the table configuration:
+如果已有表的列名与预定义列名不匹配，或希望使用不同的列名，可自定义表配置：
 
 ```java
 SQLServerEmbeddingStore embeddingStore =
@@ -101,7 +97,7 @@ SQLServerEmbeddingStore.dataSourceBuilder()
     .build();
 ```
 
-You can also configure the SQL Server connection directly without providing a DataSource:
+也可以直接配置 SQL Server 连接而无需提供 DataSource：
 
 ```java
 SQLServerEmbeddingStore embeddingStore =
@@ -119,37 +115,35 @@ SQLServerEmbeddingStore.connectionBuilder()
     .build();
 ```
 
-### Embeddings table schema
+### 嵌入表结构
 
-By default, the embedding table will have the following columns:
+默认情况下，嵌入表包含以下列：
 
-| Name | Type              | Description |
-| ---- |-------------------| ----------- |
-| id | NVARCHAR(36)      | Primary key. Used to store UUID strings which are generated when the embedding store |
-| embedding | VECTOR(dimension) | Stores the embedding using SQL Server 2025 native vector type |
-| text | NVARCHAR(MAX)     | Stores the text segment |
-| metadata | JSON              | Stores the metadata using SQL Server 2025 native JSON data type |
+| 名称 | 类型 | 描述 |
+| ---- |-------------------| ---- |
+| id | NVARCHAR(36) | 主键，存储嵌入存储生成的 UUID 字符串 |
+| embedding | VECTOR(dimension) | 使用 SQL Server 2025 原生向量类型存储嵌入 |
+| text | NVARCHAR(MAX) | 存储文本段 |
+| metadata | JSON | 使用 SQL Server 2025 原生 JSON 数据类型存储元数据 |
 
 
-## Important Notes
+## 重要说明
 
-### Numeric Types
-All number values are written as JSON Strings in the metadata fields to avoid overflow issues with numbers as `Long.MAX_VALUE`.
+### 数值类型
+所有数字值均以 JSON 字符串形式写入元数据字段，以避免 `Long.MAX_VALUE` 等数字的溢出问题。
 
-### Vector Storage and Similarity
-SQL Server 2025+ supports native VECTOR data types and this module uses the [VECTOR_DISTANCE](https://learn.microsoft.com/en-us/sql/t-sql/functions/vector-distance-transact-sql?view=sql-server-ver17) similarity function. 
-This module supports the following metrics for the `VECTOR_DISTANCE` function:
+### 向量存储与相似度
+SQL Server 2025+ 支持原生 VECTOR 数据类型，本模块使用 [VECTOR_DISTANCE](https://learn.microsoft.com/en-us/sql/t-sql/functions/vector-distance-transact-sql?view=sql-server-ver17) 相似度函数。
+本模块支持以下 `VECTOR_DISTANCE` 函数的度量：
 
-- **COSINE**: Cosine similarity (default)
-- **EUCLIDEAN**: Euclidean distance. The euclidean metric needs to perform some additional calculations to get the score from the distance.
+- **COSINE**：余弦相似度（默认）
+- **EUCLIDEAN**：欧氏距离。欧氏度量需要进行额外计算以从距离得出评分。
 
-### JSON Metadata Support
+### JSON 元数据支持
 
-SQL Server 2025 provides native JSON data type support and JSON indexing capabilities. The module 
-uses the native JSON data type for metadata storage and supports creating JSON indexes for 
-optimized metadata filtering using [JSON_VALUE](https://learn.microsoft.com/es-es/sql/t-sql/functions/json-value-transact-sql?view=sql-server-ver17) function.
+SQL Server 2025 提供原生 JSON 数据类型支持和 JSON 索引功能。本模块使用原生 JSON 数据类型存储元数据，并支持为优化元数据过滤而创建 JSON 索引，使用 [JSON_VALUE](https://learn.microsoft.com/es-es/sql/t-sql/functions/json-value-transact-sql?view=sql-server-ver17) 函数。
 
-You can configure JSON index creation for specific metadata keys, optionally indicating the order of the keys:
+可以为特定元数据键配置 JSON 索引创建，并可选择指定键的排序方式：
 
 ```java
 EmbeddingTable embeddingTable = EmbeddingTable.builder()
@@ -171,11 +165,11 @@ SQLServerEmbeddingStore embeddingStore =
         .build();
 ```
 
-- Indexes created with `Index.jsonIndexBuilder()` do not support the `CreateOption.CREATE_IF_NOT_EXISTS` option.
+- 使用 `Index.jsonIndexBuilder()` 创建的索引不支持 `CreateOption.CREATE_IF_NOT_EXISTS` 选项。
 
-## Limitations
+## 限制
 
-- Vector indexing performance depends on data size and distribution
-- DiskANN indexes on the vector column are not supported
-- The database collation should be set to a case-sensitive collation for metadata case-sensitive string comparisons
-- Distance DOT metric is not supported
+- 向量索引性能取决于数据大小和分布
+- 不支持向量列的 DiskANN 索引
+- 数据库排序规则应设置为区分大小写的排序规则，以支持元数据的大小写敏感字符串比较
+- 不支持 DOT 距离度量

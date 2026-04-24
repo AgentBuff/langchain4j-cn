@@ -1,67 +1,67 @@
 ---
-title: OpenAI-Compatible Language Models
+title: OpenAI 兼容语言模型
 sidebar_position: 17
 ---
 
-# OpenAI-Compatible Language Models
+# OpenAI 兼容语言模型
 
-Many services and tools expose OpenAI-compatible APIs. The general approach to using them with LangChain4j is:
+许多服务和工具都公开了与 OpenAI 兼容的 API。在 LangChain4j 中使用它们的通用方法如下：
 
-1.  **Identify the Base URL:** Find the API endpoint for the service. This often ends in `/v1`.
-2.  **Obtain an API Key:** If the service requires authentication, get an API key. If the service is local and doesn't require a key, put a placeholder as the `apiKey` parameter.
-3.  **Specify the Model Name:** Determine the correct model name to use for the service. This is often required.
-4.  **Configure `OpenAiChatModel` or `OpenAiStreamingChatModel`:**
+1.  **确定基础 URL：** 找到服务的 API 端点，通常以 `/v1` 结尾。
+2.  **获取 API Key：** 如果服务需要身份验证，请获取 API Key。如果服务在本地运行且不需要 Key，可在 `apiKey` 参数中填写占位符。
+3.  **指定模型名称：** 确定服务所使用的正确模型名称（通常是必填项）。
+4.  **配置 `OpenAiChatModel` 或 `OpenAiStreamingChatModel`：**
 
     ```java
     ChatModel model = OpenAiChatModel.builder()
-            .baseUrl("YOUR_API_BASE_URL") // e.g., "http://localhost:8000/v1"
-            .apiKey("YOUR_API_KEY_OR_PLACEHOLDER") // e.g., "sk-yourkey" or "none"
-            .modelName("MODEL_NAME_AS_PER_PROVIDER_DOCS") // e.g., "gpt-3.5-turbo" or custom name
-            // Add other configurations like temperature, timeout, etc. as needed
+            .baseUrl("YOUR_API_BASE_URL") // 例如 "http://localhost:8000/v1"
+            .apiKey("YOUR_API_KEY_OR_PLACEHOLDER") // 例如 "sk-yourkey" 或 "none"
+            .modelName("MODEL_NAME_AS_PER_PROVIDER_DOCS") // 例如 "gpt-3.5-turbo" 或自定义名称
+            // 根据需要添加其他配置，如 temperature、timeout 等
             .logRequests(true)
             .logResponses(true)
             .build();
     ```
 
-### Configuration for Specific OpenAI-Compatible APIs
+### 特定 OpenAI 兼容 API 的配置
 
-Some OpenAI-compatible APIs may have different behaviors in streaming responses, particularly for tool calling. LangChain4j provides configuration options to handle these differences:
+某些 OpenAI 兼容 API 在流式响应（尤其是工具调用）方面可能存在差异。LangChain4j 提供了相应的配置选项来处理这些差异：
 
-#### `accumulateToolCallId` (for `OpenAiStreamingChatModel`)
+#### `accumulateToolCallId`（用于 `OpenAiStreamingChatModel`）
 
-Controls how tool call IDs are handled in streaming responses. Default is `true`.
+控制流式响应中工具调用 ID 的处理方式，默认为 `true`。
 
-- **Enabled (`true`)**: Tool call IDs are accumulated across streaming chunks (standard OpenAI behavior)
-    - Example: Chunk 1 sends "abc", Chunk 2 sends "def" → Final ID: "abcdef"
-- **Disabled (`false`)**: Each chunk's tool call ID replaces the previous one
-    - Example: Chunk 1 sends "abc", Chunk 2 sends "abc" → Final ID: "abc"
-    - Use this for APIs like DeepSeek or Qwen that send the complete tool call ID in every chunk
+- **启用（`true`）**：跨流式块累积工具调用 ID（标准 OpenAI 行为）
+    - 示例：块 1 发送 "abc"，块 2 发送 "def" → 最终 ID："abcdef"
+- **禁用（`false`）**：每个块的工具调用 ID 替换前一个
+    - 示例：块 1 发送 "abc"，块 2 发送 "abc" → 最终 ID："abc"
+    - 适用于 DeepSeek、Qwen 等在每个块中都发送完整工具调用 ID 的 API
 
 ```java
 StreamingChatModel model = OpenAiStreamingChatModel.builder()
-        .baseUrl("https://api.deepseek.com/v1") // or other provider
+        .baseUrl("https://api.deepseek.com/v1") // 或其他提供商
         .apiKey("YOUR_API_KEY")
         .modelName("deepseek-chat")
-        .accumulateToolCallId(false) // Set to false for DeepSeek, Qwen, etc.
+        .accumulateToolCallId(false) // 对于 DeepSeek、Qwen 等设置为 false
         .build();
 ```
-Below we provide specific examples for popular OpenAI-compatible APIs, including Groq, Docker Model Runner, GPT4All, Ollama, and LM Studio.
+以下提供了 Groq、Docker Model Runner、GPT4All、Ollama 和 LM Studio 等热门 OpenAI 兼容 API 的具体示例。
 
-### Contents:
-- [Prerequisites for Using OpenAI-Compatible Language Models](#prerequisites-for-using-openai-compatible-language-models)
+### 目录：
+- [使用 OpenAI 兼容语言模型的前提条件](#prerequisites-for-using-openai-compatible-language-models)
 - [Groq](#groq)
 - [Docker Model Runner](#docker-model-runner)
 - [GPT4All](#gpt4all)
 - [Ollama](#ollama)
 - [LM Studio](#lm-studio)
 
-## Prerequisites for Using OpenAI-Compatible Language Models
+## 使用 OpenAI 兼容语言模型的前提条件 {#prerequisites-for-using-openai-compatible-language-models}
 
-LangChain4j's OpenAI module can be used with various OpenAI-compatible APIs, including local and cloud-based solutions. For each of the models below, we show how to create a `ChatModel` that you can then use to chat with the model, just like in the [standard OpenAI examples](https://github.com/langchain4j/langchain4j-examples/blob/main/open-ai-examples/src/main/java/OpenAiChatModelExamples.java).
+LangChain4j 的 OpenAI 模块可与各种 OpenAI 兼容 API 配合使用，包括本地和云端方案。以下每种模型都展示了如何创建 `ChatModel`，随后可以像[标准 OpenAI 示例](https://github.com/langchain4j/langchain4j-examples/blob/main/open-ai-examples/src/main/java/OpenAiChatModelExamples.java)一样与模型对话。
 
-First, make sure you have the OpenAI module in your `pom.xml` or Gradle build file:
+首先，请确保在 `pom.xml` 或 Gradle 构建文件中引入 OpenAI 模块：
 
-### Plain Java
+### 纯 Java
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -81,38 +81,38 @@ First, make sure you have the OpenAI module in your `pom.xml` or Gradle build fi
 
 ## Groq
 
-**Deployment:** SaaS (Key Required)
+**部署方式：** SaaS（需要 Key）
 
-**Description:** Groq offers very fast inference for LLMs.
+**简介：** Groq 为大型语言模型提供极快的推理速度。
 
-**Setup:**
-To use Groq, you'll need an API key from [GroqCloud](https://console.groq.com/keys).
+**配置步骤：**
+要使用 Groq，需要从 [GroqCloud](https://console.groq.com/keys) 获取 API Key。
 
-Configure LangChain4j's `OpenAiChatModel` or `OpenAiStreamingChatModel`:
+配置 LangChain4j 的 `OpenAiChatModel` 或 `OpenAiStreamingChatModel`：
 ```java
 ChatModel model = OpenAiChatModel.builder()
         .baseUrl("https://api.groq.com/openai/v1")
-        .apiKey(System.getenv("GROQ_API_KEY")) // Or your actual key
-        .modelName("llama3-8b-8192") // Or any other model offered by Groq, e.g., mixtral-8x7b-32768, llama3-70b-8192
+        .apiKey(System.getenv("GROQ_API_KEY")) // 或实际的 Key
+        .modelName("llama3-8b-8192") // 或 Groq 提供的其他模型，如 mixtral-8x7b-32768、llama3-70b-8192
         .temperature(0.0)
         .build();
 ```
-You can find available model names on the [Groq models page](https://console.groq.com/docs/models).
+可在 [Groq 模型页面](https://console.groq.com/docs/models)查找可用的模型名称。
 
 ## Docker Model Runner
 
-**Deployment:** Local
+**部署方式：** 本地
 
-**Description:** Docker Model Runner allows you to run LLMs locally using Docker desktop (uses `llama.cpp` under the hood and can use your CPU). This is useful for development, testing, or offline use. Works on Mac and Windows.
+**简介：** Docker Model Runner 允许使用 Docker Desktop 在本地运行 LLM（底层使用 `llama.cpp`，可利用 CPU）。适合开发、测试或离线使用，支持 Mac 和 Windows。
 
-**Setup:**
+**配置步骤：**
 
-1. Have Docker Desktop installed
-2. Enable the Docker Model Runner feature in Docker Desktop (Settings > Experimental Features > Enable Docker Model Runner)
-3. Just below that, check "Enable host-side TCP support".
-4. Pull a model using the Docker Model Runner CLI, e.g., `docker model pull ai/qwen3` or any other model from [this list](https://hub.docker.com/u/ai).
+1. 安装 Docker Desktop
+2. 在 Docker Desktop 中启用 Docker Model Runner 功能（设置 > 实验性功能 > 启用 Docker Model Runner）
+3. 在该选项下方勾选"启用主机端 TCP 支持"。
+4. 使用 Docker Model Runner CLI 拉取模型，例如 `docker model pull ai/qwen3` 或[此列表](https://hub.docker.com/u/ai)中的任意模型。
 
-Example for `ai/qwen3` (more info about the model [here](https://hub.docker.com/r/ai/qwen3)):
+`ai/qwen3` 示例（更多信息见[模型页面](https://hub.docker.com/r/ai/qwen3)）：
 
 ```java
 ChatModel model = OpenAiChatModel.builder()
@@ -120,40 +120,41 @@ ChatModel model = OpenAiChatModel.builder()
         .modelName("ai/qwen3")
         .build();
 ```
-Some models support tool calling, see details on the docker model page.
+部分模型支持工具调用，详情见 Docker 模型页面。
 
 ## GPT4All
 
-**Deployment:** Local
+**部署方式：** 本地
 
-**Description:** GPT4All provides a desktop application to run open-source LLMs locally on your machine. It can also expose an OpenAI-compatible API.
+**简介：** GPT4All 提供桌面应用，可在本机运行开源 LLM，并能公开 OpenAI 兼容 API。
 
-**Setup:**
-1. Download and install GPT4All from [https://gpt4all.io/](https://gpt4all.io/).
-2. Launch GPT4All and download the desired model(s) through its UI, eg. `llama-3.2-1b-instruct`.
-3. Enable the "Web Server" mode in GPT4All settings ("Settings" > "Application" > under Advanced: "Enable Local API Server").
-4. Note the IP address and port displayed in GPT4All (typically `http://localhost:4891/v1`).
-5. Configure LangChain4j:
+**配置步骤：**
+1. 从 [https://gpt4all.io/](https://gpt4all.io/) 下载并安装 GPT4All。
+2. 启动 GPT4All 并通过 UI 下载所需模型，例如 `llama-3.2-1b-instruct`。
+3. 在 GPT4All 设置中启用 "Web Server" 模式（"设置" > "应用程序" > 高级选项下："启用本地 API 服务器"）。
+4. 记录 GPT4All 中显示的 IP 地址和端口（通常为 `http://localhost:4891/v1`）。
+5. 配置 LangChain4j：
 ```java
 ChatModel model = OpenAiChatModel.builder()
         .baseUrl("http://localhost:4891/v1")
-        .modelName("llama-3.2-1b-instruct") // The model name might be derived from the model loaded in GPT4All UI or configurable. Check GPT4All docs.
+        .modelName("llama-3.2-1b-instruct") // 模型名称可能来自 GPT4All UI 中加载的模型，详见 GPT4All 文档
         .build();
 ```
 
 ## Ollama
 
-While LangChain4j has a dedicated `langchain4j-ollama` module (see [Ollama docs](./ollama.md)), you can also use the OpenAI module to connect to Ollama's OpenAI-compatible endpoint as shown above.
+虽然 LangChain4j 有专用的 `langchain4j-ollama` 模块（见 [Ollama 文档](./ollama.md)），
+也可以使用 OpenAI 模块连接 Ollama 的 OpenAI 兼容端点，如上所示。
 
-**Deployment:** Local
+**部署方式：** 本地
 
-**Description:** Ollama allows you to run open-source large language models, such as Llama 3, Mistral, and others, locally. It provides an OpenAI-compatible API endpoint.
+**简介：** Ollama 允许在本地运行 Llama 3、Mistral 等开源大型语言模型，并提供 OpenAI 兼容的 API 端点。
 
-**Setup:**
-1. Install Ollama from [https://ollama.ai/](https://ollama.ai/).
-2. Pull a model using the command line: `ollama pull <model_name>` (e.g., `ollama pull gemma3`).
-3. Ensure Ollama is running. It serves an OpenAI-compatible API at `http://localhost:11434/v1/`.
-4. Configure LangChain4j:
+**配置步骤：**
+1. 从 [https://ollama.ai/](https://ollama.ai/) 安装 Ollama。
+2. 使用命令行拉取模型：`ollama pull <model_name>`（例如 `ollama pull gemma3`）。
+3. 确保 Ollama 正在运行，它会在 `http://localhost:11434/v1/` 提供 OpenAI 兼容 API。
+4. 配置 LangChain4j：
 ```java
 ChatModel model = OpenAiChatModel.builder()
         .baseUrl("http://localhost:11434/v1/")
@@ -161,23 +162,23 @@ ChatModel model = OpenAiChatModel.builder()
         .build();
 ```
 
-**Examples:**
-*   For OpenAI-compatible endpoint usage, adapt general OpenAI examples.
-*   Using the dedicated Ollama module: [langchain4j-examples/.../OllamaChatModelExamples.java](https://github.com/langchain4j/langchain4j-examples/blob/main/src/main/java/dev/langchain4j/model/ollama/OllamaChatModelExamples.java)
+**示例：**
+*   OpenAI 兼容端点用法，可参考通用 OpenAI 示例进行调整。
+*   使用专用 Ollama 模块：[langchain4j-examples/.../OllamaChatModelExamples.java](https://github.com/langchain4j/langchain4j-examples/blob/main/src/main/java/dev/langchain4j/model/ollama/OllamaChatModelExamples.java)
 
 
 ## LM Studio
 
-**Deployment:** Local
+**部署方式：** 本地
 
-**Description:** LM Studio provides a UI to discover, download, and run local LLMs. It also features an OpenAI-compatible local server.
+**简介：** LM Studio 提供 UI 用于发现、下载和运行本地 LLM，同时提供 OpenAI 兼容的本地服务器。
 
-**Setup:**
-1. Download and install LM Studio from [https://lmstudio.ai/](https://lmstudio.ai/).
-2. Download your desired model(s) through the LM Studio UI (Search tab), for example `smollm2-135m-instruct`.
-3. Go to the "Developer" tab (icon like `>_` on the left) and toggle the server status on to 'running'
-4. When the server runs, you get to see the address on the top right (e.g., `http://127.0.0.1:1234`). Alternatively, the cURL call will give you the full URL.
-5. LMStudio as for now does not support HTTP2, hence we need to enforce the use of HTTP1.1. For that, we need to add the correct maven or gradle dependency:
+**配置步骤：**
+1. 从 [https://lmstudio.ai/](https://lmstudio.ai/) 下载并安装 LM Studio。
+2. 通过 LM Studio UI（搜索选项卡）下载所需模型，例如 `smollm2-135m-instruct`。
+3. 进入"Developer"选项卡（左侧 `>_` 图标），将服务器状态切换为"运行中"。
+4. 服务器运行时，右上角会显示地址（例如 `http://127.0.0.1:1234`），也可从 cURL 命令中获取完整 URL。
+5. LM Studio 目前不支持 HTTP2，因此需要强制使用 HTTP1.1。为此需要添加正确的 Maven 或 Gradle 依赖：
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -185,7 +186,7 @@ ChatModel model = OpenAiChatModel.builder()
     <version>1.13.0</version>
 </dependency>
 ```
-6. Configure LangChain4j and specify the `httpClientBuilder`
+6. 配置 LangChain4j 并指定 `httpClientBuilder`：
 ```java
 import java.net.http.HttpClient;
 import dev.langchain4j.http.client.jdk.JdkHttpClientBuilder;
@@ -205,4 +206,3 @@ ChatModel model = OpenAiChatModel.builder()
         .httpClientBuilder(jdkHttpClientBuilder)
         .build();
 ```
-

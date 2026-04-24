@@ -7,7 +7,7 @@ sidebar_position: 8
 - https://huggingface.co/docs/api-inference/index
 - https://huggingface.co/docs/api-inference/detailed_parameters#feature-extraction-task
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,11 +17,11 @@ sidebar_position: 8
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `HuggingFaceEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [HuggingFaceEmbeddingModelExample](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/embedding/model/HuggingFaceEmbeddingModelExample.java)

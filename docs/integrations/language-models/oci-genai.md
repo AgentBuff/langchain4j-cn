@@ -5,14 +5,14 @@ sidebar_position: 21
 # Oracle Cloud Infrastructure GenAI
 
 [Generative AI Service](https://www.oracle.com/artificial-intelligence/generative-ai/generative-ai-service)
-provides access to pretrained, foundational models from Cohere and Meta.
-See AI model availability [here](https://docs.public.oneportal.content.oci.oraclecloud.com/en-us/iaas/Content/generative-ai/pretrained-models.htm).
+提供对 Cohere 和 Meta 预训练基础模型的访问。
+可在[此处](https://docs.public.oneportal.content.oci.oraclecloud.com/en-us/iaas/Content/generative-ai/pretrained-models.htm)查看 AI 模型可用性。
 
-With dedicated AI clusters, you can host foundational models on dedicated GPUs that are private to you. These clusters provide stable, high-throughput performance that’s required for production use cases and can support hosting and fine-tuning workloads.
+通过专用 AI 集群，您可以在私有专用 GPU 上托管基础模型，为生产用例提供稳定、高吞吐的性能，同时支持托管和微调工作负载。
 
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -22,7 +22,7 @@ With dedicated AI clusters, you can host foundational models on dedicated GPUs t
 </dependency>
 ```
 
-Additionally, you have to select HTTP client for OCI SDK, by default, use a Jersey 3 based version:
+此外，需要为 OCI SDK 选择 HTTP 客户端，默认使用基于 Jersey 3 的版本：
 ```xml
 <dependency>
     <groupId>com.oracle.oci.sdk</groupId>
@@ -31,7 +31,7 @@ Additionally, you have to select HTTP client for OCI SDK, by default, use a Jers
 </dependency>
 ```
 
-In case use are on **Java EE/Jakarta EE 8 or older** runtime, please use Jersey 2 based version:
+如果您使用的是 **Java EE/Jakarta EE 8 或更旧版本**的运行时，请使用基于 Jersey 2 的版本：
 ```xml
 <dependency>
     <groupId>com.oracle.oci.sdk</groupId>
@@ -40,26 +40,26 @@ In case use are on **Java EE/Jakarta EE 8 or older** runtime, please use Jersey 
 </dependency>
 ```
 
-More information can be found in [OCI SDK documentation](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk3.htm#javasdk3__HTTP-client-libraries).
+更多信息请参阅 [OCI SDK 文档](https://docs.oracle.com/en-us/iaas/Content/API/SDKDocs/javasdk3.htm#javasdk3__HTTP-client-libraries)。
 
 
-## APIs
-Package `dev.langchain4j.community.model.oracle.oci.genai`
+## API 参考 {#api}
+包路径：`dev.langchain4j.community.model.oracle.oci.genai`
 
-API is separated for Cohere and Meta models as the configuration differs.
+API 按 Cohere 和 Meta 模型分开，因为二者的配置方式不同。
 
-Meta models:
-* `OciGenAiChatModel` - for all OCI GenAi generic chat models(llama)
-* `OciGenAiStreamingChatModel` - streaming API for OCI GenAi generic chat models
+Meta 模型：
+* `OciGenAiChatModel` - 适用于所有 OCI GenAI 通用对话模型（llama）
+* `OciGenAiStreamingChatModel` - OCI GenAI 通用对话模型的流式 API
 
-Cohere models:
-* `OciGenAiCohereChatModel` - for all OCI GenAi Cohere chat models
-* `OciGenAiCohereStreamingChatModel` - streaming API for OCI GenAi Cohere chat models
+Cohere 模型：
+* `OciGenAiCohereChatModel` - 适用于所有 OCI GenAI Cohere 对话模型
+* `OciGenAiCohereStreamingChatModel` - OCI GenAI Cohere 对话模型的流式 API
 
 
-## Examples
+## 示例
 
-Example of synchronous Cohere chat model usage with tool call:
+带工具调用的同步 Cohere 对话模型示例：
 ```java
 var model = OciGenAiCohereChatModel.builder()
       .modelName("cohere.command-r-08-2024")
@@ -79,7 +79,7 @@ Assistant assistant = AiServices.builder(Assistant.class)
 String answer = assistant.chat("Calculate square root of 16");
 ```
 
-Example of streaming Meta chat model usage:
+流式 Meta 对话模型示例：
 ```java
 var model = OciGenAiStreamingChatModel.builder()
                 .modelName("meta.llama-3.3-70b-instruct")

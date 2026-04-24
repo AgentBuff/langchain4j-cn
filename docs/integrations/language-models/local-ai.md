@@ -7,7 +7,7 @@ sidebar_position: 12
 https://localai.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,7 +18,7 @@ https://localai.io/
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `LocalAiChatModel`
 - `LocalAiStreamingChatModel`
@@ -26,7 +26,7 @@ https://localai.io/
 - `LocalAiStreamingLanguageModel`
 
 
-## Examples
+## 示例
 
 - [LocalAiChatModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-local-ai/src/test/java/dev/langchain4j/model/localai/LocalAiChatModelIT.java)
 - [LocalAiStreamingChatModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-local-ai/src/test/java/dev/langchain4j/model/localai/LocalAiStreamingChatModelIT.java)

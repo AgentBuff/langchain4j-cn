@@ -4,65 +4,65 @@ sidebar_position: 8
 
 # Google Vertex AI Gemini
 
-Vertex AI is Google Cloud's fully-managed AI development platform that provides access to Google's large generative models, including the older generation (PaLM2) and the newer generation (Gemini).
+Vertex AI 是 Google Cloud 完全托管的 AI 开发平台，提供对 Google 大型生成式模型的访问，包括旧一代（PaLM2）和新一代（Gemini）模型。
 
-To utilize Vertex AI, one must first create a Google Cloud Platform account.
+使用 Vertex AI 前，必须先创建一个 Google Cloud Platform 账户。
 
-## Get started
+## 快速开始
 
-### Create Google Cloud Account
+### 创建 Google Cloud 账户
 
-If you're new to Google Cloud, you can create a new account by clicking on the `[create an account]` button located under `Get set up on Google Cloud` dropdown menu on the following page:
+如果您是 Google Cloud 新用户，可在以下页面的 `Get set up on Google Cloud` 下拉菜单中点击 `[create an account]` 按钮创建新账户：
 
-[Create an account](https://cloud.google.com/vertex-ai/generative-ai/docs/start/quickstarts/quickstart-multimodal#new-to-google-cloud)
+[创建账户](https://cloud.google.com/vertex-ai/generative-ai/docs/start/quickstarts/quickstart-multimodal#new-to-google-cloud)
 
-### Create a project within your Google Cloud Platform account.
+### 在 Google Cloud Platform 账户中创建项目
 
-Within your Google Cloud Account create a new project and enable the Vertex AI APIs by following the steps outlined below:
+在 Google Cloud 账户中创建新项目并按照以下步骤启用 Vertex AI API：
 
-[Create a new project](https://cloud.google.com/vertex-ai/docs/start/cloud-environment#set_up_a_project)
+[创建新项目](https://cloud.google.com/vertex-ai/docs/start/cloud-environment#set_up_a_project)
 
-Note your `PROJECT_ID` as it will be required for future API calls.
+请记录您的 `PROJECT_ID`，后续 API 调用将需要用到。
 
-### Select the Google Cloud authentication strategy
+### 选择 Google Cloud 认证策略
 
-There are several ways on how your application authenticates to Google Cloud services and APIs. For example, you can create a [service account](https://cloud.google.com/docs/authentication/provide-credentials-adc#local-key) and set up environment variable `GOOGLE_APPLICATION_CREDENTIALS` to the path of the JSON file that contains your credentials.
+您的应用向 Google Cloud 服务和 API 进行认证有多种方式。例如，可以创建一个[服务账户](https://cloud.google.com/docs/authentication/provide-credentials-adc#local-key)并将环境变量 `GOOGLE_APPLICATION_CREDENTIALS` 设置为 JSON 凭据文件的路径。
 
-You can discover all the authentication strategies [here](https://cloud.google.com/docs/authentication/provide-credentials-adc). But for simplicity of local testing we will be using authentication via `gcloud` utility.
+所有认证策略请参阅[此处](https://cloud.google.com/docs/authentication/provide-credentials-adc)。为简化本地测试，我们将使用 `gcloud` 工具进行认证。
 
-### Install Google Cloud CLI (Optional)
+### 安装 Google Cloud CLI（可选）
 
-To access your cloud projects locally, you can install `gcloud` tool by following the [installation instructions](https://cloud.google.com/sdk/docs/install). For GNU/Linux operating systems, the installation steps are as follows:
+要在本地访问您的云项目，可按[安装说明](https://cloud.google.com/sdk/docs/install)安装 `gcloud` 工具。以 GNU/Linux 操作系统为例，安装步骤如下：
 
-1. Download SDK:
+1. 下载 SDK：
 
 ```bash
 curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-467.0.0-linux-x86_64.tar.gz
 ```
 
-2. Extract an archive:
+2. 解压存档：
 
 ```bash
 tar -xf google-cloud-cli-467.0.0-linux-x86_64.tar.gz
 ```
-3. Run an installation script:
+3. 运行安装脚本：
 
 ```bash
 cd google-cloud-sdk/
 ./install.sh
 ```
 
-4. Run the following command to set up a default project and authentication credentials:
+4. 运行以下命令设置默认项目和认证凭据：
 
 ```bash
 gcloud auth application-default login
 ```
 
-This authentication method is compatible with both the `vertex-ai` (Embedding models, PaLM2) and `vertex-ai-gemini` (Gemini) packages.
+此认证方法与 `vertex-ai`（嵌入模型、PaLM2）和 `vertex-ai-gemini`（Gemini）两个包均兼容。
 
-## Add dependencies
+## 添加依赖
 
-To get started, add the following dependencies to your project's `pom.xml`:
+首先，将以下依赖添加到项目的 `pom.xml`：
 
 ```xml
 <dependency>
@@ -72,19 +72,19 @@ To get started, add the following dependencies to your project's `pom.xml`:
 </dependency>
 ```
 
-or project's `build.gradle`:
+或项目的 `build.gradle`：
 
 ```groovy
 implementation 'dev.langchain4j:langchain4j-vertex-ai-gemini:1.13.0-beta23'
 ```
 
-### Try out an example code:
+### 尝试示例代码：
 
-[Example of using chat model for text prediction](https://github.com/langchain4j/langchain4j-examples/blob/main/vertex-ai-gemini-examples/src/main/java/VertexAiGeminiChatModelExamples.java)
+[使用对话模型进行文本预测的示例](https://github.com/langchain4j/langchain4j-examples/blob/main/vertex-ai-gemini-examples/src/main/java/VertexAiGeminiChatModelExamples.java)
 
-[Gemini Pro Vision with Image input](https://github.com/langchain4j/langchain4j/blob/657aac9519b57afc04ea434ddcfa70d701923b91/langchain4j-vertex-ai-gemini/src/test/java/dev/langchain4j/model/vertexai/VertexAiGeminiChatModelIT.java#L123)
+[Gemini Pro Vision 图像输入示例](https://github.com/langchain4j/langchain4j/blob/657aac9519b57afc04ea434ddcfa70d701923b91/langchain4j-vertex-ai-gemini/src/test/java/dev/langchain4j/model/vertexai/VertexAiGeminiChatModelIT.java#L123)
 
-The `PROJECT_ID` field represents the variable you set when creating a new Google Cloud project.
+`PROJECT_ID` 字段代表您在创建新 Google Cloud 项目时设置的变量。
 
 ```java
 import dev.langchain4j.data.message.AiMessage;
@@ -114,7 +114,7 @@ public class GeminiProVisionWithImageInput {
         ChatResponse response = visionModel.chat(
             UserMessage.from(
                 ImageContent.from(CAT_IMAGE_URL),
-                TextContent.from("What do you see?")
+                TextContent.from("你看到了什么？")
             )
         );
         
@@ -123,7 +123,7 @@ public class GeminiProVisionWithImageInput {
 }
 ```
 
-Streaming is also supported thanks to the `VertexAiGeminiStreamingChatModel` class:
+`VertexAiGeminiStreamingChatModel` 类也支持流式输出：
 
 ```java
 var model = VertexAiGeminiStreamingChatModel.builder()
@@ -132,7 +132,7 @@ var model = VertexAiGeminiStreamingChatModel.builder()
         .modelName(GEMINI_1_5_PRO)
         .build();
 
-model.chat("Why is the sky blue?", new StreamingChatResponseHandler() {
+model.chat("天空为什么是蓝色的？", new StreamingChatResponseHandler() {
 
     @Override
     public void onPartialResponse(String partialResponse) {
@@ -151,27 +151,27 @@ model.chat("Why is the sky blue?", new StreamingChatResponseHandler() {
 });
 ```
 
-You can use the shortcut `onPartialResponse()` and `onPartialResponseAndError()` utility functions from `LambdaStreamingResponseHandler`:
+您也可以使用 `LambdaStreamingResponseHandler` 中的快捷方法 `onPartialResponse()` 和 `onPartialResponseAndError()`：
 
 ```java
-model.chat("Why is the sky blue?", onPartialResponse(System.out::print));
-model.chat("Why is the sky blue?", onPartialResponseAndError(System.out::print, Throwable::printStackTrace));
+model.chat("天空为什么是蓝色的？", onPartialResponse(System.out::print));
+model.chat("天空为什么是蓝色的？", onPartialResponseAndError(System.out::print, Throwable::printStackTrace));
 ```
 
-### Available models
+### 可用模型
 
-| Model name                | Description                                                                                                                         | Inputs                                                  | Properties                                            |
-|---------------------------|-------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------|-------------------------------------------------------|
-| `gemini-1.5-flash`        | Provides speed and efficiency for high-volume, quality, cost-effective apps.                                                        | Text, code, images, audio, video, video with audio, PDF | Max input tokens: 1,048,576, Max output tokens: 8,192 |
-| `gemini-1.5-pro`          | Supports text or chat prompts for a text or code response. Supports long-context understanding up to the maximum input token limit. | Text, code, images, audio, video, video with audio, PDF | Max input tokens: 2,097,152, Max output tokens: 8,192 |
-| `gemini-1.0-pro`          | The best performing model for a wide range of text-only tasks.                                                                      | Text                                                    | Max input tokens: 32,760, Max output tokens: 8,192    |
-| `gemini-1.0-pro-vision`   | The best performing image and video understanding model to handle a broad range of applications.                                    | Text, images, audio, video, video with audio, PDF       | Max input tokens: 16,384, Max output tokens: 2,048    |
-| `gemini-1.0-ultra`        | The most capable text model, optimized for complex tasks, including instruction, code, and reasoning.                               | Text                                                    | Max tokens input: 8,192, Max tokens output: 2,048     |
-| `gemini-1.0-ultra-vision` | The most capable multimodal vision model. Optimized to support joint text, images, and video inputs.                                | Text, code, images, audio, video, video with audio, PDF | Max tokens input: 8,192, Max tokens output: 2,048     |
+| 模型名称 | 描述 | 输入 | 属性 |
+|---|---|---|---|
+| `gemini-1.5-flash` | 为大规模、高质量、低成本的应用提供速度与效率。 | 文本、代码、图片、音频、视频、带音频的视频、PDF | 最大输入 token：1,048,576，最大输出 token：8,192 |
+| `gemini-1.5-pro` | 支持文本或对话提示以获取文本或代码响应，支持最大输入 token 限制内的长上下文理解。 | 文本、代码、图片、音频、视频、带音频的视频、PDF | 最大输入 token：2,097,152，最大输出 token：8,192 |
+| `gemini-1.0-pro` | 针对各类纯文本任务性能最佳的模型。 | 文本 | 最大输入 token：32,760，最大输出 token：8,192 |
+| `gemini-1.0-pro-vision` | 图片和视频理解能力最佳的模型，适用于广泛的应用场景。 | 文本、图片、音频、视频、带音频的视频、PDF | 最大输入 token：16,384，最大输出 token：2,048 |
+| `gemini-1.0-ultra` | 最强大的文本模型，针对复杂任务（包括指令、代码和推理）进行了优化。 | 文本 | 最大输入 token：8,192，最大输出 token：2,048 |
+| `gemini-1.0-ultra-vision` | 最强大的多模态视觉模型，针对文本、图片和视频联合输入进行了优化。 | 文本、代码、图片、音频、视频、带音频的视频、PDF | 最大输入 token：8,192，最大输出 token：2,048 |
 
-You can learn more about the models in the [Gemini model documentation page](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)
+更多模型信息请参阅 [Gemini 模型文档](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)。
 
-Note that in March 2024, the Ultra version has private access with an allow list. Therefore, you may receive an exception similar to this:
+注意：2024 年 3 月，Ultra 版本仅对许可名单中的用户开放私人访问。如果您不在名单内，可能会收到类似以下的异常：
 
 ```text
 Caused by: io.grpc.StatusRuntimeException:
@@ -179,42 +179,40 @@ Caused by: io.grpc.StatusRuntimeException:
   `projects/{YOUR_PROJECT_ID}/locations/us-central1/publishers/google/models/gemini-ultra`
 ```
 
-## Configuration
+## 配置
 
 ```java
 ChatModel model = VertexAiGeminiChatModel.builder()
-    .project(PROJECT_ID)        // your Google Cloud project ID
-    .location(LOCATION)         // the region where AI inference should take place
-    .modelName(MODEL_NAME)      // the model used
-    .logRequests(true)          // log input requests
-    .logResponses(true)         // log output responses
-    .maxOutputTokens(8192)      // the maximum number of tokens to generate (up to 8192)
-    .temperature(0.7)           // temperature (between 0 and 2)
-    .topP(0.95)                 // topP (between 0 and 1) — cumulative probability of the most probable tokens
-    .topK(3)                    // topK (positive integer) — pick a token among the most probable ones
-    .seed(1234)                 // seed for the random number generator
-    .maxRetries(2)              // maximum number of retries
-    .responseMimeType("application/json") // to get JSON structured outputs
-    .responseSchema(/*...*/)    // structured output following the provided schema
-    .safetySettings(/*...*/)    // specify safety settings to filter inappropriate content
-    .useGoogleSearch(true)      // to ground responses with Google Search results
-    .vertexSearchDatastore(name)// to ground responses with data backed documents 
-                                // from a custom Vertex AI Search datastore
-    .toolCallingMode(/*...*/)   // AUTO (automatic), ANY (from a list of functions), NONE
-    .allowedFunctionNames(/*...*/) // when using ANY tool calling mode, 
-                                // specify the allowed function names to be called
-    .listeners(/*...*/)         // list of listeners to receive model events
-    .credentials(credentials)   // custom Google Cloud credentials    
+    .project(PROJECT_ID)        // 您的 Google Cloud 项目 ID
+    .location(LOCATION)         // AI 推理的区域
+    .modelName(MODEL_NAME)      // 使用的模型
+    .logRequests(true)          // 记录输入请求
+    .logResponses(true)         // 记录输出响应
+    .maxOutputTokens(8192)      // 最大生成 token 数（最多 8192）
+    .temperature(0.7)           // 温度（介于 0 和 2 之间）
+    .topP(0.95)                 // topP（介于 0 和 1 之间）——最高概率 token 的累积概率
+    .topK(3)                    // topK（正整数）——从最高概率的 token 中选择
+    .seed(1234)                 // 随机数生成器的种子
+    .maxRetries(2)              // 最大重试次数
+    .responseMimeType("application/json") // 获取 JSON 结构化输出
+    .responseSchema(/*...*/)    // 按提供的 Schema 进行结构化输出
+    .safetySettings(/*...*/)    // 设置安全过滤器以过滤不当内容
+    .useGoogleSearch(true)      // 使用 Google 搜索结果为响应提供基础
+    .vertexSearchDatastore(name)// 使用 Vertex AI Search 数据库中的文档为响应提供基础
+    .toolCallingMode(/*...*/)   // AUTO（自动）、ANY（从函数列表中选择）、NONE
+    .allowedFunctionNames(/*...*/) // 使用 ANY 工具调用模式时，指定允许调用的函数名称
+    .listeners(/*...*/)         // 接收模型事件的监听器列表
+    .credentials(credentials)   // 自定义 Google Cloud 凭据
     .build();
 ```
 
-The same parameters are also available on the streaming chat model.
+流式对话模型也支持相同的参数。
 
-## More examples
+## 更多示例
 
-Gemini is a `multimodal` model which accepts text, but also images, audio and video files, as well as PDFs in input.
+Gemini 是一个**多模态**模型，支持文本输入，也支持图片、音频、视频文件以及 PDF。
 
-### Describing the content of an image
+### 描述图片内容
 
 ```java
 ChatModel model = VertexAiGeminiChatModel.builder()
@@ -225,26 +223,25 @@ ChatModel model = VertexAiGeminiChatModel.builder()
 
 UserMessage userMessage = UserMessage.from(
     ImageContent.from(CAT_IMAGE_URL),
-    TextContent.from("What do you see? Reply in one word.")
+    TextContent.from("你看到了什么？用一个词回答。")
 );
 
 ChatResponse response = model.chat(userMessage);
 ```
 
-The URL can be a web URL, or can point at a file stored in Google Cloud Storage buckets,
-like `gs://my-bucket/my-image.png`.
+URL 可以是网页 URL，也可以指向存储在 Google Cloud Storage 桶中的文件，例如 `gs://my-bucket/my-image.png`。
 
-You can also pass the content of an image as Base64 encoded string:
+也可以将图片内容作为 Base64 编码字符串传入：
 
 ```java
 String base64Data = Base64.getEncoder().encodeToString(readBytes(CAT_IMAGE_URL));
 UserMessage userMessage = UserMessage.from(
         ImageContent.from(base64Data, "image/png"),
-        TextContent.from("What do you see? Reply in one word.")
+        TextContent.from("你看到了什么？用一个词回答。")
 );
 ```
 
-### Asking questions about a PDF document
+### 针对 PDF 文档提问
 
 ```java
 var model = VertexAiGeminiChatModel.builder()
@@ -257,13 +254,13 @@ var model = VertexAiGeminiChatModel.builder()
 
 UserMessage message = UserMessage.from(
     PdfFileContent.from(Paths.get("src/test/resources/gemini-doc-snapshot.pdf").toUri()),
-    TextContent.from("Provide a summary of the document")
+    TextContent.from("提供这份文档的摘要")
 );
 
 ChatResponse response = model.chat(message);
 ```
 
-### Tool calling
+### 工具调用
 
 ```java
 ChatModel model = VertexAiGeminiChatModel.builder()
@@ -274,43 +271,37 @@ ChatModel model = VertexAiGeminiChatModel.builder()
 
 ToolSpecification weatherToolSpec = ToolSpecification.builder()
         .name("getWeatherForecast")
-        .description("Get the weather forecast for a location")
+        .description("获取某地点的天气预报")
         .parameters(JsonObjectSchema.builder()
-                .addStringProperty("location", "the location to get the weather forecast for")
+                .addStringProperty("location", "需要获取天气预报的地点")
                 .required("location")
                 .build())
         .build();
 
 ChatRequest request = ChatRequest.builder()
-        .messages(UserMessage.from("What is the weather in Paris?"))
+        .messages(UserMessage.from("巴黎的天气怎么样？"))
         .toolSpecifications(weatherToolSpec)
         .build();
 
 ChatResponse response = model.chat(request);
 ```
 
-The model will reply back with a tool execution request instead of a text message.
-Your responsibility will be to provide the model with the response of that execution request,
-by sending a `ToolExecutionResultMessage` back to the model.
-The model will then be able to reply with a text response.
+模型将返回工具执行请求而非文本消息。您需要通过向模型发送 `ToolExecutionResultMessage` 提供该执行请求的结果，模型随后才能给出文本响应。
 
-Parallel function calling is also supported, when the model asks to make multiple tool execution requests in a single response.
+当模型在单个响应中发出多个工具执行请求时，也支持并行函数调用。
 
-### Tool support with AiServices
+### 使用 AiServices 支持工具
 
-You can use `AiServices` to create your own assistants powered by tools.
-The following example shows a `Calculator` tool to do some math calculations,
-an `Assistant` interface to specify the contract of our assistant,
-then we configure `AiServices` to use Gemini, with a chat memory, and the calculator tool.
+可使用 `AiServices` 创建由工具驱动的自定义助手。以下示例展示了一个用于数学计算的 `Calculator` 工具，一个指定助手契约的 `Assistant` 接口，以及使用 Gemini、对话记忆和计算器工具配置 `AiServices` 的方式。
 
 ```java
 static class Calculator {
-    @Tool("Adds two given numbers")
+    @Tool("将两个数字相加")
     double add(double a, double b) {
         return a + b;
     }
 
-    @Tool("Multiplies two given numbers")
+    @Tool("将两个数字相乘")
     String multiply(double a, double b) {
         return String.valueOf(a * b);
     }
@@ -328,14 +319,12 @@ Assistant assistant = AiServices.builder(Assistant.class)
         .tools(calculator)
         .build();
 
-String answer = assistant.chat("How much is 74589613588 + 4786521789?");
+String answer = assistant.chat("74589613588 加 4786521789 等于多少？");
 ```
 
-### Grounding responses with Google Search results
+### 使用 Google 搜索结果为响应提供基础
 
-LLMs don't necessarily know tha answer to all possible questions!
-It's even more the case for recent events or information that have happened past the end of their last training.
-It's possible to _ground_ Gemini's answers with fresh results from Google Search results:
+LLM 并不总能回答所有问题！尤其是训练截止日期之后发生的最新事件或信息。可以用 Google 搜索的新鲜结果为 Gemini 的回答提供**基础**：
 
 ```java
 var modelWithSearch = VertexAiGeminiChatModel.builder()
@@ -345,14 +334,12 @@ var modelWithSearch = VertexAiGeminiChatModel.builder()
     .useGoogleSearch(true)
     .build();
 
-String resp = modelWithSearch.chat("What is the score of yesterday's football match from Paris Saint Germain?");
+String resp = modelWithSearch.chat("巴黎圣日耳曼昨天足球比赛的比分是多少？");
 ```
 
-### Grounding responses with Vertex AI Search results
+### 使用 Vertex AI Search 结果为响应提供基础
 
-When working with private internal information, documents, data, you can use 
-[Vertex AI Search datastores](https://cloud.google.com/generative-ai-app-builder/docs/create-data-store-es) to hold those documents.
-You can then ground Gemini's answers with those documents:
+处理私密内部信息、文档和数据时，可使用 [Vertex AI Search 数据库](https://cloud.google.com/generative-ai-app-builder/docs/create-data-store-es)来存储这些文档，并以这些文档为 Gemini 的回答提供基础：
 
 ```java
 var modelWithSearch = VertexAiGeminiChatModel.builder()
@@ -363,9 +350,9 @@ var modelWithSearch = VertexAiGeminiChatModel.builder()
     .build();
 ```
 
-### JSON structured output
+### JSON 结构化输出
 
-You can ask Gemini to return only valid JSON outputs:
+可要求 Gemini 只返回有效的 JSON 输出：
 
 ```java
 var modelWithResponseMimeType = VertexAiGeminiChatModel.builder()
@@ -375,16 +362,14 @@ var modelWithResponseMimeType = VertexAiGeminiChatModel.builder()
     .responseMimeType("application/json")
     .build();
 
-String userMessage = "Return JSON with two fields: name and surname of Klaus Heisler.";
+String userMessage = "返回包含 Klaus Heisler 的 name 和 surname 两个字段的 JSON。";
 String jsonResponse = modelWithResponseMimeType.chat(userMessage).content().text();
 // {"name": "Klaus", "surname": "Heisler"}
 ```
 
-### Strict JSON structured output with JSON schemas
+### 使用 JSON Schema 进行严格的 JSON 结构化输出
 
-With `responseMimeType("application/json)` the model can still be a bit creative in the way it responds
-if ever your prompt didn't precisely describe the desired JSON output.
-To ensure a stricter JSON structured output, you can specify a JSON schema for the response:
+使用 `responseMimeType("application/json")` 时，如果提示词没有精确描述期望的 JSON 输出格式，模型可能仍有一定的自由发挥空间。为确保更严格的 JSON 结构化输出，可为响应指定 JSON Schema：
 
 ```java
 Schema schema = Schema.newBuilder()
@@ -410,7 +395,7 @@ var model = VertexAiGeminiChatModel.builder()
     .build();
 ```
 
-A convenience method allows you to generate a schema for a Java class:
+还有一个便捷方法可为 Java 类生成 Schema：
 
 ```java
 class Artist {
@@ -436,13 +421,9 @@ var model = VertexAiGeminiChatModel.builder()
     .build();
 ```
 
-Another method allows you to create a schema from a JSON schema string:
-`SchemaHelper.fromJson(...)`.
+另一个方法支持从 JSON Schema 字符串创建 Schema：`SchemaHelper.fromJson(...)`。
 
-Gemini supports both JSON objects and arrays as structured output, 
-but there's also a special case for a JSON string enum as output,
-which is particularly interesting when asking Gemini to do classification tasks 
-(like sentiment analysis):
+Gemini 支持将 JSON 对象和数组作为结构化输出，同时还有一种特殊的 JSON 字符串枚举输出形式，对于让 Gemini 执行分类任务（如情感分析）特别有用：
 
 ```java
 var model = VertexAiGeminiChatModel.builder()
@@ -458,12 +439,11 @@ var model = VertexAiGeminiChatModel.builder()
     .build();
 ```
 
-In this case, the implicit response mime type is set to `text/x.enum` 
-(which is not an official registered mime type).
+在这种情况下，隐式响应 MIME 类型会被设置为 `text/x.enum`（这不是官方注册的 MIME 类型）。
 
-### Specify safety settings
+### 指定安全设置
 
-If you want to filter or block harmful content, you can set safety settings with different threshold levels:
+如果要过滤或屏蔽有害内容，可设置不同阈值级别的安全设置：
 
 ```java
 HashMap<HarmCategory, SafetyThreshold> safetySettings = new HashMap<>();
@@ -481,9 +461,9 @@ var model = VertexAiGeminiChatModel.builder()
     .build();
 ```
 
-### Custom authentication
+### 自定义认证
 
-You can provide custom Google Cloud credentials:
+可提供自定义 Google Cloud 凭据：
 
 ```java
 import com.google.auth.oauth2.GoogleCredentials;
@@ -500,13 +480,13 @@ var model = VertexAiGeminiChatModel.builder()
     .build();
 ```
 
-## References
+## 参考资料
 
-[Available locations](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/locations#available-regions)
+[可用区域](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/locations#available-regions)
 
-[Multimodal capabilities](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/overview#multimodal_models)
+[多模态功能](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/overview#multimodal_models)
 
 
-## Examples
+## 示例
 
-- [Google Vertex AI Gemini Examples](https://github.com/langchain4j/langchain4j-examples/tree/main/vertex-ai-gemini-examples/src/main/java)
+- [Google Vertex AI Gemini 示例](https://github.com/langchain4j/langchain4j-examples/tree/main/vertex-ai-gemini-examples/src/main/java)

@@ -4,10 +4,9 @@ sidebar_position: 4
 
 # Google Imagen
 
-[An article about image generation with Imagen](https://glaforge.dev/posts/2024/02/01/image-generation-with-imagen-and-langchain4j/)
+[关于使用 Imagen 生成图像的文章](https://glaforge.dev/posts/2024/02/01/image-generation-with-imagen-and-langchain4j/)
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,12 +16,10 @@ sidebar_position: 4
 </dependency>
 ```
 
-
-## APIs
+## API 列表 {#apis}
 
 - `VertexAiImageModel`
 
-
-## Examples
+## 示例
 
 - [VertexAiImageModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-vertex-ai/src/test/java/dev/langchain4j/model/vertexai/VertexAiImageModelIT.java)

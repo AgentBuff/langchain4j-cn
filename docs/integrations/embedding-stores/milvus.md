@@ -7,7 +7,7 @@ sidebar_position: 14
 https://milvus.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -18,44 +18,44 @@ https://milvus.io/
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `MilvusEmbeddingStore`
 
-## Creation
+## 创建方式
 
-There are 2 ways to create `MilvusEmbeddingStore`:
+有两种创建 `MilvusEmbeddingStore` 的方式：
 
 
-1. Create MilvusEmbeddingStore with Automatic MilvusServiceClient Creation: Use this option to set up a new MilvusServiceClient internally with specified host, port, and authentication details for easy setup.
+1. 通过自动创建 MilvusServiceClient 创建 MilvusEmbeddingStore：使用此选项时，内部将使用指定的主机、端口和认证信息创建新的 MilvusServiceClient，便于快速设置。
 
 
 ```java
 MilvusEmbeddingStore store = MilvusEmbeddingStore.builder()
 
-    .host("localhost")                         // Host for Milvus instance
-    .port(19530)                               // Port for Milvus instance
-    .collectionName("example_collection")      // Name of the collection
-    .dimension(128)                            // Dimension of vectors
-    .indexType(IndexType.FLAT)                 // Index type
-    .metricType(MetricType.COSINE)             // Metric type
-    .username("username")                      // Username for Milvus
-    .password("password")                      // Password for Milvus
-    .consistencyLevel(ConsistencyLevelEnum.EVENTUALLY)  // Consistency level
-    .autoFlushOnInsert(true)                   // Auto flush after insert
-    .idFieldName("id")                         // ID field name
-    .textFieldName("text")                     // Text field name
-    .metadataFieldName("metadata")             // Metadata field name
-    .vectorFieldName("vector")                 // Vector field name
-    .build();                                  // Build the MilvusEmbeddingStore instance
+    .host("localhost")                         // Milvus 实例主机
+    .port(19530)                               // Milvus 实例端口
+    .collectionName("example_collection")      // 集合名称
+    .dimension(128)                            // 向量维度
+    .indexType(IndexType.FLAT)                 // 索引类型
+    .metricType(MetricType.COSINE)             // 度量类型
+    .username("username")                      // Milvus 用户名
+    .password("password")                      // Milvus 密码
+    .consistencyLevel(ConsistencyLevelEnum.EVENTUALLY)  // 一致性级别
+    .autoFlushOnInsert(true)                   // 插入后自动刷新
+    .idFieldName("id")                         // ID 字段名
+    .textFieldName("text")                     // 文本字段名
+    .metadataFieldName("metadata")             // 元数据字段名
+    .vectorFieldName("vector")                 // 向量字段名
+    .build();                                  // 构建 MilvusEmbeddingStore 实例
 ```
 
-2. Create MilvusEmbeddingStore with an Existing MilvusServiceClient: If you already have a MilvusServiceClient, this option lets you directly use it in the builder, allowing customized configurations.
+2. 使用已有 MilvusServiceClient 创建 MilvusEmbeddingStore：如果您已有 MilvusServiceClient，此选项可直接在 builder 中使用，允许自定义配置。
 
 
 ```java
 
-// Set up a custom MilvusServiceClient
+// 设置自定义 MilvusServiceClient
 MilvusServiceClient customMilvusClient = new MilvusServiceClient(
     ConnectParam.newBuilder()
         .withHost("localhost")
@@ -63,26 +63,26 @@ MilvusServiceClient customMilvusClient = new MilvusServiceClient(
         .build()
 );
 
-// Use the custom client in the builder
+// 在 builder 中使用自定义客户端
 MilvusEmbeddingStore store = MilvusEmbeddingStore.builder()
 
-    .milvusClient(customMilvusClient)          // Use an existing Milvus client
-    .collectionName("example_collection")      // Name of the collection
-    .dimension(128)                            // Dimension of vectors
-    .indexType(IndexType.FLAT)                 // Index type
-    .metricType(MetricType.COSINE)             // Metric type
-    .consistencyLevel(ConsistencyLevelEnum.EVENTUALLY)  // Consistency level
-    .autoFlushOnInsert(true)                   // Auto flush after insert
-    .idFieldName("id")                         // ID field name
-    .textFieldName("text")                     // Text field name
-    .metadataFieldName("metadata")             // Metadata field name
-    .vectorFieldName("vector")                 // Vector field name
-    .build();                                  // Build the MilvusEmbeddingStore instance
+    .milvusClient(customMilvusClient)          // 使用已有 Milvus 客户端
+    .collectionName("example_collection")      // 集合名称
+    .dimension(128)                            // 向量维度
+    .indexType(IndexType.FLAT)                 // 索引类型
+    .metricType(MetricType.COSINE)             // 度量类型
+    .consistencyLevel(ConsistencyLevelEnum.EVENTUALLY)  // 一致性级别
+    .autoFlushOnInsert(true)                   // 插入后自动刷新
+    .idFieldName("id")                         // ID 字段名
+    .textFieldName("text")                     // 文本字段名
+    .metadataFieldName("metadata")             // 元数据字段名
+    .vectorFieldName("vector")                 // 向量字段名
+    .build();                                  // 构建 MilvusEmbeddingStore 实例
 
 
 ```
 
 
-## Examples
+## 示例
 
 - [MilvusEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/milvus-example/src/main/java/MilvusEmbeddingStoreExample.java)

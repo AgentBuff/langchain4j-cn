@@ -2,15 +2,12 @@
 sidebar_position: 16
 ---
 
-
-
 # Neo4j
 
-[Neo4j](https://neo4j.com/) is a high-performance, open-source graph database designed for managing connected data.
-Neo4j's native graph model is ideal for modelling complex and highly interconnected domains, like social graphs, recommendation systems, and knowledge networks.
-With its integration in LangChain4j, the [Neo4j Vector](https://github.com/neo4j-documentation/labs-pages/blob/publish/modules/genai-ecosystem/pages/vector-search.adoc) capabilities can be used in the Langchain4j library.
+[Neo4j](https://neo4j.com/) 是一个高性能的开源图数据库，专为管理关联数据而设计。Neo4j 的原生图模型非常适合建模复杂且高度互联的领域，如社交图谱、推荐系统和知识网络。通过在 LangChain4j 中的集成，可以在 LangChain4j 库中使用 [Neo4j Vector](https://github.com/neo4j-documentation/labs-pages/blob/publish/modules/genai-ecosystem/pages/vector-search.adoc) 功能。
 
-## Maven Dependency
+## Maven 依赖
+
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -24,65 +21,62 @@ With its integration in LangChain4j, the [Neo4j Vector](https://github.com/neo4j
     <version>${latest version here}</version>
 </dependency>
 
-<!-- if we want to use the Spring Boot starter -->
+<!-- 如果要使用 Spring Boot starter -->
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-community-neo4j-spring-boot-starter</artifactId>
     <version>${latest version here}</version>
 </dependency>
 ```
-## APIs
 
-LangChain4j provides the following classes for Neo4j integration:
-- `Neo4jEmbeddingStore`:  Implements the EmbeddingStore interface, enabling storing and querying vector embeddings in a Neo4j database.
-- `Neo4jText2CypherRetriever`:  Implements the ContentRetriever interface for generating and executing Cypher queries from user questions, improving content retrieval from Neo4j databases. It translates natural language questions into Cypher queries,
-  leveraging the Neo4j schema calculated via [apoc.meta.data](https://neo4j.com/docs/apoc/current/overview/apoc.meta/apoc.meta.data) procedure.
-- `KnowledgeGraphWriter`: A class that stores Neo4j nodes and relationships starting from structured data coming from `LLMGraphTransformer`, 
-that is a tool that transform one or more unstructured documents in a graph. It’s database-agnostic, which means that  transforms texts into a set of Nodes and Edges that can also be used for other graph databases like RedisGraph.
-- `Neo4jEmbeddingStoreIngestor`: Implements the `ParentChildEmbeddingStoreIngestor` interface, it performs a multi-stage transformation pipeline: it transforms documents, splits them into segments, optionally applies additional transformations to child segments, generates embeddings, and stores both the parent-child relationships and embeddings in Neo4j.
-- `Neo4jChatMemoryStore`: Implements the `ChatMemoryStore` interface that stores and retrieves conversational messages in a Neo4j graph database. It supports managing chat history with efficient querying and persistence using Neo4j nodes and relationships.
+## API 参考 {#api}
 
-## Usage Examples
+LangChain4j 为 Neo4j 集成提供以下类：
+- `Neo4jEmbeddingStore`：实现 EmbeddingStore 接口，支持在 Neo4j 数据库中存储和查询向量嵌入。
+- `Neo4jText2CypherRetriever`：实现 ContentRetriever 接口，用于从用户问题生成并执行 Cypher 查询，改善从 Neo4j 数据库中检索内容的能力。它将自然语言问题转换为 Cypher 查询，通过 [apoc.meta.data](https://neo4j.com/docs/apoc/current/overview/apoc.meta/apoc.meta.data) 过程利用 Neo4j 模式。
+- `KnowledgeGraphWriter`：用于将来自 `LLMGraphTransformer`（一种将一个或多个非结构化文档转换为图的工具）的结构化数据存储为 Neo4j 节点和关系的类。它与数据库无关，这意味着它可以将文本转换为节点和边的集合，也可用于 RedisGraph 等其他图数据库。
+- `Neo4jEmbeddingStoreIngestor`：实现 `ParentChildEmbeddingStoreIngestor` 接口，执行多阶段转换管道：转换文档、分割为片段、可选地对子片段应用额外转换、生成嵌入，并在 Neo4j 中存储父子关系和嵌入。
+- `Neo4jChatMemoryStore`：实现 `ChatMemoryStore` 接口，在 Neo4j 图数据库中存储和检索对话消息，支持使用 Neo4j 节点和关系高效查询和持久化管理聊天历史。
+
+## 使用示例
 
 ### Neo4jEmbeddingStore
 
-Here is how to create a `Neo4jEmbeddingStore` instance:
+以下是创建 `Neo4jEmbeddingStore` 实例的方法：
 
 ```java
 Neo4jEmbeddingStore embeddingStore = Neo4jEmbeddingStore.builder().<builderParameters>.build();
 ```
 
-Where `<builderParameters>` must include `dimension` and either `driver` or `withBasicAuth` parameters, along with other optional ones.
+其中 `<builderParameters>` 必须包含 `dimension` 以及 `driver` 或 `withBasicAuth` 参数，以及其他可选参数。
 
-Here is the complete builder list:
+以下是完整的 builder 参数列表：
 
-| Key                 | Default Value| Description        |
-| ------------------- |-----| --------------------- |
-| `driver`            | *Required if `withBasicAuth` is not set*   | The [Java Driver instance](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
-| `withBasicAuth`     | *Required if `driver` is not set*       | Creates a [Java Driver instance](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) from `uri`, `user`, and `password` |
-| `dimension`         | *Required*    | The vector's dimension  |
-| `config`            | `org.neo4j.driver.SessionConfig.forDatabase("<databaseName>")`   | The [SessionConfig instance](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/SessionConfig.html)                                |
-| `label`             | `"Document"`| The label name    |
-| `embeddingProperty` | `"embedding"` | The embedding property name |
-| `idProperty`        | `"id"` | The ID property name  |
-| `metadataPrefix`    | `""`       | The metadata prefix   |
-| `textProperty`      | `"text"`  | The text property name |
-| `indexName`         | `"vector"` | The vector index name  |
-| `databaseName`      | `"neo4j"`| The database name  |
-| `retrievalQuery`    | `"RETURN properties(node) AS metadata, node.idProperty AS idProperty, node.textProperty AS textProperty, node.embeddingProperty AS embeddingProperty, score"`  | The retrieval query     |
+| 键 | 默认值 | 描述 |
+| --- | --- | --- |
+| `driver` | *如果未设置 `withBasicAuth` 则必填* | [Java Driver 实例](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
+| `withBasicAuth` | *如果未设置 `driver` 则必填* | 从 `uri`、`user` 和 `password` 创建 [Java Driver 实例](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
+| `dimension` | *必填* | 向量的维度 |
+| `config` | `org.neo4j.driver.SessionConfig.forDatabase("<databaseName>")` | [SessionConfig 实例](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/SessionConfig.html) |
+| `label` | `"Document"` | 标签名称 |
+| `embeddingProperty` | `"embedding"` | 嵌入属性名称 |
+| `idProperty` | `"id"` | ID 属性名称 |
+| `metadataPrefix` | `""` | 元数据前缀 |
+| `textProperty` | `"text"` | 文本属性名称 |
+| `indexName` | `"vector"` | 向量索引名称 |
+| `databaseName` | `"neo4j"` | 数据库名称 |
+| `retrievalQuery` | `"RETURN properties(node) AS metadata, node.idProperty AS idProperty, node.textProperty AS textProperty, node.embeddingProperty AS embeddingProperty, score"` | 检索查询 |
 
+因此，要创建 `Neo4jEmbeddingStore` 实例，您需要提供适当的设置：
 
-
-
-Therefore, to create `Neo4jEmbeddingStore` instance, you need to provide proper settings:
 ```java
-// ---> MINIMAL EMBEDDING <---
+// ---> 最简嵌入 <---
 Neo4jEmbeddingStore minimalEmbedding = Neo4jEmbeddingStore.builder()
     .withBasicAuth(NEO4J_CONNECTION_STRING, USERNAME, ADMIN_PASSWORD)
     .dimension(384)
     .build();
 
-// ---> CUSTOM EMBEDDING <---
+// ---> 自定义嵌入 <---
 Neo4jEmbeddingStore customEmbeddingStore = Neo4jEmbeddingStore.builder()
         .withBasicAuth(NEO4J_CONNECTION_STRING, USERNAME, ADMIN_PASSWORD)
         .dimension(384)
@@ -94,33 +88,35 @@ Neo4jEmbeddingStore customEmbeddingStore = Neo4jEmbeddingStore.builder()
         .textProperty(CUSTOM_TEXT)
         .build();
 ```
-Then you can add the embeddings in many different ways, and search them:
-```java
-// ---> ADD MINIMAL EMBEDDING <---
-Embedding embedding = embeddingModel.embed("embedText").content();
-String id = minimalEmbedding.add(embedding); // output: id of the embedding
 
-// ---> ADD MINIMAL EMBEDDING WITH ID <---
+然后您可以通过多种方式添加嵌入并进行搜索：
+
+```java
+// ---> 添加最简嵌入 <---
+Embedding embedding = embeddingModel.embed("embedText").content();
+String id = minimalEmbedding.add(embedding); // 输出：嵌入的 id
+
+// ---> 通过 ID 添加最简嵌入 <---
 String id = randomUUID();
 Embedding embedding = embeddingModel.embed("embedText").content();
 minimalEmbedding.add(id, embedding);
 
-// ---> ADD EMBEDDING WITH SEGMENT <---
+// ---> 带片段添加嵌入 <---
 TextSegment segment = TextSegment.from(randomUUID());
 Embedding embedding = embeddingModel.embed(segment.text()).content();
 String id = minimalEmbedding.add(embedding, segment);
 
-// ---> ADD EMBEDDING WITH SEGMENT AND METADATA <---
+// ---> 带片段和元数据添加嵌入 <---
 TextSegment segment = TextSegment.from(randomUUID(), Metadata.from(METADATA_KEY, "test-value"));
 Embedding embedding = embeddingModel.embed(segment.text()).content();
 String id = minimalEmbedding.add(embedding, segment);
 
-// ---> ADD MULTIPLE EMBEDDINGS <---
+// ---> 批量添加嵌入 <---
 Embedding firstEmbedding = embeddingModel.embed("firstEmbedText").content();
 Embedding secondEmbedding = embeddingModel.embed("secondEmbedText").content();
 List<String> ids = minimalEmbedding.addAll(asList(firstEmbedding, secondEmbedding));
 
-// ---> ADD MULTIPLE EMBEDDINGS WITH SEGMENTS <---
+// ---> 带片段批量添加嵌入 <---
 TextSegment firstSegment = TextSegment.from("firstText");
 Embedding firstEmbedding = embeddingModel.embed(firstSegment.text()).content();
 TextSegment secondSegment = TextSegment.from("secondText");
@@ -130,9 +126,11 @@ List<String> ids = minimalEmbedding.addAll(
         asList(firstSegment, secondSegment)
 );
 ```
-Then you can search the stored embeddings:
+
+然后您可以搜索已存储的嵌入：
+
 ```java
-// ---> SEARCH EMBEDDING WITH MAX RESULTS <---
+// ---> 带最大结果数搜索嵌入 <---
 String id = minimalEmbedding.add(embedding);
 final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .queryEmbedding(embedding)
@@ -140,7 +138,7 @@ final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .build();
 final List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.search(request).matches();
 
-// ---> SEARCH EMBEDDING WITH MIN SCORE <---
+// ---> 带最小分数搜索嵌入 <---
 Embedding embedding = embeddingModel.embed("embedText").content();
 String id = minimalEmbedding.add(embedding);
 final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
@@ -150,7 +148,7 @@ final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .build();
 final List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.search(request).matches();
 
-// ---> SEARCH EMBEDDING WITH CUSTOM METADATA PREFIX <---
+// ---> 带自定义元数据前缀搜索嵌入 <---
 String metadataCompleteKey = CUSTOM_METADATA_PREF + METADATA_KEY;
 TextSegment segment = TextSegment.from(randomUUID(), Metadata.from(METADATA_KEY, "test-value"));
 Embedding embedding = embeddingModel.embed(segment.text()).content();
@@ -161,7 +159,7 @@ final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .build();
 final List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.search(request).matches();
 
-// ---> SEARCH EMBEDDING WITH CUSTOM ID PROPERTY <---
+// ---> 带自定义 ID 属性搜索嵌入 <---
 String metadataCompleteKey = CUSTOM_METADATA_PREF + METADATA_KEY;
 TextSegment segment = TextSegment.from(randomUUID(), Metadata.from(METADATA_KEY, "test-value"));
 Embedding embedding = embeddingModel.embed(segment.text()).content();
@@ -172,7 +170,7 @@ final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
                 .build();
 final List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.search(request).matches();
 
-// ---> SEARCH MULTIPLE EMBEDDING <---
+// ---> 批量搜索嵌入 <---
 List<String> ids = minimalEmbedding.addAll(asList(firstEmbedding, secondEmbedding));
 final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .queryEmbedding(firstEmbedding)
@@ -180,7 +178,7 @@ final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .build();
 final List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.search(request).matches();
 
-// ---> SEARCH MULTIPLE EMBEDDING WITH SEGMENTS <---
+// ---> 带片段批量搜索嵌入 <---
 List<String> ids = minimalEmbedding.addAll(
         asList(firstEmbedding, secondEmbedding),
         asList(firstSegment, secondSegment)
@@ -192,9 +190,10 @@ final EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
 final List<EmbeddingMatch<TextSegment>> relevant = embeddingStore.search(request).matches();
 ```
 
-To get embeddings using a hybrid search leveraging both the vector and the full text index:
+使用同时利用向量索引和全文索引的混合搜索来获取嵌入：
+
 ```java
-// ---> ADDS EMBEDDING AND FULLTEXT WITH ID <---
+// ---> 通过 ID 添加嵌入和全文 <---
 embeddingStore = Neo4jEmbeddingStore.builder()
         .withBasicAuth("<Bolt URL>", "<username>", "<password>")
         .dimension(384)
@@ -218,7 +217,7 @@ final EmbeddingSearchRequest embeddingSearchRequest = EmbeddingSearchRequest.bui
 final List<EmbeddingMatch<TextSegment>> matches =
         embeddingStore.search(embeddingSearchRequest).matches();
 
-// ---> SEARCH EMBEDDING WITH AUTOCREATED FULLTEXT <---
+// ---> 带自动创建全文索引的嵌入搜索 <---
 final String fullTextIndexName = "movie_text";
 final String label = "Movie";
 final String fullTextSearch = "Matrix";
@@ -232,9 +231,10 @@ embeddingStore = Neo4jEmbeddingStore.builder()
         .build();
 ```
 
-If the FULLTEXT index is invalid, a descriptive exception will be thrown.: 
+如果全文索引无效，将抛出描述性异常：
+
 ```java
-// ---> ERROR HANDLING WITH INVALID FULLTEXT <---
+// ---> 使用无效全文的错误处理 <---
 Neo4jEmbeddingStore embeddingStore = Neo4jEmbeddingStore.builder()
         .withBasicAuth("<Bolt URL>", "<username>", "<password>")
         .dimension(384)
@@ -255,12 +255,13 @@ final EmbeddingSearchRequest embeddingSearchRequest = EmbeddingSearchRequest.bui
         .maxResults(3)
         .build();
 embeddingStore.search(embeddingSearchRequest).matches();
-// This search will throw a ClientException: ... Variable `invalid` not defined ...
+// 此搜索将抛出 ClientException: ... Variable `invalid` not defined ...
 ```
 
-To execute a search with a metadata filtering leveraging the `dev.langchain4j.store.embedding.filter.Filter` class:
+使用 `dev.langchain4j.store.embedding.filter.Filter` 类执行带元数据过滤的搜索：
+
 ```java
-// ---> ADD EMBEDDING WITH ID AND RETRIEVE WITH OR WITHOUT PREFILTER <---
+// ---> 通过 ID 添加嵌入并带/不带预过滤检索 <---
 final List<TextSegment> segments = IntStream.range(0, 10)
                 .boxed()
                 .map(i -> {
@@ -302,62 +303,64 @@ final EmbeddingSearchResult<TextSegment> searchWithoutFilter = embeddingStore.se
 final List<EmbeddingMatch<TextSegment>> matchesWithoutFilter = searchWithoutFilter.matches();
 ```
 
-To execute a follow-up query for reading or writing data retrieved by the embedding search, we can leverage the nodes' `embeddingId`s.
-For example:
+要在嵌入搜索返回的结果上执行后续查询以读取或写入数据，可以利用节点的 `embeddingId`。例如：
+
 ```java
-// ... Neo4jEmbeddingStore instance creation ...
-// ... add embeddings.... 
+// ... Neo4jEmbeddingStore 实例创建 ...
+// ... 添加嵌入....
 
 final List<EmbeddingMatch<TextSegment>> results = embeddingStore.search(/*dev.langchain4j.store.embedding.EmbeddingSearchRequest instance*/)
         .matches();
 
-// retrieve the ids to execute the follow-up
+// 检索 id 以执行后续查询
 List<String> nodeIds = results.stream().map(dev.langchain4j.store.embedding.EmbeddingMatch:embeddingId).toList();
 
 String cypher = """
         MATCH (d:Document)
         WHERE d.id IN $ids
-        // -- here the follow-up query, for example
+        // -- 这里是后续查询，例如
         WITH (d)-[:CONNECTED_TO]->(o:OtherLabel) 
         RETURN o.id
     """;
 
-// run the follow-up query
+// 运行后续查询
 Map<String, Object> params = Map.of("ids", nodeIds);
 final List<Record> list = session.run(cypher, params).list();
 ```
 
 #### Spring Boot starter
 
-To create a **Spring Boot starter**, the Neo4j starter provides at the time being the following `application.properties`:
-```properties
+要创建 **Spring Boot starter**，Neo4j starter 目前提供以下 `application.properties`：
 
-# the builder.dimension(dimension) method
+```properties
+# builder.dimension(dimension) 方法
 langchain4j.community.neo4j.dimension=<dimension>
-# the builder.withBasicAuth(uri, username, password) method
+# builder.withBasicAuth(uri, username, password) 方法
 langchain4j.community.neo4j.auth.uri=<boltURI>
 langchain4j.community.neo4j.auth.user=<username>
 langchain4j.community.neo4j.auth.password=<password>
-# the builder.label(label) method
+# builder.label(label) 方法
 langchain4j.community.neo4j.label=<label>
-# the builder.indexName(indexName) method
+# builder.indexName(indexName) 方法
 langchain4j.community.neo4j.indexName=<indexName>
-# the builder.metadataPrefix(metadataPrefix) method
+# builder.metadataPrefix(metadataPrefix) 方法
 langchain4j.community.neo4j.metadataPrefix=<metadataPrefix>
-# the builder.embeddingProperty(embeddingProperty) method
+# builder.embeddingProperty(embeddingProperty) 方法
 langchain4j.community.neo4j.embeddingProperty=<embeddingProperty>
-# the builder.idProperty(idProperty) method
+# builder.idProperty(idProperty) 方法
 langchain4j.community.neo4j.idProperty=<idProperty>
-# the builder.textProperty(textProperty) method
+# builder.textProperty(textProperty) 方法
 langchain4j.community.neo4j.textProperty=<textProperty>
-# the builder.databaseName(databaseName) method
+# builder.databaseName(databaseName) 方法
 langchain4j.community.neo4j.databaseName=<databaseName>
-# the builder.retrievalQuery(retrievalQuery) method
+# builder.retrievalQuery(retrievalQuery) 方法
 langchain4j.community.neo4j.retrievalQuery=<retrievalQuery>
-# the builder.awaitIndexTimeout(awaitIndexTimeout) method
+# builder.awaitIndexTimeout(awaitIndexTimeout) 方法
 langchain4j.community.neo4j.awaitIndexTimeout=<awaitIndexTimeout>
 ```
-Configuring the Starter allows us to create a simple Spring Boot project like the following:
+
+配置 Starter 后，我们可以创建如下简单的 Spring Boot 项目：
+
 ```java
 @SpringBootApplication
 public class SpringBootExample {
@@ -385,7 +388,7 @@ public class EmbeddingController {
         this.model = model;
     }
 
-    // add embeddings
+    // 添加嵌入
     @PostMapping("/add")
     public String add(@RequestBody String text) {
         TextSegment segment = TextSegment.from(text);
@@ -393,7 +396,7 @@ public class EmbeddingController {
         return store.add(embedding, segment);
     }
 
-    // search embeddings
+    // 搜索嵌入
     @PostMapping("/search")
     public List<String> search(@RequestBody String query) {
         Embedding queryEmbedding = model.embed(query).content();
@@ -407,39 +410,41 @@ public class EmbeddingController {
     }
 }
 ```
-We have defined APIs that can be called easily, as shown here:
+
+我们定义了可以轻松调用的 API，如下所示：
+
 ```shell
-# to create a new embedding 
-# and store it with a label "Spring Boot"
+# 创建新嵌入
+# 并存储标签为 "Spring Boot" 的内容
 curl -X POST localhost:8083/api/embeddings/add -H "Content-Type: text/plain" -d "embeddingTest"
 
-# to search the first 5 embeddings
+# 搜索前 5 个嵌入
 curl -X POST localhost:8083/api/embeddings/search -H "Content-Type: text/plain" -d "querySearchTest"
 ```
 
 
 ### Neo4jText2CypherRetriever
 
-Here is how to create a `Neo4jText2CypherRetriever` instance:
+以下是创建 `Neo4jText2CypherRetriever` 实例的方法：
 
 ```java
 Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder().<builderParameters>.build();
-````
+```
 
-Here is the complete builder list:
+以下是完整的 builder 参数列表：
 
-| Key | Default Value     | Description |
-| ---------- |-------------------| ---------- |
-| `graph`    | *Required*        | See below  |
-| `chatModel` | *Required*        | The [ChatModel](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-core/src/main/java/dev/langchain4j/model/chat/ChatModel.java) implementation used to create the Cypher query from a natural language question |
-| `prompt`   | See example below | The prompt that will be used with the chatModel |
-| `examples` | Empty string      | Additional examples to enrich and improve the result |
-| `maxRetries` | 3                 | Additional retry to generate the Cypher query if it fails or returns an empty result                                                                                                                                           |
+| 键 | 默认值 | 描述 |
+| --- | --- | --- |
+| `graph` | *必填* | 见下文 |
+| `chatModel` | *必填* | 用于从自然语言问题创建 Cypher 查询的 [ChatModel](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-core/src/main/java/dev/langchain4j/model/chat/ChatModel.java) 实现 |
+| `prompt` | 见下方示例 | 与 chatModel 一起使用的提示词 |
+| `examples` | 空字符串 | 用于丰富和改善结果的额外示例 |
+| `maxRetries` | 3 | 如果 Cypher 查询生成失败或返回空结果，额外的重试次数 |
 
-To connect to Neo4j we have to leverage the `Neo4jGraph` class this way:
+要连接到 Neo4j，需要使用 `Neo4jGraph` 类：
 
 ```java
-// Neo4j Java Driver connection instance
+// Neo4j Java Driver 连接实例
 Driver driver = GraphDatabase.driver("<Bolt URL>", AuthTokens.basic("<username>", "<password>"));
 
 Neo4jGraph neo4jGraph = Neo4jGraph.builder()
@@ -447,7 +452,7 @@ Neo4jGraph neo4jGraph = Neo4jGraph.builder()
     .build();
 ```
 
-Or using `withBasicAuth` as with the `Neo4jEmbeddingStore`:
+或者使用与 `Neo4jEmbeddingStore` 相同的 `withBasicAuth`：
 
 ```java
 Neo4jGraph neo4jGraph = Neo4jGraph.builder()
@@ -455,30 +460,27 @@ Neo4jGraph neo4jGraph = Neo4jGraph.builder()
     .build();
 ```
 
-And then pass it to the builder:
+然后将其传递给 builder：
 
 ```java
-Neo4jGraph neo4jGraph = /* Neo4jGraph instance */;
+Neo4jGraph neo4jGraph = /* Neo4jGraph 实例 */;
 
-// ChatModel instance, e.g. OpenAiChatModel
+// ChatModel 实例，例如 OpenAiChatModel
 ChatModel chatModel = OpenAiChatModel.builder()
         .apiKey(OPENAI_API_KEY)
         .modelName(GPT_4_O_MINI)
         .build();
 
-// Neo4jText2CypherRetriever instance
+// Neo4jText2CypherRetriever 实例
 Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder()
         .graph(neo4jGraph)
         .chatModel(chatModel)
         .build();
 ```
 
-You can further customize the `Neo4jGraph` behavior by adjusting parameters such as `sample` (how many example paths to return in the context prompt) and `maxRels` (the maximum number of relationships to read per node label).
-These parameters are optional (with default respectively `1000` and `100`) and can be omitted if you prefer the default behavior.
-These are particularly useful for controlling prompt size and complexity in larger graphs.
+您可以通过调整 `sample`（上下文提示中返回的示例路径数量）和 `maxRels`（每个节点标签读取的最大关系数）等参数进一步自定义 `Neo4jGraph` 的行为。这些参数是可选的（默认值分别为 `1000` 和 `100`），如果您希望使用默认行为，可以省略。这对于控制较大图中的提示大小和复杂性特别有用。
 
-Moreover, you can use the `Neo4jGraph` to return the entities schema, 
-i.e. a list of patterns, node properties, and relationship properties that describe the structure of the graph:
+此外，可以使用 `Neo4jGraph` 返回实体模式，即描述图结构的模式、节点属性和关系属性列表：
 
 ```java
 final Neo4jGraph.StructuredSchema structuredSchema = graph.getStructuredSchema();
@@ -488,20 +490,20 @@ List<String> nodesProperties = structuredSchema.nodesProperties();
 List<String> relationshipsProperties = structuredSchema.relationshipsProperties();
 
 /*
-Example outputs:
+输出示例：
 `patterns`: [(:Person)-[:WROTE]->(:Book)]
 `nodesProperties`: [:Book {title: STRING}, :Person {name: STRING}]
 `relationshipsProperties`: [:WROTE {year: 1986}]
 */
 ```
 
-### Example with `sample` and `maxRels`
+### 使用 `sample` 和 `maxRels` 的示例
 
 ```java
 Neo4jGraph neo4jGraph = Neo4jGraph.builder()
     .driver(driver)
-    .sample(3L) // Sample up to 3 example paths from the graph schema
-    .maxRels(8L) // Explore a maximum of 8 relationships from the start node
+    .sample(3L) // 从图模式中最多采样 3 条示例路径
+    .maxRels(8L) // 从起始节点最多探索 8 个关系
     .build();
 
 Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder()
@@ -510,20 +512,18 @@ Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder()
     .build();
 ```
 
+以下是一个基本示例：
 
-Here is a basic examples:
 ```java
+// 创建数据集，例如：
+// CREATE (book:Book {title: 'Dune'})<-[:WROTE {when: date('1999')}]-(author:Person {name: 'Frank Herbert'})
 
-// create dataset, for example:
-// CREATE (book:Book {title: 'Dune'})<-[:WROTE {when: date('1999')}]-(author:Person {name: 'Frank Herbert'})");
-
-
-// create a Neo4jGraph instance
+// 创建 Neo4jGraph 实例
 Neo4jGraph neo4jGraph = Neo4jGraph.builder()
-        .driver(/*<Neo4j Driver instance>*/)
+        .driver(/*<Neo4j Driver 实例>*/)
         .build();
 
-// create a Neo4jText2CypherRetriever instance
+// 创建 Neo4jText2CypherRetriever 实例
 Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder()
         .graph(neo4jGraph)
         .chatModel(chatModel)
@@ -531,13 +531,15 @@ Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder()
 
 Query query = new Query("Who is the author of the book 'Dune'?");
 
-// retrieve result
+// 检索结果
 List<Content> contents = retriever.retrieve(query);
 
 System.out.println(contents.get(0).textSegment().text());
-// example output: "Frank Herbert"
+// 输出示例："Frank Herbert"
 ```
-The above one will execute a chat request with the following prompt string:
+
+上述代码将使用以下提示字符串执行聊天请求：
+
 ```text
 Task:Generate Cypher statement to query a graph database.
 Instructions
@@ -560,25 +562,13 @@ Do not respond to any questions that might ask anything else than for you to con
 Do not include any text except the generated Cypher statement.
 The question is: {{question}}
 ```
-where  `question` is "Who is the author of the book 'Dune'?"
-and `schema` is handled by the apoc.meta.data procedure to retrieve and stringify the current Neo4j schema.
-In this case is
-```text
-Node properties are the following:
-:Book {title: STRING}
-:Person {name: STRING}
 
-Relationship properties are the following:
-:WROTE {when: DATE}
+其中 `question` 是 "Who is the author of the book 'Dune'?"，`schema` 由 apoc.meta.data 过程处理以检索并字符串化当前 Neo4j 模式。
 
-The relationships are the following:
-(:Person)-[:WROTE]->(:Book)
-----
+如果需要，也可以更改默认提示词：
 
-We can also change the default prompt if needed:
-[source,java]
-----
-Neo4jGraph neo4jGraph = /* Neo4jGraph instance */
+```java
+Neo4jGraph neo4jGraph = /* Neo4jGraph 实例 */
 
 Neo4jText2CypherRetriever.builder()
   .neo4jGraph(neo4jGraph)
@@ -586,20 +576,20 @@ Neo4jText2CypherRetriever.builder()
   .build();
 ```
 
-
-To create a retriever without any retry logic, set `maxRetries` to `0`:
+要创建不带任何重试逻辑的检索器，将 `maxRetries` 设置为 `0`：
 
 ```java
 Neo4jText2CypherRetriever retriever = Neo4jText2CypherRetriever.builder()
     .graph(graph)
     .chatModel(chatModel)
-    .maxRetries(0) // disables retry logic
+    .maxRetries(0) // 禁用重试逻辑
     .build();
 ```
-This configuration is useful when you want deterministic behavior and do not want the retriever to attempt fallback queries if the Cypher generation fails. It’s typically recommended for scenarios where performance is critical or failure handling is managed externally.
 
+当您希望确定性行为并且不希望在 Cypher 生成失败时尝试回退查询时，此配置很有用。通常建议在性能至关重要或外部管理失败处理的场景中使用。
 
-Also use the `fromLLM("<question>")` method to leverage a `chatModel` with the following prompt to generate a natural language answer based on the retrieved context and Cypher query, where `{{context}}` is the schema retrieved from `Neo4jGraph`, `{{cypher}}` is the Cypher query generated by text-to-Cypher, and `{{question}}` is the argument passed to `fromLLM()`.
+还可以使用 `fromLLM("<question>")` 方法，通过以下提示利用 `chatModel` 根据检索到的上下文和 Cypher 查询生成自然语言答案，其中 `{{context}}` 是从 `Neo4jGraph` 检索的模式，`{{cypher}}` 是由文本转 Cypher 生成的 Cypher 查询，`{{question}}` 是传递给 `fromLLM()` 的参数。
+
 ```
 Based on the following context and the generated Cypher,
 write an answer in natural language to the provided user's question:
@@ -607,9 +597,9 @@ Context: {{context}}
 Generated Cypher: {{cypher}}
 Question: {{question}}
 Cypher query:
-````
+```
 
-Example usage:
+示例用法：
 
 ```java
 Neo4jText2CypherRetriever neo4jContentRetriever = Neo4jText2CypherRetriever.builder()
@@ -620,43 +610,39 @@ Neo4jText2CypherRetriever neo4jContentRetriever = Neo4jText2CypherRetriever.buil
 Query query = new Query("Who is the author of the book 'Dune'?");
 
 String response = neo4jContentRetriever.fromLLM(query);
-// example output: the author of the book 'Dune' is Frank Herbert
-
-````
-
+// 输出示例：the author of the book 'Dune' is Frank Herbert
+```
 
 
 ### KnowledgeGraphWriter
 
-The `KnowledgeGraphWriter` is a utility class for writing structured knowledge graph data to Neo4j. It is designed to work with data produced by an `LLMGraphTransformer`, which extracts nodes and relationships from unstructured documents.
+`KnowledgeGraphWriter` 是一个用于将结构化知识图谱数据写入 Neo4j 的工具类。它旨在与 `LLMGraphTransformer` 生成的数据配合使用，该转换器从非结构化文档中提取节点和关系。
 
-This writer is particularly useful for scenarios where textual data has been transformed into a graph structure and needs to be stored efficiently in a Neo4j database, including optional document provenance.
+此写入器特别适用于将文本数据转换为图结构并需要高效存储到 Neo4j 数据库（包括可选的文档溯源）的场景。
 
-#### Features
+#### 功能
 
-- Stores nodes and relationships in Neo4j from `GraphDocument` instances.
-- Supports optional storage of source document metadata and content.
-- Automatically creates unique constraints for entities.
-- Allows customization of labels, relationship types, ID and text properties.
+- 将来自 `GraphDocument` 实例的节点和关系存储到 Neo4j。
+- 支持可选存储源文档元数据和内容。
+- 自动为实体创建唯一约束。
+- 允许自定义标签、关系类型、ID 和文本属性。
 
-Here is how to create a `KnowledgeGraphWriter` instance:
+以下是创建 `KnowledgeGraphWriter` 实例的方法：
 
 ```java
 KnowledgeGraphWriter writer = KnowledgeGraphWriter.builder().<builderParameters>.build();
 ```
 
-#### Here is the complete builder list:
+#### 完整的 builder 参数列表：
 
-| Builder Method           | Description                                                | Default Value    |
-| ------------------------ | ---------------------------------------------------------- | ---------------- |
-| `graph(Neo4jGraph)`      | Sets the Neo4j graph connection. (Required)                | -                |
-| `label(String)`          | Sets the entity label for nodes.                           | `__Entity__`     |
-| `relType(String)`        | Sets the relationship type between entities and documents. | `HAS_ENTITY`     |
-| `idProperty(String)`     | Sets the property name used as the unique identifier.      | `id`             |
-| `textProperty(String)`   | Sets the property name used for storing document text.     | `text`           |
-| `constraintName(String)` | Sets the name of the uniqueness constraint in Neo4j.       | `knowledge_cons` |
-
-
+| Builder 方法 | 描述 | 默认值 |
+| --- | --- | --- |
+| `graph(Neo4jGraph)` | 设置 Neo4j 图连接（必填） | - |
+| `label(String)` | 设置节点的实体标签 | `__Entity__` |
+| `relType(String)` | 设置实体和文档之间的关系类型 | `HAS_ENTITY` |
+| `idProperty(String)` | 设置用作唯一标识符的属性名称 | `id` |
+| `textProperty(String)` | 设置用于存储文档文本的属性名称 | `text` |
+| `constraintName(String)` | 设置 Neo4j 中唯一性约束的名称 | `knowledge_cons` |
 
 ```java
 Neo4jGraph graph = Neo4jGraph.builder()
@@ -671,16 +657,16 @@ KnowledgeGraphWriter writer = KnowledgeGraphWriter.builder()
     .textProperty("text")
     .build();
 
-List<GraphDocument> graphDocuments = ... // obtained from LLMGraphTransformer
-writer.addGraphDocuments(graphDocuments, true); // set to true to include document source
-````
+List<GraphDocument> graphDocuments = ... // 从 LLMGraphTransformer 获取
+writer.addGraphDocuments(graphDocuments, true); // 设为 true 以包含文档来源
+```
 
 
 ### Neo4jEmbeddingStoreIngestor
 
-`Neo4jEmbeddingStoreIngestor` is a specialized ingestor class designed to store embeddings and related data in a Neo4j graph database. It provides configurable options for embedding storage, query templates, and prompts to support various knowledge ingestion and retrieval workflows.
+`Neo4jEmbeddingStoreIngestor` 是一个专门的摄取类，用于在 Neo4j 图数据库中存储嵌入和相关数据。它提供了可配置的嵌入存储选项、查询模板和提示词，以支持各种知识摄取和检索工作流。
 
-Here is how to create a `Neo4jEmbeddingStoreIngestor` instance:
+以下是创建 `Neo4jEmbeddingStoreIngestor` 实例的方法：
 
 ```java
 Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
@@ -688,23 +674,22 @@ Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
     .build();
 ```
 
-Where the `<builderParameters>` includes `driver` and `dimension` as required, plus optional customization.
+其中 `<builderParameters>` 包含 `driver` 和 `dimension` 作为必填参数，以及可选的自定义参数。
 
-Here is the complete builder list:
+以下是完整的 builder 参数列表：
 
-| Key                   | Default Value             | Description                                                                                                                    |
-| --------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `driver`              | *Required*                | The [Neo4j Java Driver instance](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
-| `retrievalQuery`      | See class default         | Cypher query used to retrieve entities during embedding lookup                                                                 |
-| `entityCreationQuery` | See class default         | Cypher query for creating entities with embeddings                                                                             |
-| `label`               | `"Child"`                 | Node label to use in Neo4j for embedding nodes                                                                                 |
-| `indexName`           | `"child_embedding_index"` | Name of the index for embedding nodes                                                                                          |
-| `dimension`           | `384`                     | Dimensionality of the embedding vectors                                                                                        |
-| `systemPrompt`        | See class default         | System prompt for LLM-driven tasks                                                                                             |
-| `userPrompt`          | See class default         | User prompt for LLM-driven tasks                                                                                               |
+| 键 | 默认值 | 描述 |
+| --- | --- | --- |
+| `driver` | *必填* | [Neo4j Java Driver 实例](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
+| `retrievalQuery` | 见类默认值 | 用于在嵌入查找期间检索实体的 Cypher 查询 |
+| `entityCreationQuery` | 见类默认值 | 用于创建带嵌入的实体的 Cypher 查询 |
+| `label` | `"Child"` | Neo4j 中嵌入节点使用的节点标签 |
+| `indexName` | `"child_embedding_index"` | 嵌入节点的索引名称 |
+| `dimension` | `384` | 嵌入向量的维度 |
+| `systemPrompt` | 见类默认值 | LLM 驱动任务的系统提示词 |
+| `userPrompt` | 见类默认值 | LLM 驱动任务的用户提示词 |
 
-
-**Basic usage with required parameters:**
+**使用必填参数的基本用法：**
 
 ```java
 Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
@@ -713,7 +698,7 @@ Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
     .build();
 ```
 
-**Custom retrieval and creation queries:**
+**自定义检索和创建查询：**
 
 ```java
 Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
@@ -726,7 +711,7 @@ Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
     .build();
 ```
 
-**Using custom system and user prompts:**
+**使用自定义系统和用户提示词：**
 
 ```java
 Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
@@ -738,18 +723,16 @@ Neo4jEmbeddingStoreIngestor ingestor = Neo4jEmbeddingStoreIngestor.builder()
 ```
 
 
-### Neo4j Ingestors for Specialized Use Cases
+### 专用场景的 Neo4j 摄取器
 
-The following classes extend `Neo4jEmbeddingStoreIngestor` to provide pre-configured ingestion logic tailored to specific [GraphRAG](https://graphrag.com/reference/graphrag) patterns. Each ingestor comes with predefined Cypher queries and prompt templates, while still allowing builder-level customization.
-All ingestors inherit the full builder API from `Neo4jEmbeddingStoreIngestor`.
+以下类扩展了 `Neo4jEmbeddingStoreIngestor`，提供针对特定 [GraphRAG](https://graphrag.com/reference/graphrag) 模式的预配置摄取逻辑。每个摄取器都附带预定义的 Cypher 查询和提示词模板，同时仍允许 builder 级别的自定义。所有摄取器继承 `Neo4jEmbeddingStoreIngestor` 的完整 builder API。
 
 #### SummaryGraphIngestor
 
+实现[全局社区摘要检索器概念](https://graphrag.com/reference/graphrag/global-community-summary-retriever/)。此摄取器使用摘要提示词提取并存储文档的简洁摘要，将其存储为默认标记为 `"Summary"` 的节点，并与原始文档关联。
 
-To implement the [Global Community Summary Retriever concept](https://graphrag.com/reference/graphrag/global-community-summary-retriever/)
-This ingestor extracts and stores concise summaries of documents in the graph using summarization prompts and stores them as nodes labeled `"Summary"` (by default), linked to the original document.
+示例用法：
 
-Example usage:
 ```java
 SummaryGraphIngestor ingestor = SummaryGraphIngestor.builder()
         .driver(driver)
@@ -757,9 +740,9 @@ SummaryGraphIngestor ingestor = SummaryGraphIngestor.builder()
         .questionModel(chatModel)
         .documentSplitter(splitter)
         .build();
-````
+```
 
-Unlike `Neo4jEmbeddingStoreIngestor`, it has the following default values:
+与 `Neo4jEmbeddingStoreIngestor` 不同，它具有以下默认值：
 
 - `query`: `"CREATE (:SummaryChunk $metadata)"`
 - `systemPrompt`:
@@ -805,11 +788,10 @@ EmbeddingStore defaultEmbeddingStore = Neo4jEmbeddingStore.builder()
 
 #### HypotheticalQuestionGraphIngestor
 
-To implement the [Hypothetical Question Retriever concept](https://graphrag.com/reference/graphrag/hypothetical-question-retriever/) by generating and embedding hypothetical questions derived from content chunks. This improves semantic search accuracy, especially for indirect or abstract user questions.
-It enhances retrieval when queries don’t directly match document phrasing.
+实现[假设性问题检索器概念](https://graphrag.com/reference/graphrag/hypothetical-question-retriever/)，通过生成和嵌入从内容块派生的假设性问题来改善语义搜索准确性，特别是对于间接或抽象的用户问题。当查询与文档措辞不直接匹配时，它增强了检索效果。
 
+示例用法：
 
-Example usage:
 ```java
 HypotheticalQuestionGraphIngestor ingestor = HypotheticalQuestionGraphIngestor.builder()
         .embeddingModel(embeddingModel)
@@ -820,7 +802,7 @@ HypotheticalQuestionGraphIngestor ingestor = HypotheticalQuestionGraphIngestor.b
         .build();
 ```
 
-Unlike `Neo4jEmbeddingStoreIngestor`, it has the following default values:
+与 `Neo4jEmbeddingStoreIngestor` 不同，它具有以下默认值：
 
 - `query`: `"CREATE (:QuestionChunk $metadata)"`
 - `systemPrompt`:
@@ -869,10 +851,7 @@ EmbeddingStore defaultEmbeddingStore = Neo4jEmbeddingStore.builder()
 
 #### ParentChildGraphIngestor
 
-To implement the [Parent-Child Retriever concept](https://graphrag.com/reference/graphrag/parent-child-retriever/).
-It's useful where semantic search is done on child nodes but results are anchored to parent documents.
-This ingestor stores child chunks with embeddings and, by default, links them to parent nodes using `:HAS_CHILD` relationships. Ideal for retrieving relevant fragments while referencing the broader document context.
-
+实现[父子检索器概念](https://graphrag.com/reference/graphrag/parent-child-retriever/)。适用于在子节点上执行语义搜索但结果锚定到父文档的场景。此摄取器存储带嵌入的子块，默认通过 `:HAS_CHILD` 关系将它们链接到父节点。适合检索相关片段同时引用更广泛的文档上下文。
 
 ```java
 ParentChildGraphIngestor ingestor = ParentChildGraphIngestor.builder()
@@ -883,7 +862,7 @@ ParentChildGraphIngestor ingestor = ParentChildGraphIngestor.builder()
         .build();
 ```
 
-Unlike `Neo4jEmbeddingStoreIngestor`, it has the following default values:
+与 `Neo4jEmbeddingStoreIngestor` 不同，它具有以下默认值：
 
 - `query`: `"CREATE (:ParentChunk $metadata)"`
 
@@ -918,12 +897,11 @@ EmbeddingStore defaultEmbeddingStore = Neo4jEmbeddingStore.builder()
 ```
 
 
-
 ### Neo4jChatMemoryStore
 
-`Neo4jChatMemoryStore` is a specialized chat memory implementation that stores and retrieves conversational messages in a Neo4j graph database. It supports managing chat history with efficient querying and persistence using Neo4j nodes and relationships.
+`Neo4jChatMemoryStore` 是一个专门的聊天记忆实现，在 Neo4j 图数据库中存储和检索对话消息。它支持使用 Neo4j 节点和关系高效查询和持久化管理聊天历史。
 
-Here is how to create a `Neo4jChatMemoryStore` instance:
+以下是创建 `Neo4jChatMemoryStore` 实例的方法：
 
 ```java
 Neo4jChatMemoryStore chatMemoryStore = Neo4jChatMemoryStore.builder()
@@ -931,21 +909,21 @@ Neo4jChatMemoryStore chatMemoryStore = Neo4jChatMemoryStore.builder()
     .build();
 ```
 
-Where `<builderParameters>` includes `driver` as required, and optional properties for label and node property names.
+其中 `<builderParameters>` 包含 `driver` 作为必填参数，以及标签和节点属性名称的可选属性。
 
-Here is the complete builder list:
+以下是完整的 builder 参数列表：
 
-| Key                      | Default Value      | Description                                                                                                                    |
-| ------------------------ | ------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| `driver`                 | *Required*         | The [Neo4j Java Driver instance](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
-| `label`                  | `"ChatMessage"`    | The label used for chat message nodes in Neo4j                                                                                 |
-| `idProperty`             | `"id"`             | The property name for the message ID                                                                                           |
-| `conversationIdProperty` | `"conversationId"` | The property name identifying the conversation                                                                                 |
-| `timestampProperty`      | `"timestamp"`      | The property name for message timestamps                                                                                       |
+| 键 | 默认值 | 描述 |
+| --- | --- | --- |
+| `driver` | *必填* | [Neo4j Java Driver 实例](https://neo4j.com/docs/api/java-driver/current/org.neo4j.driver/org/neo4j/driver/Driver.html) |
+| `label` | `"ChatMessage"` | Neo4j 中聊天消息节点使用的标签 |
+| `idProperty` | `"id"` | 消息 ID 的属性名称 |
+| `conversationIdProperty` | `"conversationId"` | 标识对话的属性名称 |
+| `timestampProperty` | `"timestamp"` | 消息时间戳的属性名称 |
 
-#### Examples
+#### 示例
 
-**Basic usage with required parameter:**
+**使用必填参数的基本用法：**
 
 ```java
 Neo4jChatMemoryStore chatMemoryStore = Neo4jChatMemoryStore.builder()
@@ -953,7 +931,7 @@ Neo4jChatMemoryStore chatMemoryStore = Neo4jChatMemoryStore.builder()
     .build();
 ```
 
-**Customizing node label and properties:**
+**自定义节点标签和属性：**
 
 ```java
 Neo4jChatMemoryStore chatMemoryStore = Neo4jChatMemoryStore.builder()
@@ -966,15 +944,10 @@ Neo4jChatMemoryStore chatMemoryStore = Neo4jChatMemoryStore.builder()
 ```
 
 
+### 简单流程示例
 
+以下是 `Neo4jEmbeddingStore` 和 `Neo4jText2CypherRetriever` API 使用流程的几个示例。
 
-
-
-
-
-
-### Simple Flow Examples
-The following are a few examples of the use flow for the `Neo4jEmbeddingStore` and `Neo4jText2CypherRetriever` APIs.
 - `Neo4jEmbeddingStore`:
 ```java
 private static final EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
@@ -1051,6 +1024,7 @@ public static void customEmbeddingStore() {
     }
 }
 ```
+
 - `Neo4jText2CypherRetriever`:
 ```java
     private final ChatModel chatModel;
@@ -1084,4 +1058,5 @@ public static void customEmbeddingStore() {
         }
     }
 ```
-[Examples Sources](https://github.com/langchain4j/langchain4j-examples/tree/main/neo4j-example/src/main/java)
+
+[示例源码](https://github.com/langchain4j/langchain4j-examples/tree/main/neo4j-example/src/main/java)

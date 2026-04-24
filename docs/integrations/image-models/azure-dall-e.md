@@ -6,23 +6,22 @@ sidebar_position: 1
 
 :::note
 
-This is the documentation for the `Azure OpenAI` integration, that uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+这是 `Azure OpenAI` 集成的文档，使用微软的 Azure SDK，最适合与微软 Java 技术栈结合使用，包括高级 Azure 身份验证机制。
 
-LangChain4j provides 3 different integrations with OpenAI for generating images, and this is #3 :
+LangChain4j 提供 3 种不同的 OpenAI 图像生成集成，这是第 3 种：
 
-- [OpenAI](/integrations/language-models/open-ai) uses a custom Java implementation of the OpenAI REST API, that works best with Quarkus (as it uses the Quarkus REST client) and Spring (as it uses Spring's RestClient).
-
-- [OpenAI Official SDK](/integrations/language-models/open-ai-official) uses the official OpenAI Java SDK.
-- [Azure OpenAI](/integrations/language-models/azure-open-ai) uses the Azure SDK from Microsoft, and works best if you are using the Microsoft Java stack, including advanced Azure authentication mechanisms.
+- [OpenAI](/integrations/language-models/open-ai) 使用 OpenAI REST API 的自定义 Java 实现，最适合 Quarkus（使用 Quarkus REST 客户端）和 Spring（使用 Spring 的 RestClient）。
+- [OpenAI Official SDK](/integrations/language-models/open-ai-official) 使用官方 OpenAI Java SDK。
+- [Azure OpenAI](/integrations/language-models/azure-open-ai) 使用微软的 Azure SDK，最适合与微软 Java 技术栈结合使用，包括高级 Azure 身份验证机制。
 
 :::
 
-Azure OpenAI provides a few image models (`dall-e-3`, etc.)
-that can be used for various image processing tasks.
+Azure OpenAI 提供了一些图像模型（`dall-e-3` 等），可用于各种图像处理任务。
 
-## Maven Dependency
+## Maven 依赖
 
-### Plain Java
+### 纯 Java {#plain-java}
+
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
@@ -30,49 +29,3 @@ that can be used for various image processing tasks.
     <version>1.13.0</version>
 </dependency>
 ```
-
-### Spring Boot
-```xml
-<dependency>
-    <groupId>dev.langchain4j</groupId>
-    <artifactId>langchain4j-azure-open-ai-spring-boot-starter</artifactId>
-    <version>1.13.0-beta23</version>
-</dependency>
-```
-
-
-## Creating `AzureOpenAiImageModel`
-
-### Plain Java
-```java
-ImageModel model = AzureOpenAiImageModel.builder()
-        .apiKey(System.getenv("AZURE_OPENAI_KEY"))
-        .deploymentName("dall-e-3")
-        .endpoint("https://langchain4j.openai.azure.com/")
-        ...
-        .build();
-```
-
-### Spring Boot
-Add to the `application.properties`:
-```properties
-langchain4j.azure-open-ai.image-model.endpoint=https://langchain4j.openai.azure.com/
-langchain4j.azure-open-ai.image-model.service-version=...
-langchain4j.azure-open-ai.image-model.api-key=${AZURE_OPENAI_KEY}
-langchain4j.azure-open-ai.image-model.deployment-name=dall-e-3
-langchain4j.azure-open-ai.image-model.quality=...
-langchain4j.azure-open-ai.image-model.size=...
-langchain4j.azure-open-ai.image-model.user=...
-langchain4j.azure-open-ai.image-model.style=...
-langchain4j.azure-open-ai.image-model.response-format=...
-langchain4j.azure-open-ai.image-model.timeout=...
-langchain4j.azure-open-ai.image-model.max-retries=...
-langchain4j.azure-open-ai.image-model.log-requests-and-responses=...
-langchain4j.azure-open-ai.image-model.user-agent-suffix=...
-langchain4j.azure-open-ai.image-model.customHeaders=...
-```
-
-
-## Examples
-
-- [AzureOpenAIDallEExample](https://github.com/langchain4j/langchain4j-examples/blob/main/azure-open-ai-examples/src/main/java/AzureOpenAIDallEExample.java)

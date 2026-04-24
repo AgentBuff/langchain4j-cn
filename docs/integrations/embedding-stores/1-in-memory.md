@@ -2,16 +2,14 @@
 sidebar_position: 1
 ---
 
-# In-memory
+# 内存
 
-LangChain4j provides a simple in-memory implementation of an `EmbeddingStore` interface:
-`InMemoryEmbeddingStore`.
-It is useful for fast prototyping and simple use cases.
-It keeps `Embedding`s and associated `TextSegment`s in memory.
-Search is also performed in memory.
-It can also be persisted and restored to/from a JSON string or a file.
+LangChain4j 提供了一个简单的内存实现 `EmbeddingStore` 接口：`InMemoryEmbeddingStore`。
+它适用于快速原型开发和简单使用场景。
+它将 `Embedding` 和相关的 `TextSegment` 保存在内存中，搜索也在内存中执行。
+还可以将其序列化/反序列化为 JSON 字符串或文件。
 
-### Maven Dependency
+### Maven 依赖
 
 ```xml
 <dependency>
@@ -21,14 +19,14 @@ It can also be persisted and restored to/from a JSON string or a file.
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
-- `InMemoryEmbeddingStore` 
+- `InMemoryEmbeddingStore`
 
 
-## Persisting
+## 持久化
 
-`InMemoryEmbeddingStore` can be serialized to a json string or a file:
+`InMemoryEmbeddingStore` 可以序列化为 JSON 字符串或文件：
 ```java
 InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
 embeddingStore.addAll(embeddings, embedded);
@@ -41,6 +39,6 @@ embeddingStore.serializeToFile(filePath);
 InMemoryEmbeddingStore<TextSegment> deserializedStore = InMemoryEmbeddingStore.fromFile(filePath);
 ```
 
-## Examples
+## 示例
 
 - [InMemoryEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/other-examples/src/main/java/embedding/store/InMemoryEmbeddingStoreExample.java)

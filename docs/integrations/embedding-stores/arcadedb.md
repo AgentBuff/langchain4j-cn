@@ -6,14 +6,14 @@ sidebar_position: 30
 
 https://arcadedb.com/
 
-ArcadeDB is a multi-model NoSQL database that supports graph, document, key-value, time-series, and vector data. It provides a built-in LSM_VECTOR index (powered by JVector/HNSW) for high-performance approximate nearest neighbor (ANN) vector search.
+ArcadeDB 是一个多模型 NoSQL 数据库，支持图、文档、键值、时序和向量数据。它提供内置的 LSM_VECTOR 索引（由 JVector/HNSW 驱动），用于高性能近似最近邻（ANN）向量搜索。
 
-The langchain4j integration supports two operation modes:
+langchain4j 集成支持两种操作模式：
 
-- **Remote mode** — connects to an ArcadeDB server over HTTP. Suitable for production deployments and shared infrastructure.
-- **Embedded mode** — runs ArcadeDB in-process inside the same JVM. No server or Docker container required; the database is stored on the local filesystem. Ideal for testing, desktop applications, or single-process workloads.
+- **远程模式** — 通过 HTTP 连接到 ArcadeDB 服务器。适用于生产部署和共享基础设施。
+- **嵌入模式** — 在同一 JVM 内进程运行 ArcadeDB。无需服务器或 Docker 容器；数据库存储在本地文件系统。适合测试、桌面应用或单进程工作负载。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -23,31 +23,31 @@ The langchain4j integration supports two operation modes:
 </dependency>
 ```
 
-Note: This is a community integration module. You may need to add the langchain4j-community repository to your project configuration.
+注意：这是一个社区集成模块，可能需要在项目配置中添加 langchain4j-community 仓库。
 
-## APIs
+## API 参考 {#api}
 
 - `ArcadeDBEmbeddingStore`
 
-## Features
+## 功能特性
 
-- **Two Operation Modes**: Remote (HTTP client to an ArcadeDB server) or embedded (ArcadeDB runs in-process, no server needed)
-- **Multi-Model Database**: Stores embeddings as vertices in ArcadeDB's graph model alongside documents, key-value, and time-series data
-- **HNSW Vector Index**: Uses ArcadeDB's LSM_VECTOR index (JVector-based) for fast approximate nearest neighbor search
-- **Metadata Filtering**: Supports filtering search results by metadata using comparison and logical operators
-- **Persistent Storage**: Data is durable across restarts in both remote and embedded modes
-- **Auto Schema Creation**: Automatically creates the vertex type, properties, and vector index on first use
-- **Multiple Similarity Functions**: Supports COSINE (default), EUCLIDEAN, and SQUARED_EUCLIDEAN distance metrics (remote mode)
-- **Batch Operations**: Add multiple embeddings in a single call
-- **Flexible Removal**: Remove embeddings by ID, by filter, or clear all
+- **两种操作模式**：远程（HTTP 客户端连接 ArcadeDB 服务器）或嵌入（ArcadeDB 在进程内运行，无需服务器）
+- **多模型数据库**：在 ArcadeDB 图模型中将嵌入存储为顶点，与文档、键值和时序数据共存
+- **HNSW 向量索引**：使用 ArcadeDB 的 LSM_VECTOR 索引（基于 JVector）进行快速近似最近邻搜索
+- **元数据过滤**：支持使用比较和逻辑运算符按元数据过滤搜索结果
+- **持久化存储**：远程和嵌入模式下数据在重启后均可持久化
+- **自动模式创建**：首次使用时自动创建顶点类型、属性和向量索引
+- **多种相似度函数**：支持 COSINE（默认）、EUCLIDEAN 和 SQUARED_EUCLIDEAN 距离度量（远程模式）
+- **批量操作**：单次调用添加多个嵌入
+- **灵活删除**：可按 ID、按过滤条件删除或清除所有嵌入
 
-## Basic Usage
+## 基本用法
 
-### Remote Mode
+### 远程模式
 
-Remote mode connects to a running ArcadeDB server. See [Running ArcadeDB with Docker](#running-arcadedb-with-docker) to start one locally.
+远程模式连接到正在运行的 ArcadeDB 服务器。请参阅[使用 Docker 运行 ArcadeDB](#使用-docker-运行-arcadedb) 在本地启动一个服务器。
 
-#### Connect to an Existing Database
+#### 连接到已有数据库
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
@@ -56,11 +56,11 @@ EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
     .databaseName("my_database")
     .username("root")
     .password("playwithdata")
-    .dimension(384)           // Must match your embedding model's dimension
+    .dimension(384)           // 必须与嵌入模型的维度一致
     .build();
 ```
 
-#### Auto-Create the Database
+#### 自动创建数据库
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
@@ -70,28 +70,28 @@ EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
     .username("root")
     .password("playwithdata")
     .dimension(384)
-    .createDatabase(true)     // Create database if it doesn't exist
+    .createDatabase(true)     // 如果数据库不存在则创建
     .build();
 ```
 
-### Embedded Mode
+### 嵌入模式
 
-Embedded mode runs ArcadeDB inside the same JVM. No server is needed — just provide a path on the local filesystem where the database should be stored. The database is created automatically if it does not already exist.
+嵌入模式在同一 JVM 内运行 ArcadeDB。无需服务器——只需提供本地文件系统上用于存储数据库的路径。如果数据库不存在，将自动创建。
 
-Always call `close()` when you are finished to release resources.
+使用完毕后务必调用 `close()` 以释放资源。
 
 ```java
 ArcadeDBEmbeddingStore embeddingStore = ArcadeDBEmbeddingStore.embeddedBuilder()
     .databasePath("/path/to/my-database")
-    .dimension(384)           // Must match your embedding model's dimension
+    .dimension(384)           // 必须与嵌入模型的维度一致
     .build();
 
-// ... use the store ...
+// ... 使用存储 ...
 
 embeddingStore.close();
 ```
 
-Use try-finally (or try-with-resources via a wrapper) to ensure `close()` is always called:
+使用 try-finally（或通过包装器使用 try-with-resources）确保 `close()` 始终被调用：
 
 ```java
 ArcadeDBEmbeddingStore embeddingStore = ArcadeDBEmbeddingStore.embeddedBuilder()
@@ -99,23 +99,23 @@ ArcadeDBEmbeddingStore embeddingStore = ArcadeDBEmbeddingStore.embeddedBuilder()
     .dimension(384)
     .build();
 try {
-    // ... use the store ...
+    // ... 使用存储 ...
 } finally {
     embeddingStore.close();
 }
 ```
 
-### Add and Search Embeddings
+### 添加和搜索嵌入
 
-The search API is identical in both modes:
+两种模式的搜索 API 相同：
 
 ```java
-// Add a text segment with its embedding
+// 添加带嵌入的文本段
 TextSegment segment = TextSegment.from("Hello, world!", Metadata.from("source", "example"));
 Embedding embedding = embeddingModel.embed(segment).content();
 embeddingStore.add(embedding, segment);
 
-// Search for similar embeddings
+// 搜索相似嵌入
 EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
     .queryEmbedding(queryEmbedding)
     .maxResults(5)
@@ -125,73 +125,73 @@ EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
 List<EmbeddingMatch<TextSegment>> matches = embeddingStore.search(request).matches();
 ```
 
-## Configuration Options
+## 配置选项
 
-### Remote Mode
+### 远程模式
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
-    .host("localhost")              // Required: ArcadeDB server hostname
-    .port(2480)                     // Default: 2480 (HTTP port)
-    .databaseName("my_database")   // Required: database name
-    .username("root")               // Required: username
-    .password("playwithdata")       // Required: password
-    .typeName("EmbeddingDocument") // Default: "EmbeddingDocument" — vertex type name
-    .dimension(384)                 // Required: embedding vector dimension
-    .similarityFunction("COSINE")  // Default: "COSINE" — similarity metric
-    .maxConnections(16)             // Default: 16 — HNSW graph connections per node
-    .beamWidth(100)                 // Default: 100 — HNSW search beam width
-    .createDatabase(false)          // Default: false — auto-create the database
-    .metadataPrefix("meta_")       // Default: "meta_" — prefix for metadata properties
+    .host("localhost")              // 必填：ArcadeDB 服务器主机名
+    .port(2480)                     // 默认：2480（HTTP 端口）
+    .databaseName("my_database")   // 必填：数据库名称
+    .username("root")               // 必填：用户名
+    .password("playwithdata")       // 必填：密码
+    .typeName("EmbeddingDocument") // 默认："EmbeddingDocument" — 顶点类型名称
+    .dimension(384)                 // 必填：嵌入向量维度
+    .similarityFunction("COSINE")  // 默认："COSINE" — 相似度度量
+    .maxConnections(16)             // 默认：16 — 每个节点的 HNSW 图连接数
+    .beamWidth(100)                 // 默认：100 — HNSW 搜索束宽
+    .createDatabase(false)          // 默认：false — 自动创建数据库
+    .metadataPrefix("meta_")       // 默认："meta_" — 元数据属性前缀
     .build();
 ```
 
-### Embedded Mode
+### 嵌入模式
 
 ```java
 ArcadeDBEmbeddingStore embeddingStore = ArcadeDBEmbeddingStore.embeddedBuilder()
-    .databasePath("/path/to/my-database") // Required: local filesystem path for the database
-    .typeName("EmbeddingDocument")        // Default: "EmbeddingDocument" — vertex type name
-    .dimension(384)                        // Default: 384 — embedding vector dimension
-    .maxConnections(16)                    // Default: 16 — HNSW graph connections per node
-    .beamWidth(100)                        // Default: 100 — HNSW search beam width
-    .metadataPrefix("")                    // Default: "" (no prefix) — prefix for metadata properties
+    .databasePath("/path/to/my-database") // 必填：数据库的本地文件系统路径
+    .typeName("EmbeddingDocument")        // 默认："EmbeddingDocument" — 顶点类型名称
+    .dimension(384)                        // 默认：384 — 嵌入向量维度
+    .maxConnections(16)                    // 默认：16 — 每个节点的 HNSW 图连接数
+    .beamWidth(100)                        // 默认：100 — HNSW 搜索束宽
+    .metadataPrefix("")                    // 默认：""（无前缀）— 元数据属性前缀
     .build();
 ```
 
-### Parameter Guidelines
+### 参数说明
 
-**Shared parameters (both modes):**
+**共享参数（两种模式均适用）：**
 
-- **typeName**: The vertex type used to store embedding documents. Changing this allows multiple embedding stores within the same database
-- **dimension**: Must match your embedding model's output dimension exactly
-- **maxConnections**: Controls graph connectivity in the HNSW index. Higher values improve recall but increase memory and index build time. Recommended: 16–128
-- **beamWidth**: Controls the quality of the HNSW index construction and search. Higher values produce better recall at the cost of speed. Recommended: 100–500
-- **metadataPrefix**: Prefix applied to metadata keys when stored as vertex properties. Change if your metadata keys conflict with built-in properties
+- **typeName**：用于存储嵌入文档的顶点类型。修改此值可在同一数据库中使用多个嵌入存储
+- **dimension**：必须与嵌入模型的输出维度完全匹配
+- **maxConnections**：控制 HNSW 索引中的图连接度。值越大召回率越高，但内存和索引构建时间增加。推荐：16–128
+- **beamWidth**：控制 HNSW 索引构建和搜索的质量。值越大召回率越高，但速度降低。推荐：100–500
+- **metadataPrefix**：存储为顶点属性时应用于元数据键的前缀。如果元数据键与内置属性冲突，请更改此值
 
-**Remote-only parameters:**
+**仅限远程模式的参数：**
 
-- **host**: Hostname or IP address of the ArcadeDB server (required)
-- **port**: HTTP port for the ArcadeDB REST API (default: 2480)
-- **databaseName**: The database to connect to or create (required)
-- **username / password**: ArcadeDB credentials (required)
-- **similarityFunction**:
-  - `COSINE` — Cosine similarity; best for normalized vectors (default)
-  - `EUCLIDEAN` — Euclidean distance
-  - `SQUARED_EUCLIDEAN` — Squared Euclidean distance; faster than EUCLIDEAN
-- **createDatabase**: Set to `true` to automatically create the database if it does not exist
+- **host**：ArcadeDB 服务器的主机名或 IP 地址（必填）
+- **port**：ArcadeDB REST API 的 HTTP 端口（默认：2480）
+- **databaseName**：要连接或创建的数据库（必填）
+- **username / password**：ArcadeDB 凭据（必填）
+- **similarityFunction**：
+  - `COSINE` — 余弦相似度；最适合归一化向量（默认）
+  - `EUCLIDEAN` — 欧氏距离
+  - `SQUARED_EUCLIDEAN` — 平方欧氏距离；比 EUCLIDEAN 更快
+- **createDatabase**：设置为 `true` 可在数据库不存在时自动创建
 
-**Embedded-only parameters:**
+**仅限嵌入模式的参数：**
 
-- **databasePath**: Path to the directory where the embedded database is stored. Created automatically if it does not exist
-- **database**: Alternatively, supply an existing `com.arcadedb.database.Database` instance directly instead of a path
+- **databasePath**：嵌入式数据库存储目录的路径。如果不存在则自动创建
+- **database**：也可直接提供现有的 `com.arcadedb.database.Database` 实例，而不是路径
 
-## Metadata Filtering
+## 元数据过滤
 
-ArcadeDB supports filtering search results by metadata. Filters are applied after the vector index lookup.
+ArcadeDB 支持按元数据过滤搜索结果。过滤器在向量索引查找后应用。
 
 ```java
-// Filter by a single metadata value
+// 按单个元数据值过滤
 Filter filter = new IsEqualTo("source", "wikipedia");
 
 EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
@@ -203,41 +203,41 @@ EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
 List<EmbeddingMatch<TextSegment>> matches = embeddingStore.search(request).matches();
 ```
 
-### Supported Filter Types
+### 支持的过滤类型
 
-**Comparison operators:**
-- `IsEqualTo`, `IsNotEqualTo`
-- `IsGreaterThan`, `IsGreaterThanOrEqualTo`
-- `IsLessThan`, `IsLessThanOrEqualTo`
-- `IsIn`, `IsNotIn`
+**比较运算符：**
+- `IsEqualTo`、`IsNotEqualTo`
+- `IsGreaterThan`、`IsGreaterThanOrEqualTo`
+- `IsLessThan`、`IsLessThanOrEqualTo`
+- `IsIn`、`IsNotIn`
 
-**Logical operators:**
-- `And`, `Or`, `Not`
+**逻辑运算符：**
+- `And`、`Or`、`Not`
 
-## Removal Operations
+## 删除操作
 
 ```java
-// Remove by list of IDs
+// 按 ID 列表删除
 embeddingStore.removeAll(List.of("id1", "id2"));
 
-// Remove by metadata filter
+// 按元数据过滤条件删除
 embeddingStore.removeAll(new IsEqualTo("source", "old-source"));
 
-// Remove all embeddings
+// 删除所有嵌入
 embeddingStore.removeAll();
 ```
 
-## Current Limitations
+## 当前限制
 
-- **Approximate Search**: The HNSW index is approximate. With very large result sets containing many near-identical vectors, some documents may not be returned
-- **In-Memory Filter Application**: Metadata filters are applied in-memory after the vector search rather than at the index level. The store fetches up to 5× the requested number of results to account for filter reduction
-- **Floating-Point Precision**: ArcadeDB returns vectors as JSON doubles, which may introduce minor floating-point precision differences compared to the original stored values. `Double.MIN_VALUE` (4.9E-324) underflows to 0.0 and cannot be stored precisely
-- **No String Content Filters**: String-based content filters (e.g., `ContainsString`) are not supported; only the metadata filter types listed above are available
-- **No Similarity Function Choice in Embedded Mode**: The embedded builder does not expose a `similarityFunction` option; the index uses its default metric
+- **近似搜索**：HNSW 索引是近似的。当结果集很大且包含许多近似相同的向量时，某些文档可能不会被返回
+- **内存过滤应用**：元数据过滤器在向量搜索后在内存中应用，而非在索引层面。存储会获取请求数量 5 倍的结果以应对过滤导致的数量减少
+- **浮点精度**：ArcadeDB 以 JSON 双精度浮点数形式返回向量，与原始存储值相比可能存在轻微的浮点精度差异。`Double.MIN_VALUE`（4.9E-324）会下溢为 0.0，无法精确存储
+- **不支持字符串内容过滤**：不支持基于字符串的内容过滤（如 `ContainsString`）；仅支持上述元数据过滤类型
+- **嵌入模式无法选择相似度函数**：嵌入式 builder 不提供 `similarityFunction` 选项；索引使用其默认度量
 
-## Running ArcadeDB with Docker
+## 使用 Docker 运行 ArcadeDB
 
-Required for remote mode. The quickest way to get started:
+远程模式所需。最快速的入门方式：
 
 ```bash
 docker run -d \
@@ -247,7 +247,7 @@ docker run -d \
   arcadedata/arcadedb:latest
 ```
 
-Then connect your store:
+然后连接您的存储：
 
 ```java
 EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
@@ -261,7 +261,7 @@ EmbeddingStore<TextSegment> embeddingStore = ArcadeDBEmbeddingStore.builder()
     .build();
 ```
 
-## Examples
+## 示例
 
-- For integration test examples, check the test files in the [langchain4j-community-arcadedb module](https://github.com/langchain4j/langchain4j-community/tree/main/embedding-stores/langchain4j-community-arcadedb/src/test/java)
-- You can also find a few examples in the [langchain4j-examples project](https://github.com/langchain4j/langchain4j-examples)
+- 集成测试示例请查看 [langchain4j-community-arcadedb 模块测试文件](https://github.com/langchain4j/langchain4j-community/tree/main/embedding-stores/langchain4j-community-arcadedb/src/test/java)
+- 也可以在 [langchain4j-examples 项目](https://github.com/langchain4j/langchain4j-examples)中找到一些示例

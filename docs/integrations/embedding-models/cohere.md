@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Cohere
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -14,11 +14,11 @@ sidebar_position: 4
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `CohereEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [CohereEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-cohere/src/test/java/dev/langchain4j/model/cohere/CohereEmbeddingModelIT.java)

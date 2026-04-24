@@ -2,15 +2,15 @@
 sidebar_position: 34
 ---
 
-# Testing and Evaluation
+# 测试与评估
 
-## Examples
+## 示例
 
-[Here](https://github.com/langchain4j/langchain4j-examples/blob/main/customer-support-agent-example/src/test/java/dev/langchain4j/example/CustomerSupportAgentIT.java)
-is an example of an integration testing for a Customer Support Agent.
-This corresponds to [Level 1: Unit Tests](https://hamel.dev/blog/posts/evals/#level-1-unit-tests).
+[这里](https://github.com/langchain4j/langchain4j-examples/blob/main/customer-support-agent-example/src/test/java/dev/langchain4j/example/CustomerSupportAgentIT.java)
+有一个针对 Customer Support Agent 的集成测试示例。
+它对应于 [Level 1: Unit Tests](https://hamel.dev/blog/posts/evals/#level-1-unit-tests)。
 
-## Recommended Reading
+## 推荐阅读
 
 - [Your AI Product Needs Evals](https://hamel.dev/blog/posts/evals/)
 - [Creating a LLM-as-a-Judge That Drives Business Results](https://hamel.dev/blog/posts/llm-judge/)
@@ -22,5 +22,5 @@ This corresponds to [Level 1: Unit Tests](https://hamel.dev/blog/posts/evals/#le
 - [Generate Synthetic Data to Test LLM Applications](https://medium.com/relari/generate-synthetic-data-to-test-llm-applications-4bffeb51b80e)
 
 :::note
-More information coming soon.
+更多内容即将补充。
 :::

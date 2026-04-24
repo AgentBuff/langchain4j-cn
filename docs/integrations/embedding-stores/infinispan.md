@@ -4,21 +4,18 @@ sidebar_position: 13
 
 # Infinispan
 
-Infinispan is an open-source (Apache 2) in-memory key-value database and cache, can hold nearly any type of data, from plain-text 
-to structured objects, is designed for high performance, scalability, and low-latency data access. 
-It supports both embedded and client-server modes, allowing applications to 
-use it as a local cache or a remote server database. 
+Infinispan 是一款开源（Apache 2）的内存键值数据库和缓存，可存储几乎任何类型的数据（从纯文本到结构化对象），
+专为高性能、可扩展性和低延迟数据访问而设计。
+它支持嵌入式和客户端-服务器两种模式，可作为本地缓存或远程服务器数据库使用。
 
-Infinispan is built in Java and provides features such as persistence, transactions, 
-querying (full-text and vector search included), clustering, and support for Protobuf-based data indexing—making it suitable 
-for use cases ranging from simple caching to complex real-time data processing in 
-microservices and AI applications.
+Infinispan 使用 Java 构建，提供持久化、事务、查询（包括全文和向量搜索）、
+集群以及基于 Protobuf 的数据索引等功能，适用于从简单缓存到微服务和 AI 应用中复杂实时数据处理的各种场景。
 
-More in https://infinispan.org/
+更多信息请访问 https://infinispan.org/
 
-From 15.2 Infinispan Server and above, metadata filtering is supported.
+从 Infinispan Server 15.2 起，支持元数据过滤。
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -29,11 +26,11 @@ From 15.2 Infinispan Server and above, metadata filtering is supported.
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `InfinispanEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [InfinispanEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/infinispan-example/src/main/java/InfinispanEmbeddingStoreExample.java)

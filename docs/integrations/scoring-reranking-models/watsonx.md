@@ -4,10 +4,10 @@ sidebar_position: 7
 
 # watsonx.ai
 
-- [watsonx.ai API Reference](https://cloud.ibm.com/apidocs/watsonx-ai#text-rerank)
+- [watsonx.ai API 参考](https://cloud.ibm.com/apidocs/watsonx-ai#text-rerank)
 - [watsonx.ai Java SDK](https://github.com/IBM/watsonx-ai-java-sdk)
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
@@ -17,30 +17,31 @@ sidebar_position: 7
 </dependency>
 ```
 
-## Authentication
+## 身份验证
 
-Watsonx.ai supports authentication via the `Authenticator` interface.
+Watsonx.ai 通过 `Authenticator` 接口支持身份验证。
 
-This allows to use different authentication mechanisms depending on your deployment:
+这允许根据您的部署使用不同的身份验证机制：
 
-- **IBMCloudAuthenticator** – authenticates with **IBM Cloud** using an API key. This is the simplest approach and is used when you provide the `apiKey(...)` builder method.
-- **CP4DAuthenticator** – authenticates with **Cloud Pak for Data** deployments.
-- **Custom authenticators** – any implementation of the `Authenticator` interface can be used.
+- **IBMCloudAuthenticator** – 使用 API 密钥向 **IBM Cloud** 进行身份验证。这是最简单的方法，在使用 `apiKey(...)` builder 方法时使用。
+- **CP4DAuthenticator** – 向 **Cloud Pak for Data** 部署进行身份验证。
+- **自定义认证器** – 可以使用 `Authenticator` 接口的任何实现。
 
-The `WatsonxScoringModel` and other service builders accept either a shortcut via `.apiKey(...)` or a full `Authenticator` instance via `.authenticator(...)`.
+`WatsonxScoringModel` 和其他服务构建器接受通过 `.apiKey(...)` 的快捷方式或通过 `.authenticator(...)` 的完整 `Authenticator` 实例。
 
-### Example
+### 示例
+
 ```java
 WatsonxScoringModel.builder()
     .baseUrl(CloudRegion.FRANKFURT)
-    .apiKey("your-api-key") // Simple IBM Cloud authentication
+    .apiKey("your-api-key") // 简单的 IBM Cloud 身份验证
     .projectId("your-project-id")
     .modelName("cross-encoder/ms-marco-minilm-l-12-v2")
     .build();
 
 WatsonxScoringModel.builder()
     .baseUrl("https://my-instance-url")
-    .authenticator( // For Cloud Pak for Data deployments
+    .authenticator( // 用于 Cloud Pak for Data 部署
         CP4DAuthenticator.builder()
             .baseUrl("https://my-instance-url")
             .username("username")
@@ -52,11 +53,11 @@ WatsonxScoringModel.builder()
     .build();
 ```
 
-### Custom HttpClient and SSL Configuration
+### 自定义 HttpClient 和 SSL 配置
 
-#### Using a custom HttpClient
+#### 使用自定义 HttpClient
 
-All services and authenticators support a custom `HttpClient` instance through the builder pattern. This is particularly useful for Cloud Pak for Data environments where you may need to configure custom TLS/SSL settings, proxy configuration, or other HTTP client properties.
+所有服务和认证器都通过 builder 模式支持自定义 `HttpClient` 实例。这对于 Cloud Pak for Data 环境特别有用，您可能需要在这些环境中配置自定义 TLS/SSL 设置、代理配置或其他 HTTP 客户端属性。
 
 ```java
 HttpClient httpClient = HttpClient.newBuilder()
@@ -68,59 +69,59 @@ EmbeddingModel embeddingModel = WatsonxEmbeddingModel.builder()
     .baseUrl("https://my-instance-url")
     .modelName("ibm/granite-embedding-278m-multilingual")
     .projectId("project-id")
-    .httpClient(httpClient) // Custom HttpClient
+    .httpClient(httpClient) // 自定义 HttpClient
     .authenticator(
         CP4DAuthenticator.builder()
             .baseUrl("https://my-instance-url")
             .username("username")
             .apiKey("api-key")
-            .httpClient(httpClient) // Custom HttpClient
+            .httpClient(httpClient) // 自定义 HttpClient
             .build()
     )
     .build();
 ```
 
-> **Note:** When using a custom `HttpClient` with Cloud Pak for Data, make sure to set it on both the service builder and the authenticator builder to ensure consistent HTTP behavior across all requests.
+> **注意：** 在 Cloud Pak for Data 中使用自定义 `HttpClient` 时，请确保同时在服务构建器和认证器构建器上设置它，以确保所有请求的 HTTP 行为一致。
 
-#### Disabling SSL verification
+#### 禁用 SSL 验证
 
-If you only need to disable SSL certificate verification, you can use the `verifySsl(false)` option instead of providing a custom `HttpClient`:
+如果只需要禁用 SSL 证书验证，可以使用 `verifySsl(false)` 选项，而不是提供自定义 `HttpClient`：
 
 ```java
 EmbeddingModel embeddingModel = WatsonxEmbeddingModel.builder()
     .baseUrl("https://my-instance-url")
     .modelName("ibm/granite-embedding-278m-multilingual")
     .projectId("project-id")
-    .verifySsl(false) // Disable SSL verification
+    .verifySsl(false) // 禁用 SSL 验证
     .authenticator(
         CP4DAuthenticator.builder()
             .baseUrl("https://my-instance-url")
             .username("username")
             .apiKey("api-key")
-            .verifySsl(false) // Disable SSL verification
+            .verifySsl(false) // 禁用 SSL 验证
             .build()
     )
     .build();
 ```
 
-### How to create an IBM Cloud API Key
+### 如何创建 IBM Cloud API 密钥
 
-You can create an API key at [https://cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys) by clicking **Create +**.
+您可以在 [https://cloud.ibm.com/iam/apikeys](https://cloud.ibm.com/iam/apikeys) 点击 **Create +** 创建 API 密钥。
 
-### How to find your Project ID
+### 如何查找您的项目 ID
 
-1. Visit [https://dataplatform.cloud.ibm.com/projects/?context=wx](https://dataplatform.cloud.ibm.com/projects/?context=wx)  
-2. Open your project  
-3. Go to the **Manage** tab  
-4. Copy the **Project ID** from the **Details** section 
+1. 访问 [https://dataplatform.cloud.ibm.com/projects/?context=wx](https://dataplatform.cloud.ibm.com/projects/?context=wx)
+2. 打开您的项目
+3. 转到 **Manage** 标签
+4. 从 **Details** 部分复制 **Project ID**
 
 ## WatsonxScoringModel
 
-The `WatsonxScoringModel` provides a LangChain4j implementation of a `ScoringModel` using IBM watsonx.ai models.
+`WatsonxScoringModel` 提供了使用 IBM watsonx.ai 模型的 LangChain4j `ScoringModel` 实现。
 
-It is particularly useful for ranking a list of documents (or text segments) based on their relevance to a user query.
+它特别适用于根据与用户查询的相关性对文档（或文本段落）列表进行排名。
 
-### Example
+### 示例
 
 ```java
 ScoringModel scoringModel = WatsonxScoringModel.builder()
@@ -141,8 +142,8 @@ var scores = scoringModel.scoreAll(
 System.out.println(scores);
 ```
 
-> 🔗 [View available rerank model IDs](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-embed.html?context=wx&audience=wdp#rerank)
+> 🔗 [查看可用的重排序模型 ID](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-embed.html?context=wx&audience=wdp#rerank)
 
-## Examples
+## 示例
 
 - [WatsonxScoringModelTest](https://github.com/langchain4j/langchain4j-examples/blob/main/watsonx-ai-examples/src/main/java/WatsonxScoringModelTest.java)

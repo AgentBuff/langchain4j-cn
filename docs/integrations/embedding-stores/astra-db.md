@@ -6,4 +6,4 @@ sidebar_position: 2
 
 [Astra DB](https://www.datastax.com/products/datastax-astra)
 
-Tutorial coming soon
+教程即将推出

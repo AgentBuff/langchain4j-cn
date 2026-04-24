@@ -4,17 +4,14 @@ sidebar_position: 3
 
 # Jina
 
-- [Jina Reranker Documentation](https://jina.ai/reranker)
+- [Jina Reranker 文档](https://jina.ai/reranker)
 - [Jina Reranker API](https://api.jina.ai/redoc#tag/rerank)
 
+### 简介
 
-### Introduction
+重排序器是一种高级 AI 模型，它接收搜索的初始结果集（通常由基于嵌入/词元的搜索提供），并重新评估它们，以确保它们更贴近用户的意图。它超越了表面级的术语匹配，考虑搜索查询与文档内容之间更深层次的交互。
 
-A reranker is an advanced AI model that takes the initial set of results from a search—often provided by an embeddings/token-based search—and reevaluates them to ensure they align more closely with the user's intent. 
-It looks beyond the surface-level matching of terms to consider the deeper interaction between the search query and the content of the documents.
-
-
-### Maven Dependency
+### Maven 依赖
 
 ```xml
 <dependency>
@@ -24,11 +21,9 @@ It looks beyond the surface-level matching of terms to consider the deeper inter
 </dependency>
 ```
 
-### Usage
+### 用法
 
 ```java
-
-
 ScoringModel scoringModel = JinaScoringModel.builder()
     .apiKey(System.getenv("JINA_API_KEY"))
     .modelName("jina-reranker-v2-base-multilingual")

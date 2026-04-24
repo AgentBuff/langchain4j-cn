@@ -351,7 +351,7 @@ const config = {
                     path: 'docs',
                     routeBasePath: '', // change this to any URL route you'd want. For example: `home` - if you want /home/intro.
                     sidebarPath: './sidebars.js',
-                    showLastUpdateTime: true,
+                    showLastUpdateTime: false,
                     showLastUpdateAuthor: false,
                     // Please change this to your repo.
                     // Remove this to remove the "edit this page" links.
@@ -373,7 +373,7 @@ const config = {
                     anonymizeIP: true,
                 },
                 sitemap: {
-                    lastmod: 'date',
+                    lastmod: null,
                     changefreq: 'weekly',
                     priority: 0.7,
                     filename: 'sitemap.xml',

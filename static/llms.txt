@@ -1,0 +1,57 @@
+# LangChain4j 中文文档
+
+> LangChain4j 是面向 Java 开发者的大语言模型（LLM）应用开发框架。它提供统一的 API 用于接入 20+ 主流大模型（OpenAI、Azure OpenAI、Google Gemini、Anthropic Claude、通义千问、DeepSeek、文心一言、智谱 GLM、Ollama 等）与 30+ 向量数据库，并内置 RAG（检索增强生成）、Agents（智能体）、Tools（工具调用/Function Calling）、MCP（Model Context Protocol）、AI Services、Chat Memory、Guardrails 等高层组件，与 Spring Boot、Quarkus、Helidon、Micronaut 深度集成，帮助 Java 工程师快速构建可上生产的 AI 应用。
+
+官方站点：https://langchain4j-cn.vercel.app/
+GitHub：https://github.com/langchain4j/langchain4j
+最新稳定版：1.13.0
+最低 JDK 版本：17
+
+## 快速开始
+
+- [简介 Introduction](https://langchain4j-cn.vercel.app/intro): LangChain4j 项目总览、核心价值与架构
+- [快速开始 Get Started](https://langchain4j-cn.vercel.app/get-started): 5 分钟引入依赖、接入 OpenAI 并发起第一次对话
+
+## 教程 Tutorials
+
+- [AI Services](https://langchain4j-cn.vercel.app/tutorials/ai-services): 用声明式接口定义 LLM 能力，类似 Retrofit
+- [Chat and Language Models](https://langchain4j-cn.vercel.app/tutorials/chat-and-language-models): ChatModel / LanguageModel 底层 API
+- [Chat Memory](https://langchain4j-cn.vercel.app/tutorials/chat-memory): 对话记忆管理（MessageWindow、TokenWindow、持久化）
+- [Response Streaming](https://langchain4j-cn.vercel.app/tutorials/response-streaming): 流式响应
+- [Model Parameters](https://langchain4j-cn.vercel.app/tutorials/model-parameters): 模型参数调优
+- [Tools (Function Calling)](https://langchain4j-cn.vercel.app/tutorials/tools): 工具调用 / 函数调用
+- [MCP](https://langchain4j-cn.vercel.app/tutorials/mcp): Model Context Protocol 客户端
+- [Agents 与 Agentic AI](https://langchain4j-cn.vercel.app/tutorials/agents): 智能体开发
+- [Skills](https://langchain4j-cn.vercel.app/tutorials/skills): 可复用技能封装
+- [RAG 检索增强生成](https://langchain4j-cn.vercel.app/tutorials/rag): 从文档导入到检索、重排、生成的完整流程
+- [Structured Outputs](https://langchain4j-cn.vercel.app/tutorials/structured-outputs): 结构化输出与 POJO 解析
+- [Guardrails](https://langchain4j-cn.vercel.app/tutorials/guardrails): 输入/输出安全护栏
+- [Observability](https://langchain4j-cn.vercel.app/tutorials/observability): 可观测性、链路追踪
+- [Classification](https://langchain4j-cn.vercel.app/tutorials/classification): 文本分类
+- [Kotlin 扩展](https://langchain4j-cn.vercel.app/tutorials/kotlin): Kotlin 协程支持
+
+## 框架集成 Integrations
+
+- [Spring Boot 集成](https://langchain4j-cn.vercel.app/tutorials/spring-boot-integration)
+- [Quarkus 集成](https://langchain4j-cn.vercel.app/tutorials/quarkus-integration)
+- [Helidon 集成](https://langchain4j-cn.vercel.app/tutorials/helidon-integration)
+- [Micronaut 集成](https://langchain4j-cn.vercel.app/tutorials/micronaut-integration)
+- [Payara Micro 集成](https://langchain4j-cn.vercel.app/tutorials/payara-micro-integration)
+
+## LLM 提供商 Language Models
+
+- [语言模型总览](https://langchain4j-cn.vercel.app/category/language-models): OpenAI、Azure OpenAI、Gemini、Claude、Mistral、Ollama、通义千问、DeepSeek、文心一言、智谱 GLM、Bedrock 等 20+ 家
+
+## 向量数据库 Embedding Stores
+
+- [向量存储总览](https://langchain4j-cn.vercel.app/category/embedding-stores): Milvus、Pinecone、Weaviate、Chroma、Qdrant、Elasticsearch、PgVector、Redis、Cassandra 等 30+ 种
+
+## 常用资源 Useful Materials
+
+- [Useful Materials](https://langchain4j-cn.vercel.app/useful-materials): 精选示例、博客、视频和社区资源
+
+## Optional
+
+- [Javadoc API](https://docs.langchain4j.dev/apidocs/index.html)
+- [示例仓库 langchain4j-examples](https://github.com/langchain4j/langchain4j-examples)
+- [英文版文档](https://langchain4j-cn.vercel.app/en/)

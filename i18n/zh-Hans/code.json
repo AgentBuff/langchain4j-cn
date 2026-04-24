@@ -1,15 +1,35 @@
 {
   "site.tagline": {
-    "message": "用 LLM 的能力增强你的 Java 应用",
+    "message": "用 LLM 的能力增强你的 Java 应用 —— LangChain4j 官方中文文档",
     "description": "Site tagline"
+  },
+  "homepage.hero.title": {
+    "message": "LangChain4j 中文文档",
+    "description": "Homepage hero title"
+  },
+  "homepage.hero.logoAlt": {
+    "message": "LangChain4j 中文文档 - Java 大模型（LLM）应用开发框架 Logo",
+    "description": "Alt text for the homepage hero logo"
   },
   "homepage.header.button": {
     "message": "开始阅读",
     "description": "Homepage hero button"
   },
   "homepage.meta.description": {
-    "message": "LangChain4j 文档首页",
+    "message": "LangChain4j 中文文档：面向 Java 开发者的大语言模型应用开发框架，统一 API 接入 OpenAI、通义千问、DeepSeek、Gemini、Claude 等 20+ LLM 与 30+ 向量数据库，内置 RAG、Agents、Tools、MCP、AI Services，深度集成 Spring Boot / Quarkus / Helidon / Micronaut。",
     "description": "Homepage meta description"
+  },
+  "homepage.seo.heading": {
+    "message": "LangChain4j - 为 Java 开发者打造的大语言模型（LLM）应用开发框架",
+    "description": "Homepage SEO content heading"
+  },
+  "homepage.seo.paragraph1": {
+    "message": "LangChain4j 是面向 Java 生态的大语言模型应用开发框架，提供统一 API 接入 OpenAI、Azure OpenAI、Google Gemini、Anthropic Claude、通义千问、DeepSeek、文心一言、智谱 GLM、Ollama 等 20+ 主流大模型，以及 Milvus、Pinecone、Weaviate、Qdrant、Elasticsearch、PgVector 等 30+ 向量数据库。",
+    "description": "Homepage SEO first paragraph"
+  },
+  "homepage.seo.paragraph2": {
+    "message": "内置 RAG 检索增强生成、Agents 智能体、Tools 工具调用（Function Calling）、MCP（Model Context Protocol）、AI Services、Chat Memory、Guardrails 等高层能力，并与 Spring Boot、Quarkus、Helidon、Micronaut 深度集成，帮助 Java 工程师快速构建可上生产的 AI 应用。",
+    "description": "Homepage SEO second paragraph"
   },
   "homepage.features.easy.title": {
     "message": "轻松接入 LLM 与向量存储",

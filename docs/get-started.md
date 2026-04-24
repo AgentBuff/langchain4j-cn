@@ -2,6 +2,17 @@
 sidebar_position: 5
 stableVersion: 1.13.0
 betaVersion: 1.13.0-beta23
+title: Get Started with LangChain4j | Java LLM Quickstart
+description: Add LangChain4j to your Maven or Gradle project in minutes. Wire up OpenAI, Azure OpenAI, Gemini, Claude, Ollama or other LLM providers, and run your first chat with just a few lines of Java. Requires JDK 17+.
+keywords:
+  - LangChain4j quickstart
+  - LangChain4j Maven
+  - LangChain4j Gradle
+  - Java LLM quickstart
+  - OpenAI Java example
+  - Java ChatGPT
+  - LangChain4j dependency
+image: /img/docusaurus-social-card.jpg
 ---
 
 # Get Started

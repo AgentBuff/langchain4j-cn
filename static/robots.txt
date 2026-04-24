@@ -1,5 +1,5 @@
 # robots.txt for LangChain4j 中文文档
-# https://langchain4j-cn.vercel.app/
+# https://langchain4j.coderbuffer.com/
 
 User-agent: *
 Allow: /
@@ -96,4 +96,4 @@ User-agent: YandexBot
 Allow: /
 
 # Sitemaps
-Sitemap: https://langchain4j-cn.vercel.app/sitemap.xml
+Sitemap: https://langchain4j.coderbuffer.com/sitemap.xml

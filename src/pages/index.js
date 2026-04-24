@@ -72,7 +72,7 @@ export default function Home() {
         title={siteConfig.title}
         description={description}>
         <Head>
-            <link rel="canonical" href="https://langchain4j-cn.vercel.app/" />
+            <link rel="canonical" href="https://langchain4j.coderbuffer.com/" />
         </Head>
         <HomepageHeader/>
         <main>

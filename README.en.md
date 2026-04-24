@@ -2,7 +2,7 @@
 
 This repository contains the Simplified Chinese LangChain4j documentation site, built with [Docusaurus](https://docusaurus.io/).
 
-Live site: <https://langchain4j-cn.vercel.app/>
+Live site: <https://langchain4j.coderbuffer.com/>
 
 The root path serves Simplified Chinese by default, and the English version is available under `/en`.
 

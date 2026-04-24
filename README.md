@@ -2,7 +2,7 @@
 
 这是 LangChain4j 简体中文文档站点仓库，基于 [Docusaurus](https://docusaurus.io/) 构建。
 
-在线访问地址：<https://langchain4j-cn.vercel.app/>
+在线访问地址：<https://langchain4j.coderbuffer.com/>
 
 站点默认根路径展示简体中文内容，英文版本位于 `/en`。
 

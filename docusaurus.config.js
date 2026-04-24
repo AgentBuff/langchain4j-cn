@@ -6,7 +6,7 @@
 
 import { themes as prismThemes } from 'prism-react-renderer';
 
-const SITE_URL = 'https://langchain4j-cn.vercel.app';
+const SITE_URL = 'https://langchain4j.coderbuffer.com';
 const SITE_TITLE = 'LangChain4j 中文文档 | Java LLM 应用开发框架';
 const SITE_TAGLINE = '用 LLM 的能力增强你的 Java 应用 - LangChain4j 官方中文文档';
 const SITE_DESCRIPTION = 'LangChain4j 中文文档：面向 Java 开发者的大语言模型（LLM）应用开发框架，提供统一 API 接入 OpenAI、Azure OpenAI、Gemini、Claude、通义千问、DeepSeek、文心一言等 20+ LLM，支持 RAG 检索增强生成、Agents 智能体、Tools 工具调用、MCP、向量数据库、Spring Boot / Quarkus 集成，助你用 Java 快速构建生产级 AI 应用。';

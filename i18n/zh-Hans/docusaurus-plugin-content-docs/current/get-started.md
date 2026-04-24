@@ -2,6 +2,19 @@
 sidebar_position: 5
 stableVersion: 1.13.0
 betaVersion: 1.13.0-beta23
+title: LangChain4j 快速开始 | Java 大模型应用入门教程
+description: 5 分钟上手 LangChain4j：通过 Maven 或 Gradle 引入依赖，接入 OpenAI、通义千问、DeepSeek、Gemini、Claude、Ollama 等大模型，完成第一次 Java 调用 LLM。要求 JDK 17 及以上。
+keywords:
+  - LangChain4j 快速开始
+  - LangChain4j 入门
+  - LangChain4j Maven 依赖
+  - LangChain4j Gradle
+  - Java 调用 ChatGPT
+  - Java 调用 OpenAI
+  - Java 调用大模型
+  - Java 调用 DeepSeek
+  - Java 调用通义千问
+image: /img/docusaurus-social-card.jpg
 ---
 
 # 快速开始

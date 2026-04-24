@@ -1,0 +1,99 @@
+# robots.txt for LangChain4j 中文文档
+# https://langchain4j-cn.vercel.app/
+
+User-agent: *
+Allow: /
+Disallow: /markdown-page
+
+# Bing / Microsoft crawlers - explicitly allow, no crawl delay.
+User-agent: bingbot
+Allow: /
+Crawl-delay: 0
+
+User-agent: msnbot
+Allow: /
+
+User-agent: adidxbot
+Allow: /
+
+# Generative / AI search engines (GEO) - explicitly permitted so our docs can
+# appear in AI search results (ChatGPT Search, Perplexity, Bing Chat, Google AI
+# Overviews, etc.).
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# Chinese search engines
+User-agent: Baiduspider
+Allow: /
+
+User-agent: Baiduspider-image
+Allow: /
+
+User-agent: Sogou web spider
+Allow: /
+
+User-agent: Sogou inst spider
+Allow: /
+
+User-agent: 360Spider
+Allow: /
+
+User-agent: Yisouspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Sitemaps
+Sitemap: https://langchain4j-cn.vercel.app/sitemap.xml

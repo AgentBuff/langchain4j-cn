@@ -1,6 +1,20 @@
 ---
 sidebar_position: 1
-title: Introduction
+title: Introduction | LangChain4j Java LLM Framework
+description: LangChain4j is an idiomatic Java framework for building LLM-powered applications. Unified API for 20+ LLM providers (OpenAI, Gemini, Claude, Qwen, DeepSeek, Ollama), 30+ vector stores, RAG, Agents, Tools (Function Calling), MCP, AI Services, and first-class Spring Boot / Quarkus / Helidon / Micronaut integrations.
+keywords:
+  - LangChain4j
+  - Java LLM framework
+  - Java AI
+  - Java OpenAI
+  - Java RAG
+  - Java Agents
+  - Function Calling Java
+  - MCP Java
+  - Spring Boot AI
+  - Quarkus LLM
+image: /img/docusaurus-social-card.jpg
+slug: /intro
 ---
 
 # Introduction

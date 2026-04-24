@@ -134,7 +134,7 @@ const config = {
             tagName: 'meta',
             attributes: {
                 name: 'msvalidate.01',
-                content: 'REPLACE_WITH_BING_WEBMASTER_VERIFICATION_CODE',
+                content: '0C729FA3171A9AEA3FDDBB56FB56E19A',
             },
         },
         // Google Search Console site verification placeholder.

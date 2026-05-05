@@ -7,21 +7,21 @@ sidebar_position: 4
 https://azure.microsoft.com/en-us/products/cosmos-db/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-azure-cosmos-mongo-vcore</artifactId>
-    <version>1.13.1-beta23</version>
+    <version>1.13.0-beta23</version>
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `AzureCosmosDbMongoVCoreEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [AzureCosmosDBMongoVCoreEmbeddingStoreIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-azure-cosmos-mongo-vcore/src/test/java/dev/langchain4j/store/embedding/azure/cosmos/mongo/vcore/AzureCosmosDBMongoVCoreEmbeddingStoreIT.java)

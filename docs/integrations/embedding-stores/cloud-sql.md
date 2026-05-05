@@ -1,20 +1,19 @@
 # Google Cloud SQL for PostgreSQL
 
-[Cloud SQL](https://cloud.google.com/sql/docs/postgres) is a fully managed relational database service that offers high performance, seamless integration, and impressive scalability. Cloud SQL is 100% compatible with PostgreSQL. Extend your database application to build AI-powered experiences leveraging Cloud SQL's Langchain integrations.
+[Cloud SQL](https://cloud.google.com/sql/docs/postgres) 是一款全托管的关系型数据库服务，提供高性能、无缝集成和出色的可扩展性。Cloud SQL 与 PostgreSQL 100% 兼容。利用 Cloud SQL 的 Langchain 集成，可将数据库应用扩展以构建 AI 驱动的体验。
 
-This module implements `EmbeddingStore` backed by an Cloud SQL for PostgreSQL database.
+本模块实现了基于 Cloud SQL for PostgreSQL 数据库的 `EmbeddingStore`。
 
-## Before You Begin
+## 开始前的准备
 
-In order to use this library, you first need to go through the following
-steps:
+使用本库之前，需要完成以下步骤：
 
-1. [Select or create a Cloud Platform project.](https://console.cloud.google.com/project)
-2. [Enable billing for your project.](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
-3. [Enable the CloudSQL API.](https://console.cloud.google.com/flows/enableapi?apiid=sql.googleapis.com)
-4. [Setup Authentication.](https://googleapis.dev/python/google-api-core/latest/auth.html)
+1. [选择或创建一个 Cloud Platform 项目。](https://console.cloud.google.com/project)
+2. [为项目启用计费功能。](https://cloud.google.com/billing/docs/how-to/modify-project#enable_billing_for_a_project)
+3. [启用 CloudSQL API。](https://console.cloud.google.com/flows/enableapi?apiid=sql.googleapis.com)
+4. [配置认证。](https://googleapis.dev/python/google-api-core/latest/auth.html)
 
-### Maven Dependency
+### Maven 依赖
 
 ```xml
 <dependency>
@@ -24,23 +23,23 @@ steps:
 </dependency>
 ```
 
-## PostgresEmbeddingStore Usage
+## PostgresEmbeddingStore 使用方法
 
-Use a vector store to store text embedded data and perform vector search. Instances of `PostgresEmbeddingStore` can be created by configuring provided `Builder`, it requires the following:
+使用向量存储来存储文本嵌入数据并执行向量搜索。`PostgresEmbeddingStore` 实例通过配置提供的 `Builder` 创建，需要以下参数：
 
-- `PostgresEngine` instance
-- table name
-- schema name (optional, default: "public")
-- content column (optional, default: "content")
-- embedding column (optional, default: "embedding")
-- id column (optional, default: "langchain_id")
-- metadata column names (optional)
-- additional metadata json column (optional, default: "langchain_metadata")
-- ignored metadata column names (optional)
-- distance strategy (optional, default:DistanceStrategy.COSINE_DISTANCE)
-- query options (optional)
+- `PostgresEngine` 实例
+- 表名
+- schema 名（可选，默认："public"）
+- 内容列（可选，默认："content"）
+- 嵌入列（可选，默认："embedding"）
+- ID 列（可选，默认："langchain_id"）
+- 元数据列名（可选）
+- 附加元数据 JSON 列（可选，默认："langchain_metadata"）
+- 忽略的元数据列名（可选）
+- 距离策略（可选，默认：DistanceStrategy.COSINE_DISTANCE）
+- 查询选项（可选）
 
-example usage:
+示例用法：
 ```java
 import dev.langchain4j.data.document.Metadata;
 import dev.langchain4j.data.embedding.Embedding;
@@ -83,13 +82,13 @@ for (String text : testTexts) {
     embeddings.add(MyEmbeddingModel.embed(text).content());
 }
 List<String> ids = store.addAll(embeddings, textSegments);
-// search for "cat"
+// 搜索 "cat"
 EmbeddingSearchRequest request = EmbeddingSearchRequest.builder()
         .queryEmbedding(embeddings.get(0))
         .maxResults(10)
         .minScore(0.9)
         .build();
 List<EmbeddingMatch<TextSegment>> result = store.search(request).matches();
-// remove "cat"
+// 删除 "cat"
 store.removeAll(singletonList(result.get(0).embeddingId()));
 ```

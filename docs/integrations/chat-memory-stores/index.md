@@ -1,10 +1,10 @@
 ---
-title: Comparison table of all supported Chat Memory Stores
+title: 所有支持的对话记忆存储对比表
 hide_title: false
 sidebar_position: 0
 ---
 
-| Chat Memory Stores                                                        | Persistence | Default |
+| 对话记忆存储 | 持久化 | 默认 |
 |---------------------------------------------------------------------------|-------------|---------|
 | [In-memory](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-core/src/test/java/dev/langchain4j/store/memory/chat/InMemoryChatMemoryStoreTest.java)                     |             |         |
 | [Azure CosmosDB NoSQL](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-azure-cosmos-nosql/src/test/java/dev/langchain4j/store/memory/azure/cosmos/nosql/AzureCosmosDBNoSqlMemoryStoreIT.java) | ✅            |         |

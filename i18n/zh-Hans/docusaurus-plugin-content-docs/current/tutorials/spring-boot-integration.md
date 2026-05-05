@@ -12,9 +12,9 @@ LangChain4j 为以下场景提供了 [Spring Boot starters](https://github.com/l
 ## Spring Boot 启动器
 
 Spring Boot starter 可以帮助你通过配置项创建并配置
-[language models](/category/language-models)、
+[language models](/integrations/language-models)、
 [embedding models](/category/embedding-models)、
-[embedding stores](/category/embedding-stores)
+[embedding stores](/integrations/embedding-stores)
 以及其他 LangChain4j 核心组件。
 
 要使用某个 [Spring Boot starter](https://github.com/langchain4j/langchain4j-spring)，

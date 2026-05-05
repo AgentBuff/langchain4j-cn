@@ -2,25 +2,22 @@
 sidebar_position: 1
 ---
 
-# Text
+# 文本
 
-
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j</artifactId>
-    <version>1.13.1</version>
+    <version>1.13.0</version>
 </dependency>
 ```
 
-
-## APIs
+## API 参考 {#api}
 
 - `TextDocumentParser`
 
-
-## Examples
+## 示例
 
 - [TextDocumentParserTest](https://github.com/langchain4j/langchain4j/blob/main/langchain4j/src/test/java/dev/langchain4j/data/document/parser/TextDocumentParserTest.java)

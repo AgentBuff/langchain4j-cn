@@ -2,35 +2,35 @@
 sidebar_position: 1
 ---
 
-# Prompt Repetition
+# 提示词重复
 
-`langchain4j-community-prompt-repetition` is an optional community module that provides ready-made prompt repetition integrations for two LangChain4j integration points:
+`langchain4j-community-prompt-repetition` 是一个可选的社区模块，为两个 LangChain4j 集成点提供现成的提示词重复集成：
 
-- AI Services input guardrails
-- RAG query transformation
+- AI Services 输入守卫（guardrails）
+- RAG 查询转换
 
-It is inspired by the paper [Prompt Repetition Improves Non-Reasoning LLMs](https://arxiv.org/html/2512.14982v1), which reports gains on a range of non-reasoning workloads. In LangChain4j, the module exposes the core repeated-input transformation through framework-native components and adds conservative defaults for real applications.
+它受论文 [Prompt Repetition Improves Non-Reasoning LLMs](https://arxiv.org/html/2512.14982v1) 的启发，该论文报告了在一系列非推理工作负载上的提升效果。在 LangChain4j 中，该模块通过框架原生组件暴露核心的重复输入转换，并为实际应用添加了保守的默认值。
 
-The module is experimental, and its effectiveness is workload-dependent. Validate it on your own prompts, models, and tasks before broad rollout.
+该模块为实验性模块，其有效性取决于工作负载。在大规模推广之前，请在你自己的提示词、模型和任务上进行验证。
 
-## What It Is
+## 功能概述
 
-Prompt repetition rewrites text in the following form:
+提示词重复按如下形式改写文本：
 
 ```text
 Q -> Q\nQ
 ```
 
-In LangChain4j, this can be applied in two different places:
+在 LangChain4j 中，可以在两个不同的位置应用此功能：
 
-- Before a non-RAG AI Services call, using `PromptRepeatingInputGuardrail`
-- Before retrieval in an advanced RAG pipeline, using `RepeatingQueryTransformer`
+- 在非 RAG 的 AI Services 调用之前，使用 `PromptRepeatingInputGuardrail`
+- 在高级 RAG 管道的检索之前，使用 `RepeatingQueryTransformer`
 
-For RAG, the repetition should be applied only to the retrieval query, not to the final augmented prompt sent to the model.
+对于 RAG，重复应仅应用于检索查询，而不是发送给模型的最终增强提示词。
 
-## Maven Dependencies
+## Maven 依赖
 
-If you already use community modules, importing the community BOM is recommended:
+如果你已经使用了社区模块，建议导入社区 BOM：
 
 ```xml
 <dependencyManagement>
@@ -46,7 +46,7 @@ If you already use community modules, importing the community BOM is recommended
 </dependencyManagement>
 ```
 
-Then add the prompt repetition module:
+然后添加 prompt repetition 模块：
 
 ```xml
 <dependency>
@@ -55,7 +55,7 @@ Then add the prompt repetition module:
 </dependency>
 ```
 
-You can also declare the module directly:
+也可以直接声明该模块：
 
 ```xml
 <dependency>
@@ -65,19 +65,19 @@ You can also declare the module directly:
 </dependency>
 ```
 
-## Components
+## 组件
 
-The module provides three main APIs:
+该模块提供三个主要 API：
 
-- `PromptRepeatingInputGuardrail` repeats eligible single-text user input before the model is called
-- `RepeatingQueryTransformer` repeats the retrieval query in advanced RAG pipelines
-- `PromptRepetitionPolicy` contains the shared repetition rules used by both integrations
+- `PromptRepeatingInputGuardrail`：在调用模型之前重复符合条件的单文本用户输入
+- `RepeatingQueryTransformer`：在高级 RAG 管道中重复检索查询
+- `PromptRepetitionPolicy`：包含两种集成共用的重复规则
 
-All of these APIs are marked as `@Experimental`.
+以上所有 API 均标记为 `@Experimental`。
 
-## Non-RAG Usage
+## 非 RAG 用法
 
-For non-RAG AI Services calls, attach `PromptRepeatingInputGuardrail` to the `AiServices` builder:
+对于非 RAG 的 AI Services 调用，将 `PromptRepeatingInputGuardrail` 附加到 `AiServices` 构建器：
 
 ```java
 PromptRepetitionPolicy policy = PromptRepetitionPolicy.builder()
@@ -91,11 +91,11 @@ Assistant assistant = AiServices.builder(Assistant.class)
         .build();
 ```
 
-This is the preferred integration point when you want to rewrite the user input before the model call and you are not operating on an augmented RAG prompt.
+这是当你想在模型调用前改写用户输入而不在增强 RAG 提示词上操作时的首选集成点。
 
-## RAG Usage
+## RAG 用法
 
-For RAG, repeat the retrieval query only:
+对于 RAG，仅重复检索查询：
 
 ```java
 PromptRepetitionPolicy policy = PromptRepetitionPolicy.builder()
@@ -108,32 +108,32 @@ RetrievalAugmentor retrievalAugmentor = DefaultRetrievalAugmentor.builder()
         .build();
 ```
 
-This keeps the transformation inside the retrieval stage and avoids duplicating the final prompt after retrieved content has already been injected.
+这将转换保持在检索阶段内，避免在检索到内容注入后重复最终提示词。
 
-## Modes
+## 模式
 
-`PromptRepetitionPolicy` supports three modes:
+`PromptRepetitionPolicy` 支持三种模式：
 
-- `NEVER`: disables repetition
-- `ALWAYS`: repeats eligible input
-- `AUTO`: conservative mode that skips already repeated text, very long input, and prompts that appear to request explicit reasoning
+- `NEVER`：禁用重复
+- `ALWAYS`：重复符合条件的输入
+- `AUTO`：保守模式，跳过已重复的文本、过长的输入以及看起来要求显式推理的提示词
 
-`AUTO` is the safest starting point for evaluation.
+`AUTO` 是评估的最安全起点。
 
-## Safety and Constraints
+## 安全性与约束
 
-- `PromptRepeatingInputGuardrail` only rewrites eligible single-text user input
-- It is not intended to be the main integration point for multimodal requests
-- By default, the guardrail skips requests when RAG augmentation has already happened
-- In RAG setups, use `RepeatingQueryTransformer` to repeat the retrieval query instead of repeating the final augmented prompt
-- The module is experimental, so APIs and behavior may change in future versions
+- `PromptRepeatingInputGuardrail` 仅改写符合条件的单文本用户输入
+- 不适合作为多模态请求的主要集成点
+- 默认情况下，当 RAG 增强已经发生时，守卫会跳过请求
+- 在 RAG 场景中，使用 `RepeatingQueryTransformer` 重复检索查询，而不是重复最终增强提示词
+- 该模块为实验性模块，API 和行为在未来版本中可能会发生变化
 
-## When to Use It
+## 使用场景
 
-Use this module when you want a ready-made way to apply prompt repetition in LangChain4j, not when you want a universal default prompt policy.
+在你希望以现成方式在 LangChain4j 中应用提示词重复时使用此模块，而不是作为通用的默认提示词策略。
 
-- Start with `PromptRepetitionMode.AUTO`
-- Prefer it for non-reasoning or low-reasoning workloads first
-- Evaluate it with A/B tests on your own prompts, models, and tasks
-- Keep the default safety constraints unless you have a clear reason to relax them
-- Treat improvements as workload-dependent rather than guaranteed
+- 从 `PromptRepetitionMode.AUTO` 开始
+- 优先在非推理或低推理工作负载上使用
+- 在你自己的提示词、模型和任务上通过 A/B 测试进行评估
+- 除非有明确理由，否则保留默认安全约束
+- 将提升效果视为与工作负载相关，而非有所保证

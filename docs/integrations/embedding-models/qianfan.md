@@ -2,24 +2,22 @@
 sidebar_position: 18
 ---
 
-# Qianfan
+# 千帆
 
-[百度智能云千帆大模型](https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application)
-![image](https://github.com/langchain4j/langchain4j/assets/95265298/600f8006-4484-4a75-829c-c8c16a3130c2)
+[百度智能云千帆大模型平台](https://cloud.baidu.com/product/wenxinworkshop) 提供了一系列可用于文本生成、
+文本嵌入等任务的 AI 模型。
 
-## Maven Dependency
-
-You can use DashScope with LangChain4j in plain Java or Spring Boot applications.
-
-### Plain Java
+## Maven 依赖
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-qianfan` has migrated to `langchain4j-community` and is renamed to `langchain4j-community-qianfan`.
+自 `1.0.0-alpha1` 起，`langchain4j-qianfan` 已迁移到 `langchain4j-community` 并重命名为
+`langchain4j-community-qianfan`。
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
+
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-qianfan</artifactId>
@@ -27,9 +25,10 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
+
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-community-qianfan</artifactId>
@@ -38,24 +37,6 @@ Before `1.0.0-alpha1`:
 ```
 
 ### Spring Boot
-
-:::note
-Since `1.0.0-alpha1`, `langchain4j-qianfan-spring-boot-starter` has migrated to `langchain4j-community` and is renamed
-to `langchain4j-community-qianfan-spring-boot-starter`.
-:::
-
-Before `1.0.0-alpha1`:
-
-```xml
-
-<dependency>
-    <groupId>dev.langchain4j</groupId>
-    <artifactId>langchain4j-qianfan-spring-boot-starter</artifactId>
-    <version>${previous version here}</version>
-</dependency>
-```
-
-`1.0.0-alpha1` and later:
 
 ```xml
 
@@ -66,7 +47,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或使用 BOM 统一管理依赖：
 
 ```xml
 
@@ -81,11 +62,10 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `QianfanEmbeddingModel`
 
-
-## Examples
+## 示例
 
 - [QianfanEmbeddingModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-qianfan/src/test/java/dev/langchain4j/community/model/qianfan/QianfanEmbeddingModelIT.java)

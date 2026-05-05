@@ -7,9 +7,9 @@ sidebar_position: 21
 - https://inference.readthedocs.io/
 
 
-## Maven Dependency
+## Maven 依赖
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 <dependency>
@@ -19,7 +19,7 @@ sidebar_position: 21
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或者，使用 BOM 统一管理依赖版本：
 
 ```xml
 <dependencyManagement>
@@ -34,13 +34,13 @@ Or, you can use BOM to manage dependencies consistently:
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `XinferenceChatModel`
 - `XinferenceStreamingChatModel`
 
 
-## Examples
+## 示例
 
 - [XinferenceChatModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-xinference/src/test/java/dev/langchain4j/community/model/xinference/XinferenceChatModelIT.java)
 - [XinferenceStreamingChatModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-xinference/src/test/java/dev/langchain4j/community/model/xinference/XinferenceStreamingChatModelIT.java)

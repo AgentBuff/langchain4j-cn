@@ -7,21 +7,21 @@ sidebar_position: 14
 https://ollama.com/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-ollama</artifactId>
-    <version>1.13.1</version>
+    <version>1.13.0</version>
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `OllamaEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [OllamaEmbeddingModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-ollama/src/test/java/dev/langchain4j/model/ollama/OllamaEmbeddingModelIT.java)

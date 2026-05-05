@@ -6,20 +6,18 @@ sidebar_position: 6
 
 https://developers.cloudflare.com/workers-ai/
 
-
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-workers-ai</artifactId>
-    <version>1.13.1-beta23</version>
+    <version>1.13.0-beta23</version>
 </dependency>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `WorkersAiImageModel`
 
-
-## Examples
+## 示例
 
 - [WorkersAiImageModelIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-workers-ai/src/test/java/dev/langchain4j/model/workersai/WorkersAiImageModelIT.java)

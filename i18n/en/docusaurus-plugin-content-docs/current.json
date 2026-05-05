@@ -1,0 +1,26 @@
+{
+	"sidebar.tutorialSidebar.category.教程": {
+		"message": "Tutorials",
+		"description": "The label for category '教程' in sidebar 'tutorialSidebar'"
+	},
+	"sidebar.tutorialSidebar.category.教程.link.generated-index.description": {
+		"message": "Tutorials",
+		"description": "The generated-index page description for category '教程' in sidebar 'tutorialSidebar'"
+	},
+	"sidebar.tutorialSidebar.category.集成": {
+		"message": "Integrations",
+		"description": "The label for category '集成' in sidebar 'tutorialSidebar'"
+	},
+	"sidebar.tutorialSidebar.category.集成.link.generated-index.description": {
+		"message": "Integrations",
+		"description": "The generated-index page description for category '集成' in sidebar 'tutorialSidebar'"
+	},
+	"sidebar.tutorialSidebar.category.参考资料": {
+		"message": "Useful Materials",
+		"description": "The label for category '参考资料' in sidebar 'tutorialSidebar'"
+	},
+	"sidebar.tutorialSidebar.category.参考资料.link.generated-index.description": {
+		"message": "Useful Materials",
+		"description": "The generated-index page description for category '参考资料' in sidebar 'tutorialSidebar'"
+	}
+}

@@ -2,25 +2,26 @@
 sidebar_position: 33
 ---
 
-# Customizable HTTP Client
+# 可定制 HTTP 客户端
 
-Some LangChain4j modules (currently OpenAI and Ollama) support customizing the HTTP clients used
-to call the LLM provider API.
+LangChain4j 的部分模块（当前为 OpenAI 和 Ollama）
+支持对调用 LLM provider API 时使用的 HTTP client 进行定制。
 
-The `langchain4j-http-client` module implements an `HttpClient` SPI, which is used
-by those modules to call the LLM provider's REST API.
-This means the underlying HTTP client can be customized,
-and any other HTTP client can be integrated by implementing the `HttpClient` SPI.
+`langchain4j-http-client` 模块实现了一个 `HttpClient` SPI，
+受支持的模块会通过它调用 LLM provider 的 REST API。
+这意味着底层 HTTP client 可以被自定义，
+并且你也可以通过实现 `HttpClient` SPI 来接入其他任意 HTTP client。
 
-Currently, there are the following out-of-the-box implementations:
-- `JdkHttpClient` from the `langchain4j-http-client-jdk` module.
-It is used by default when a supported module (e.g., `langchain4j-open-ai`) is used.
-- `SpringRestClient` from the `langchain4j-http-client-spring-restclient`/`langchain4j-http-client-spring-boot4-restclient` modules.
-It is used by default when a supported module's Spring Boot starter (e.g., `langchain4j-open-ai-spring-boot-starter`/`langchain4j-open-ai-spring-boot4-starter`) is used.
-- `ApacheHttpClient` from the `langchain4j-http-client-apache` module.
-- `OkHttpClient` from the `langchain4j-http-client-okhttp` module.
+当前开箱即用的实现包括：
+- 来自 `langchain4j-http-client-jdk` 模块的 `JdkHttpClient`。
+  当使用受支持模块（例如 `langchain4j-open-ai`）时，它默认会被使用。
+- 来自 `langchain4j-http-client-spring-restclient` / `langchain4j-http-client-spring-boot4-restclient` 模块的 `SpringRestClient`。
+  当使用受支持模块的 Spring Boot starter
+  （例如 `langchain4j-open-ai-spring-boot-starter` / `langchain4j-open-ai-spring-boot4-starter`）时，它默认会被使用。
+- 来自 `langchain4j-http-client-apache` 模块的 `ApacheHttpClient`。
+- 来自 `langchain4j-http-client-okhttp` 模块的 `OkHttpClient`。
 
-## Customizing JDK's `HttpClient`
+## 定制 JDK 的 `HttpClient`
 
 ```java
 HttpClient.Builder httpClientBuilder = HttpClient.newBuilder()
@@ -36,7 +37,7 @@ OpenAiChatModel model = OpenAiChatModel.builder()
         .build();
 ```
 
-## Customizing Spring's `RestClient`
+## 定制 Spring 的 `RestClient`
 
 ```java
 RestClient.Builder restClientBuilder = RestClient.builder()
@@ -53,7 +54,7 @@ OpenAiChatModel model = OpenAiChatModel.builder()
         .build();
 ```
 
-## Customizing Apache's `HttpClient`
+## 定制 Apache 的 `HttpClient`
 
 ```java
 org.apache.hc.client5.http.impl.classic.HttpClientBuilder httpClientBuilder = org.apache.hc.client5.http.impl.classic.HttpClientBuilder.create();

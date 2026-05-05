@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-title: LangChain4j 中文简介 | Java 大模型（LLM）应用开发框架
+title: 简介
 description: LangChain4j 是面向 Java 开发者的大语言模型应用开发框架，提供统一 API 接入 OpenAI、Gemini、Claude、通义千问、DeepSeek、文心一言、智谱 GLM、Ollama 等 20+ 大模型与 30+ 向量数据库，支持 RAG、Agents、Tools/Function Calling、MCP、AI Services，并与 Spring Boot、Quarkus、Helidon、Micronaut 深度集成。
 keywords:
   - LangChain4j

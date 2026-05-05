@@ -6,21 +6,21 @@ sidebar_position: 24
 
 https://www.aliyun.com/product/ots
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-tablestore</artifactId>
-    <version>1.13.1-beta23</version>
+    <version>1.13.0-beta23</version>
 </dependency>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `TablestoreEmbeddingStore`
 
-## Examples
+## 示例
 
 - [TablestoreEmbeddingStoreExampleIT](https://github.com/langchain4j/langchain4j/blob/main/langchain4j-tablestore/src/test/java/dev/langchain4j/store/embedding/tablestore/TablestoreEmbeddingStoreExampleIT.java)

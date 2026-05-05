@@ -7,22 +7,22 @@ sidebar_position: 21
 https://qdrant.tech/
 
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-qdrant</artifactId>
-    <version>1.13.1-beta23</version>
+    <version>1.13.0-beta23</version>
 </dependency>
 ```
 
 
-## APIs
+## API 参考 {#api}
 
 - `QdrantEmbeddingStore`
 
 
-## Examples
+## 示例
 
 - [QdrantEmbeddingStoreExample](https://github.com/langchain4j/langchain4j-examples/blob/main/qdrant-example/src/main/java/QdrantEmbeddingStoreExample.java)

@@ -5,32 +5,31 @@ sidebar_position: 2
 # GraalVM Polyglot/Truffle
 
 :::danger
-⚠️ Security Warning: High-Risk Code Execution
+⚠️ 安全警告：高风险代码执行
 
-This module enables execution of arbitrary Python/JavaScript code via GraalVM and is inherently dangerous.
+此模块通过 GraalVM 启用任意 Python/JavaScript 代码的执行，存在固有风险。
 
-❗ Do NOT use in production environments!
+❗ 请勿在生产环境中使用！
 :::
 
-## Maven Dependency
+## Maven 依赖
 
 ```xml
 <dependency>
     <groupId>dev.langchain4j</groupId>
     <artifactId>langchain4j-code-execution-engine-graalvm-polyglot</artifactId>
-    <version>1.13.1-beta23</version>
+    <version>1.13.0-beta23</version>
 </dependency>
 ```
 
-## APIs
+## API 列表 {#apis}
 
 - `GraalVmJavaScriptExecutionEngine`
 - `GraalVmJavaScriptExecutionTool`
 - `GraalVmPythonExecutionEngine`
 - `GraalVmPythonExecutionTool`
 
-
-## Examples
+## 示例
 
 - [GraalVmJavaScriptExecutionEngineTest](https://github.com/langchain4j/langchain4j/blob/main/code-execution-engines/langchain4j-code-execution-engine-graalvm-polyglot/src/test/java/dev/langchain4j/code/graalvm/GraalVmJavaScriptExecutionEngineTest.java)
 - [GraalVmJavaScriptExecutionToolIT](https://github.com/langchain4j/langchain4j/blob/main/code-execution-engines/langchain4j-code-execution-engine-graalvm-polyglot/src/test/java/dev/langchain4j/agent/tool/graalvm/GraalVmJavaScriptExecutionToolIT.java)

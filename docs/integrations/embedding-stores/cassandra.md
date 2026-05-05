@@ -6,4 +6,4 @@ sidebar_position: 6
 
 [Cassandra](https://cassandra.apache.org/)
 
-Tutorial coming soon
+教程即将推出

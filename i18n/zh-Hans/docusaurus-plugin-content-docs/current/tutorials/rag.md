@@ -891,7 +891,7 @@ String response = assistant.chat("Hello", parameters);
 #### Web Search Content Retriever {#web-search-content-retriever}
 `WebSearchContentRetriever` 使用 `WebSearchEngine` 从互联网检索相关 `Content`。
 
-所有支持的 `WebSearchEngine` 集成都可以在[这里](/category/web-search-engines)查看。
+所有支持的 `WebSearchEngine` 集成都可以在[这里](/integrations/web-search-engines)查看。
 
 示例：
 ```java

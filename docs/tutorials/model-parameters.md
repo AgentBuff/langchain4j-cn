@@ -2,37 +2,36 @@
 sidebar_position: 4
 ---
 
-# Model Parameters
+# 模型参数
 
-Depending on the model and provider you choose, you can adjust numerous parameters that will define:
-- The model's output: the level of creativity or determinism in the generated content (text, images),
-the volume of content generated, etc.
-- The connectivity: base URL, authorization keys, timeouts, retries, logging, etc.
+根据你选择的模型和 provider，
+你可以调整大量参数，这些参数将决定：
+- 模型输出：生成内容（文本、图像）的创造性或确定性程度、生成内容的长度等
+- 连接相关：base URL、鉴权 key、超时、重试、日志等
 
-Typically, you will find all the parameters and their meaning on the model provider's website.
-For example, OpenAI API's parameters can be found at https://platform.openai.com/docs/api-reference/chat
-(most up-to-date version)and include options like:
+通常，你都可以在模型提供商官网上找到完整参数说明及其含义。
+例如，OpenAI API 的参数可在 https://platform.openai.com/docs/api-reference/chat 查看
+（这是最新版本的说明），其中包含如下选项：
 
 | Parameter          | Description                                                                                                                                                                                | Type      |
 |--------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|
-| `modelName`        | The name of the model to use (e.g., gpt-4o, gpt-4o-mini, etc.)                                                                                                                             | `String`  |
-| `temperature`      | What sampling temperature to use, between 0 and 2. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.       | `Double`  |
-| `maxTokens`        | The maximum number of tokens that can be generated in the chat completion.                                                                                                                 | `Integer` |
-| `frequencyPenalty` | Number between -2.0 and 2.0. Positive values penalize new tokens based on their existing frequency in the text so far, decreasing the model's likelihood to repeat the same line verbatim. | `Double`  |
+| `modelName`        | 要使用的模型名称（例如 `gpt-4o`、`gpt-4o-mini` 等）                                                                                                                                         | `String`  |
+| `temperature`      | 采样温度，取值范围为 0 到 2。较高的值（如 0.8）会使输出更加随机，较低的值（如 0.2）会使输出更聚焦、更具确定性。       | `Double`  |
+| `maxTokens`        | chat completion 中最多可生成的 token 数量。                                                                                                                 | `Integer` |
+| `frequencyPenalty` | 取值范围为 -2.0 到 2.0。正值会根据某些 token 在当前文本中已经出现的频率对其进行惩罚，从而降低模型逐字重复同一行内容的概率。 | `Double`  |
 | `...`              | ...                                                                                                                                                                                        | `...`     |
 
-For the full list of parameters in OpenAI LLMs, see the [OpenAI Language Model page](/integrations/language-models/open-ai).
-Full lists of parameters and default values per model can be found under the separate model pages
-(under Integration, Language Model and Image Model).
+如需 OpenAI LLM 的完整参数列表，请参阅 [OpenAI Language Model 页面](/integrations/language-models/open-ai)。
+不同模型的完整参数与默认值列表，可在对应模型页面中查看
+（位于 Integration、Language Model 和 Image Model 各页面下）。
 
-You can create `*Model` in two ways:
-- A static factory that accepts only the mandatory parameters, such as API keys,
-with all other mandatory parameters set to sensible defaults.
-- A builder pattern: here, you can specify the value for each parameter.
+你可以通过两种方式创建 `*Model`：
+- 使用静态工厂：只接收 API key 等必填参数，其余参数会自动采用合理的默认值
+- 使用 builder 模式：可以逐项指定每个参数的值
 
 
-## Model Builder
-We can set every available parameter of the model using the builder pattern as follows:
+## 模型构建器 {#model-builder}
+我们可以像下面这样，通过 builder 模式设置模型的所有可用参数：
 ```java
 OpenAiChatModel model = OpenAiChatModel.builder()
         .apiKey(System.getenv("OPENAI_API_KEY"))
@@ -44,34 +43,34 @@ OpenAiChatModel model = OpenAiChatModel.builder()
         .build();
 ```
 
-## Setting Parameters in Quarkus
-LangChain4j parameters in Quarkus applications can be set in the `application.properties` file as follows:
+## 在 Quarkus 中设置参数
+Quarkus 应用中的 LangChain4j 参数可以像下面这样在 `application.properties` 中配置：
 ```
 quarkus.langchain4j.openai.api-key=${OPENAI_API_KEY}
 quarkus.langchain4j.openai.chat-model.temperature=0.5
 quarkus.langchain4j.openai.timeout=60s
 ```
 
-Interestingly, for debugging, tweaking or even just knowing all the available parameters,
-one can have a look in the quarkus DEV UI.
-In this dashboard, you can make changes that will be immediately reflected in your running instance,
-and your changes are automatically ported to the code.
-The DEV UI can be accessed by running your Quarkus application with the command `quarkus dev`,
-then you can find it on localhost:8080/q/dev-ui (or wherever you deploy your application).
+有意思的是，如果是为了调试、微调，或者只是想了解有哪些可用参数，
+你可以直接查看 Quarkus DEV UI。
+在这个控制面板中，你做出的修改会立刻反映到运行中的实例里，
+并且这些改动会自动回写到代码配置中。
+你可以通过 `quarkus dev` 命令启动 Quarkus 应用，
+然后在 localhost:8080/q/dev-ui（或者你的应用实际部署地址）访问 DEV UI。
 
 ![](/img/quarkus-dev-ui-parameters.png)
 
-More info on Quarkus integration can be found [here](/tutorials/quarkus-integration).
+更多关于 Quarkus 集成的信息可在[这里](/tutorials/quarkus-integration)查看。
 
-## Setting Parameters in Spring Boot
-If you are using one of our [Spring Boot starters](https://github.com/langchain4j/langchain4j-spring),
-you can configure model parameters in the `application.properties` file as follows:
+## 在 Spring Boot 中设置参数
+如果你使用的是我们的某个 [Spring Boot starter](https://github.com/langchain4j/langchain4j-spring)，
+可以像下面这样在 `application.properties` 中配置模型参数：
 ```
 langchain4j.open-ai.chat-model.api-key=${OPENAI_API_KEY}
 langchain4j.open-ai.chat-model.model-name=gpt-4-1106-preview
 ...
 ```
-The complete list of supported properties can be found
-[here](https://github.com/langchain4j/langchain4j-spring/blob/main/langchain4j-open-ai-spring-boot-starter/src/main/java/dev/langchain4j/openai/spring/AutoConfig.java).
+完整的受支持配置项列表可在
+[这里](https://github.com/langchain4j/langchain4j-spring/blob/main/langchain4j-open-ai-spring-boot-starter/src/main/java/dev/langchain4j/openai/spring/AutoConfig.java)查看。
 
-More info on Spring Boot integration can be found [here](/tutorials/spring-boot-integration).
+更多关于 Spring Boot 集成的信息可在[这里](/tutorials/spring-boot-integration)查看。

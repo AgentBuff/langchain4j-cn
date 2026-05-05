@@ -2,17 +2,20 @@
 sidebar_position: 17
 ---
 
-# Building a Java MCP stdio server
+# 构建 Java MCP stdio 服务器
 
-LangChain4j provides an MCP **client** (`langchain4j-mcp`) for connecting to MCP servers.
-If you want to build a Java-based MCP **stdio server** (a local subprocess launched by an MCP client),
-use the community module: `langchain4j-community-mcp-server`.
+LangChain4j 提供了一个 MCP **client**（`langchain4j-mcp`），
+用于连接 MCP servers。
+如果你希望构建一个基于 Java 的 MCP **stdio server**
+（也就是由 MCP client 启动的本地子进程），
+请使用 community 模块：`langchain4j-community-mcp-server`。
 
-This guide shows the minimal setup for exposing existing `@Tool`-annotated methods over MCP (JSON-RPC) via stdio.
+本文展示了如何通过最小化配置，
+把已有的 `@Tool` 标注方法通过 stdio 以 MCP（JSON-RPC）的形式暴露出来。
 
-## Add dependency
+## 添加依赖
 
-Add BOMs (recommended):
+先添加 BOM（推荐）：
 
 ```xml
 <dependencyManagement>
@@ -35,7 +38,7 @@ Add BOMs (recommended):
 </dependencyManagement>
 ```
 
-Then add the community MCP server dependency:
+然后添加 community MCP server 依赖：
 
 ```xml
 <dependency>
@@ -44,9 +47,9 @@ Then add the community MCP server dependency:
 </dependency>
 ```
 
-## Implement tools
+## 实现工具 {#implement-tools}
 
-Expose your functionality using `@Tool`:
+使用 `@Tool` 暴露你的功能：
 
 ```java
 import dev.langchain4j.agent.tool.P;
@@ -61,7 +64,7 @@ class Calculator {
 }
 ```
 
-## Start the stdio server
+## 启动 stdio 服务器 {#start-stdio-server}
 
 ```java
 import dev.langchain4j.community.mcp.server.McpServer;
@@ -86,20 +89,22 @@ public class McpServerMain {
 ```
 
 :::caution
-`StdioMcpServerTransport` writes the JSON-RPC protocol to `System.out`.
-Make sure your logging is configured to write to `System.err` (otherwise you will corrupt the protocol stream and the client will disconnect).
+`StdioMcpServerTransport` 会把 JSON-RPC 协议流写到 `System.out`。
+请确保你的日志被配置为写入 `System.err`，
+否则会破坏协议流，导致 client 断开连接。
 :::
 
-## Package as a runnable JAR
+## 打包为可运行 JAR
 
-MCP clients (like Claude Desktop) typically expect to start a local server process.
-Packaging your server as a runnable (fat) JAR is a common approach, but any runnable process works.
+MCP clients（例如 Claude Desktop）通常会期望启动一个本地 server 进程。
+将 server 打包为可运行的 fat JAR 是一种常见做法，
+不过任何可运行进程都可以。
 
-## Configure an MCP client
+## 配置 MCP 客户端 {#configure-mcp-client}
 
-### Claude Desktop
+### Claude Desktop 配置 {#claude-desktop}
 
-Add a server entry in `claude_desktop_config.json`:
+在 `claude_desktop_config.json` 中添加一个 server 条目：
 
 ```json
 {
@@ -112,10 +117,11 @@ Add a server entry in `claude_desktop_config.json`:
 }
 ```
 
-Use absolute paths; on Windows, escape backslashes.
+请使用绝对路径；在 Windows 上需要对反斜杠进行转义。
 
-## Complete runnable example
+## 完整可运行示例
 
-See the `mcp-stdio-server-example` in the examples repository for an end-to-end runnable project (including packaging and client config):
+你可以在 examples 仓库中的 `mcp-stdio-server-example` 查看一个完整可运行项目
+（包括打包和 client 配置）：
 
 - https://github.com/langchain4j/langchain4j-examples (directory: `mcp-stdio-server-example`)

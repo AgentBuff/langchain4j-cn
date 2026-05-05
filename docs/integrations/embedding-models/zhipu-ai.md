@@ -4,23 +4,23 @@ sidebar_position: 21
 
 # Zhipu AI
 
-[ZhiPu AI](https://www.zhipuai.cn/) is a platform to provide model service including text generation, text embedding,
-image generation and so on. You can refer to [ZhiPu AI Open Platform](https://open.bigmodel.cn/) for more details.
-LangChain4j integrates with ZhiPu AI by using [HTTP endpoint](https://bigmodel.cn/dev/api/normal-model/glm-4). We are
-consider migrating it from HTTP endpoint to official SDK and are appreciated of any help!
+[ZhiPu AI](https://www.zhipuai.cn/) 是一个提供模型服务的平台，包括文本生成、文本嵌入、图像生成等功能。
+更多详情请参阅 [ZhiPu AI 开放平台](https://open.bigmodel.cn/)。
+LangChain4j 通过 [HTTP 端点](https://bigmodel.cn/dev/api/normal-model/glm-4) 与 ZhiPu AI 集成，
+我们正在考虑将其从 HTTP 端点迁移到官方 SDK，欢迎任何贡献！
 
-## Maven Dependency
+## Maven 依赖
 
-You can use ZhiPu AI with LangChain4j in plain Java or Spring Boot applications.
+可在纯 Java 或 Spring Boot 应用中使用 ZhiPu AI 与 LangChain4j 集成。
 
-### Plain Java
+### 纯 Java
 
 :::note
-Since `1.0.0-alpha1`, `langchain4j-zhipu-ai` has migrated to `langchain4j-community` and is renamed to
+自 `1.0.0-alpha1` 起，`langchain4j-zhipu-ai` 已迁移到 `langchain4j-community` 并重命名为
 `langchain4j-community-zhipu-ai`
 :::
 
-Before `1.0.0-alpha1`:
+`1.0.0-alpha1` 之前：
 
 ```xml
 
@@ -31,7 +31,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-`1.0.0-alpha1` and later:
+`1.0.0-alpha1` 及以上版本：
 
 ```xml
 
@@ -42,7 +42,7 @@ Before `1.0.0-alpha1`:
 </dependency>
 ```
 
-Or, you can use BOM to manage dependencies consistently:
+或使用 BOM 统一管理依赖：
 
 ```xml
 
@@ -57,11 +57,11 @@ Or, you can use BOM to manage dependencies consistently:
 </dependencyManagement>
 ```
 
-## APIs
+## API 参考 {#api}
 
 - `ZhipuAiEmbeddingModel`
 
 
-## Examples
+## 示例
 
 - [ZhipuAiEmbeddingModelIT](https://github.com/langchain4j/langchain4j-community/blob/main/models/langchain4j-community-zhipu-ai/src/test/java/dev/langchain4j/community/model/zhipu/ZhipuAiEmbeddingModelIT.java)

@@ -76,10 +76,14 @@ const config = {
         localeConfigs: {
             en: {
                 label: 'English',
+                path: 'en',
+                translate: true,
                 htmlLang: 'en-US',
             },
             'zh-Hans': {
                 label: '简体中文',
+                path: 'zh-Hans',
+                translate: true,
                 htmlLang: 'zh-CN',
             },
         },
@@ -423,12 +427,12 @@ const config = {
                         position: 'left'
                     },
                     {
-                        to: '/category/tutorials',
+                            to: '/tutorials',
                         label: 'Tutorials',
                         position: 'left'
                     },
                     {
-                        to: '/category/integrations',
+                            to: '/integrations',
                         label: 'Integrations',
                         position: 'left'
                     },
@@ -489,11 +493,11 @@ const config = {
                             },
                             {
                                 label: 'Tutorials',
-                                to: '/category/tutorials',
+                                to: '/tutorials',
                             },
                             {
                                 label: 'Integrations',
-                                to: '/category/integrations',
+                                to: '/integrations',
                             },
                             {
                                 label: 'Useful Materials',

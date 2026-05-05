@@ -1,8 +1,8 @@
 {
-  "label": "Browser Execution Engines",
+  "label": "浏览器执行引擎",
   "position": 20,
   "link": {
     "type": "generated-index",
-    "description": "Browser Execution Engines"
+    "description": "浏览器执行引擎"
   }
 }

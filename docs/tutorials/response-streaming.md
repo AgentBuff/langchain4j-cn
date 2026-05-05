@@ -2,22 +2,23 @@
 sidebar_position: 5
 ---
 
-# Response Streaming
+# 响应流式传输
 
 :::note
-This page describes response streaming with a low-level LLM API.
-See [AI Services](/tutorials/ai-services#streaming) for a high-level LLM API.
+本页介绍的是低层 LLM API 中的 response streaming。
+高层 LLM API 请参阅 [AI Services](/tutorials/ai-services#streaming)。
 :::
 
-LLMs generate text one token at a time, so many LLM providers offer a way to stream the response
-token-by-token instead of waiting for the entire text to be generated.
-This significantly improves the user experience, as the user does not need to wait an unknown
-amount of time and can start reading the response almost immediately.
+LLM 是按 token 逐个生成文本的，
+因此许多 LLM 提供商都支持按 token 流式返回响应，
+而不是等整段文本全部生成完再一次性返回。
+这能显著提升用户体验，因为用户不需要等待一段未知时长，
+几乎可以立刻开始阅读返回内容。
 
-For the `ChatModel` and `LanguageModel` interfaces, there are corresponding
-`StreamingChatModel` and `StreamingLanguageModel` interfaces.
-These have a similar API but can stream the responses.
-They accept an implementation of the `StreamingChatResponseHandler` interface as an argument.
+对于 `ChatModel` 和 `LanguageModel` 接口，
+LangChain4j 分别提供了对应的 `StreamingChatModel` 和 `StreamingLanguageModel` 接口。
+它们的 API 形式相近，但支持流式返回响应。
+调用时需要传入一个 `StreamingChatResponseHandler` 接口的实现。
 
 ```java
 public interface StreamingChatResponseHandler {
@@ -39,22 +40,27 @@ public interface StreamingChatResponseHandler {
 }
 ```
 
-By implementing `StreamingChatResponseHandler`, you can define actions for the following events:
-- When the next partial textual response is generated: either `onPartialResponse(String)`
-or `onPartialResponse(PartialResponse, PartialResponseContext)` is invoked (you can implement either of these methods).
-Depending on the LLM provider, partial response text can consist of a single or more tokens.
-For instance, you can send the token directly to the UI as soon as it becomes available.
-- When the next partial thinking/reasoning text is generated: either `onPartialThinking(PartialThinking)`
-or `onPartialThinking(PartialThinking, PartialThinkingContext)` is invoked (you can implement either of these methods).
-Depending on the LLM provider, partial thinking text can consist of a single or more tokens.
-- When the next [partial tool call](/tutorials/tools#using-streamingchatmodel) is generated: either `onPartialToolCall(PartialToolCall)`
-or `onPartialToolCall(PartialToolCall, PartialToolCallContext)` is invoked (you can implement either of these methods).
-- When the LLM has completed streaming for a single tool call: `onCompleteToolCall(CompleteToolCall)` is invoked.
-- When the LLM has completed generation: `onCompleteResponse(ChatResponse)` is invoked.
-The `ChatResponse` object contains the complete response (`AiMessage`) as well as `ChatResponseMetadata`.
-- When an error occurs: `onError(Throwable error)` is invoked.
+通过实现 `StreamingChatResponseHandler`，
+你可以为以下事件定义处理逻辑：
+- 当生成下一段部分文本响应时，会调用 `onPartialResponse(String)`
+  或 `onPartialResponse(PartialResponse, PartialResponseContext)`
+  （你可以任选其一实现）。
+  根据不同 LLM 提供商的实现，部分响应文本可能只包含一个 token，也可能包含多个 token。
+  例如，你可以在 token 一可用时就立刻把它推送到 UI。
+- 当生成下一段部分 thinking / reasoning 文本时，会调用 `onPartialThinking(PartialThinking)`
+  或 `onPartialThinking(PartialThinking, PartialThinkingContext)`
+  （你也可以任选其一实现）。
+  根据不同 LLM 提供商的实现，部分 thinking 文本可能由一个或多个 token 组成。
+- 当生成下一段[部分 tool call](/tutorials/tools#using-streamingchatmodel) 时，
+  会调用 `onPartialToolCall(PartialToolCall)`
+  或 `onPartialToolCall(PartialToolCall, PartialToolCallContext)`
+  （同样任选其一实现即可）。
+- 当 LLM 完成某一次单独 tool call 的流式输出时，会调用 `onCompleteToolCall(CompleteToolCall)`。
+- 当 LLM 完成整个响应生成时，会调用 `onCompleteResponse(ChatResponse)`。
+  其中 `ChatResponse` 包含完整响应（`AiMessage`）以及 `ChatResponseMetadata`。
+- 当发生错误时，会调用 `onError(Throwable error)`。
 
-Below is an example of how to implement streaming with `StreamingChatModel`:
+下面是一个使用 `StreamingChatModel` 实现流式响应的示例：
 ```java
 StreamingChatModel model = OpenAiStreamingChatModel.builder()
     .apiKey(System.getenv("OPENAI_API_KEY"))
@@ -97,10 +103,11 @@ model.chat(userMessage, new StreamingChatResponseHandler() {
 });
 ```
 
-A more compact way to stream the response is to use the `LambdaStreamingResponseHandler` class.
-This utility class provides static methods to create a `StreamingChatResponseHandler` using lambda expressions.
-The way to use lambdas to stream the response is quite simple. 
-You just call the `onPartialResponse()` static method with a lambda expression that defines what to do with the partial response:
+还有一种更紧凑的方式可以实现流式响应，即使用 `LambdaStreamingResponseHandler` 类。
+这个工具类提供了一组静态方法，可以借助 lambda 表达式快速创建 `StreamingChatResponseHandler`。
+使用 lambda 来处理流式响应非常直接：
+只需调用 `onPartialResponse()` 静态方法，
+并传入一个定义“如何处理部分响应”的 lambda 表达式即可：
 
 ```java
 import static dev.langchain4j.model.LambdaStreamingResponseHandler.onPartialResponse;
@@ -108,8 +115,8 @@ import static dev.langchain4j.model.LambdaStreamingResponseHandler.onPartialResp
 model.chat("Tell me a joke", onPartialResponse(System.out::print));
 ```
 
-The `onPartialResponseAndError()` method allows you to define actions for both
-the `onPartialResponse()` and `onError()` events:
+`onPartialResponseAndError()` 方法允许你同时定义
+`onPartialResponse()` 和 `onError()` 的处理逻辑：
 
 ```java
 import static dev.langchain4j.model.LambdaStreamingResponseHandler.onPartialResponseAndError;
@@ -117,14 +124,15 @@ import static dev.langchain4j.model.LambdaStreamingResponseHandler.onPartialResp
 model.chat("Tell me a joke", onPartialResponseAndError(System.out::print, Throwable::printStackTrace));
 ```
 
-## Streaming Cancellation
+## 流式取消 {#streaming-cancellation}
 
-If you wish to cancel the streaming, you can do so from one of the following methods:
+如果你希望主动取消流式输出，可以在以下任意方法内部执行取消：
 - `onPartialResponse(PartialResponse, PartialResponseContext)`
 - `onPartialThinking(PartialThinking, PartialThinkingContext)`
 - `onPartialToolCall(PartialToolCall, PartialToolCallContext)`
 
-The context object contains the `StreamingHandle`, which can be used to cancel the streaming:
+context 对象中包含 `StreamingHandle`，
+可以用它来取消流式输出：
 ```java
 model.chat(userMessage, new StreamingChatResponseHandler() {
 
@@ -148,5 +156,6 @@ model.chat(userMessage, new StreamingChatResponseHandler() {
 });
 ```
 
-When `StreamingHandle.cancel()` is called, LangChain4j will close the connection and stop the streaming.
-Once `StreamingHandle.cancel()` has been called, `StreamingChatResponseHandler` will not receive any further callbacks.
+当调用 `StreamingHandle.cancel()` 后，LangChain4j 会关闭连接并停止流式输出。
+一旦 `StreamingHandle.cancel()` 被调用，
+`StreamingChatResponseHandler` 就不会再收到任何后续回调。
